@@ -1,8 +1,6 @@
-let currentPage = 0;
-let tableId = "";
-let statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${currentPage}1`;
-// let chartUrl = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=1&interval=hourly`;
-let tableContainer = document.getElementById('statisticsTableContainer');
+let currentPage = 1;
+let statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${currentPage}`;
+const tableContainer = document.getElementById('statisticsTableContainer');
 let coinsData = [];
 
 //Function for getting the coins data 
@@ -65,22 +63,21 @@ async function showSmallChartAsync(coinId) {
     );
 }
 
-//Event for loading the statistics table
+//Event for loading the statistics table (This event should be changed to load on 'click' when the statistics page will be clicked on the nav bar)
 window.addEventListener('load', async (event) => {
     let data = [];
     try{
+        //Function for loading top gainers and top losers goes here
         data = await getCoinsDataAsync(statisticsTableUrl);
         let statisticsTableContainer = document.getElementById("statisticsTableContainer");
         statisticsTableContainer.innerHTML = renderStatisticsTable(data);
         data.forEach(async coin => {
-            //console.log(document.getElementById(coin.id).getContext("2d"));
             await showSmallChartAsync(coin.id)
         });
     }
     catch(err){
         console.log("Error");
     }
-    //console.log(data);
   });
 
 
