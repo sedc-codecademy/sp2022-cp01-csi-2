@@ -5,18 +5,88 @@ let coinsData = [];
 
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
-    try{
+    try {
         let response = await fetch(url);
         //console.log(response);
         return await response.json();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         // Handle errors here
     }
 }
 
+
+//-------------------------------------------------------------------------------------------------------
+//#region  Stefan i Igor => Task :Create statistics page best growing/falling charts
+
+//returns the sorted data for the top gainers
+async function returnResultForGainers(url) {
+
+    let data = await getCoinsDataAsync(url)
+    let sortedData = data.sort((x, y) => y.price_change_percentage_24h - x.price_change_percentage_24h);
+    return sortedData
+}
+//returns the sorted data for the top losers
+
+async function returnResultForLosers(url) {
+    let data = await getCoinsDataAsync(url)
+    let sortedData = data.sort((x, y) => x.price_change_percentage_24h - y.price_change_percentage_24h);
+    return sortedData
+}
+
+//creates the table for top losers and top gainers
+async function tableMaker(data) {
+    let table = [];
+    table.push(`
+        <table class="table">
+          <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Logo</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Gain in last 24H</th>
+        </tr>
+      </thead>
+      <tbody>`)
+
+    for (let i = 0; i < data.length - data.length + 5; i++) {
+
+        table.push(`        
+            <tr>
+              <th class="align-middle" scope="row">${i + 1}</th>
+              <td class="img-fluid align-middle"><img src="${data[i].image}" height="30px" alt="${data[i].id}"}"></td>
+              <td class="align-middle">${data[i].name}</td>
+              <td class="align-middle"> ${data[i].current_price.toFixed(5)}$</td>
+              <td class="align-middle">% ${data[i].price_change_percentage_24h.toFixed(2)}</td>
+              
+            </tr>`)
+
+
+    }
+    table.push(`</tbody></table>`)
+
+    return table.join('')
+}
+
+async function showGainersAndLosersTables() {
+    let gainersDiv = document.getElementById("gainers");
+    let losersDiv = document.getElementById("losers");
+    let baseUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250"
+    let sortedGainersTable = await returnResultForGainers(baseUrl)
+    let sortedLooserTable = await returnResultForLosers(baseUrl)
+    gainersDiv.innerHTML += await tableMaker(sortedGainersTable)
+    losersDiv.innerHTML += await tableMaker(sortedLooserTable)
+
+}
+
+//#endregion
+
+//-------------------------------------------------------------------------------------------------------
+//#region  Aneta  => Task :Create statistics page growth table
+
 //Function for rendering the main statistics table
-function renderStatisticsTable(data){
+function renderStatisticsTable(data) {
     let strArr = [];
     strArr.push(`<table class="table table-hover table-responsive table-fit">
     <thead>
@@ -32,16 +102,16 @@ function renderStatisticsTable(data){
       </tr>
     </thead>
     <tbody>
-    `); 
-    for(let coin of data){
-        strArr.push( `<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    `);
+    for (let coin of data) {
+        strArr.push(`<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <td>${coin.market_cap_rank}</td>
         <td class="img-fluid align-middle"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
         <td class="align-middle">${coin.name}</td>
         <td class="align-middle">${coin.market_cap.toLocaleString('en-US')}</td>
         <td class="align-middle">${coin.current_price.toLocaleString('en-US')}</td>
         <td class="align-middle">${coin.price_change_percentage_24h > 0 ? "<strong class='increase'>↑</strong>" : "<strong class='decrease'>↓</strong>"}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
-        <td class="align-middle">${coin.total_supply !=null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
+        <td class="align-middle">${coin.total_supply != null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
         <td class="align-middle"><div class="smallChartContainer chart-container"></div><canvas id="${coin.id}" style ="max-width:200px !important; max-height:9vh"></canvas></div></td>
         </tr>
         `)
@@ -51,11 +121,11 @@ function renderStatisticsTable(data){
 }
 
 //Function for showing the small charts in the main statistics table
-async function showSmallChartAsync(coinId) {  
+async function showSmallChartAsync(coinId) {
 
     let currentUrl = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=1&interval=hourly`;
     let chartCanvas = document.getElementById(coinId);
-    let ctx = chartCanvas.getContext("2d"); 
+    let ctx = chartCanvas.getContext("2d");
     let config = await getTableChartConfig(currentUrl);
     new Chart(
         ctx,
@@ -66,8 +136,12 @@ async function showSmallChartAsync(coinId) {
 //Event for loading the statistics table (This event should be changed to load on 'click' when the statistics page will be clicked on the nav bar)
 window.addEventListener('load', async (event) => {
     let data = [];
-    try{
+    try {
         //Function for loading top gainers and top losers goes here
+        
+        showGainersAndLosersTables()
+        
+        //Function for loading the table
         data = await getCoinsDataAsync(statisticsTableUrl);
         let statisticsTableContainer = document.getElementById("statisticsTableContainer");
         statisticsTableContainer.innerHTML = renderStatisticsTable(data);
@@ -75,10 +149,10 @@ window.addEventListener('load', async (event) => {
             await showSmallChartAsync(coin.id)
         });
     }
-    catch(err){
+    catch (err) {
         console.log("Error");
     }
-  });
+});
 
 
 //Function for converting the unix number to date format
@@ -143,11 +217,13 @@ async function getTableChartConfig(url) {
                 }
             },
             events: [],
-            maintainAspectRatio    : false
+            maintainAspectRatio: false
         }
     };
     return config;
 }
+
+//#endregion
 
 //#region  KRISTIJAN => Task: Create statistics page growth chart
 
@@ -181,15 +257,15 @@ async function GetSingleCoinChartConfig(id, coinName) {
         type: 'line',
         data: data,
         options: {
-            maintainAspectRatio	: false,
+            maintainAspectRatio: false,
 
             scales: {
-                x:{
+                x: {
                     grid: {
                         display: false,
                     }
                 },
-                y:{
+                y: {
                     grid: {
                         display: false,
                     }
@@ -207,7 +283,7 @@ async function createSingleCoinChartAsync(coinId, coinName) {
 
     let chartContainer = document.createElement('div')
     chartContainer.setAttribute('class', 'single-coin-chart-container')
-    
+
     let chartCanvas = document.createElement('canvas')
     chartContainer.appendChild(chartCanvas)
 
@@ -262,7 +338,7 @@ tableContainer.addEventListener('click', async (e) => {
 
         let chart = await createSingleCoinChartAsync(coinId, coinName)
         let info = await createSingleCoinInfoAsync(coinId)
-        
+
         let modal = document.getElementById('coin-info')
         modal.innerHTML = '';
         modal.appendChild(chart)
