@@ -148,3 +148,126 @@ async function getTableChartConfig(url) {
     };
     return config;
 }
+
+//#region  KRISTIJAN => Task: Create statistics page growth chart
+
+//Function for creating the config for the big chart in the modal
+
+async function GetSingleCoinChartConfig(id, coinName) {
+
+    let chartUrl = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1&interval=minutely`
+    let chartData = await getCoinsDataAsync(chartUrl)
+    let priceResult = [];
+    let timeResult = [];
+    let convertedDate = 0;
+
+    for (const data of chartData.prices) {
+        convertedDate = convertUnixToDate(data[0])
+        timeResult.push(convertedDate);
+        priceResult.push(data[1])
+    }
+
+    const data = {
+        labels: timeResult,
+        datasets: [{
+            label: `${coinName} Price Chart`,
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: priceResult,
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            maintainAspectRatio	: false,
+
+            scales: {
+                x:{
+                    grid: {
+                        display: false,
+                    }
+                },
+                y:{
+                    grid: {
+                        display: false,
+                    }
+                }
+            }
+        }
+    };
+
+    return config;
+}
+
+//Function for creating the big chart in the modal
+
+async function createSingleCoinChartAsync(coinId, coinName) {
+
+    let chartContainer = document.createElement('div')
+    chartContainer.setAttribute('class', 'single-coin-chart-container')
+    
+    let chartCanvas = document.createElement('canvas')
+    chartContainer.appendChild(chartCanvas)
+
+    let config = await GetSingleCoinChartConfig(coinId, coinName)
+
+    new Chart(
+        chartCanvas,
+        config
+    );
+
+    return chartContainer
+}
+
+//function for creating the bonus info for each crypto when you click on the statistics table
+
+async function createSingleCoinInfoAsync(coinId) {
+
+    let url = `https://api.coingecko.com/api/v3/coins/${coinId}`
+    let data = await getCoinsDataAsync(url);
+
+    let infoContainer = document.createElement('div')
+    infoContainer.setAttribute('class', 'info-container mx-4')
+
+    infoContainer.innerHTML = `
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h1 class="card-title"><img src="${data.image.small}"alt="${data.id}"}"> ${data.name}</h1>
+                <h3 class="card-text">${data.symbol.toUpperCase()} Price Statistics</h3>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Price: $${data.market_data.current_price.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item">Market cap: $${data.market_data.market_cap.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item">Market cap rank: ${data.market_cap_rank}</li>
+                <li class="list-group-item">Circulating Supply: ${data.market_data.circulating_supply.toLocaleString('en-US')}</li>
+                <li class="list-group-item">Total Supply: ${data.market_data.total_supply != null ? data.market_data.total_supply.toLocaleString('en-US') : data.market_data.circulating_supply.toLocaleString('en-US')}</li>
+                <li class="list-group-item">Trading volume: $${data.market_data.total_volume.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item">All-Time High: $${data.market_data.ath.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item">All-Time Low: $${data.market_data.atl.usd}</li>
+                <li class="list-group-item">24h Low / 24h High: $${data.market_data.low_24h.usd.toLocaleString('en-US')} / $${data.market_data.high_24h.usd.toLocaleString('en-US')}</li>
+            </ul>
+        </div>
+    `
+    return infoContainer
+}
+
+// event listener to show the modal with chart and bonus info
+
+tableContainer.addEventListener('click', async (e) => {
+    if (e.target.nodeName === "TD") {
+        let coinId = e.path[1].className
+        let coinName = e.path[1].attributes[1].value
+
+        let chart = await createSingleCoinChartAsync(coinId, coinName)
+        let info = await createSingleCoinInfoAsync(coinId)
+        
+        let modal = document.getElementById('coin-info')
+        modal.innerHTML = '';
+        modal.appendChild(chart)
+        modal.appendChild(info)
+    }
+})
+
+//#endregion
