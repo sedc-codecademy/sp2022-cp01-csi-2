@@ -19,8 +19,8 @@ async function getCoinsDataAsync(url) {
 
 //Function for rendering the main statistics table
 function renderStatisticsTable(data){
-    let str = [];
-    str.push(`<table class="table table-hover table-responsive table-fit">
+    let strArr = [];
+    strArr.push(`<table class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
         <th scope="col">Rank</th>
@@ -36,7 +36,7 @@ function renderStatisticsTable(data){
     <tbody>
     `); 
     for(let coin of data){
-        str.push( `<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        strArr.push( `<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <td>${coin.market_cap_rank}</td>
         <td class="img-fluid align-middle"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
         <td class="align-middle">${coin.name}</td>
@@ -48,8 +48,8 @@ function renderStatisticsTable(data){
         </tr>
         `)
     }
-    str.push(`</tbody></table>`)
-    return str.join('');
+    strArr.push(`</tbody></table>`)
+    return strArr.join('');
 }
 
 //Function for showing the small charts in the main statistics table
