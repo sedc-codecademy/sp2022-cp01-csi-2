@@ -2,13 +2,14 @@ let currentPage = 0;
 let tableId = "";
 let statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${currentPage}1`;
 // let chartUrl = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=1&interval=hourly`;
-let tableContainer = document.createElement("statisticsTableContainer");
+let tableContainer = document.getElementById('statisticsTableContainer');
 let coinsData = [];
 
+//Function for getting the coins data 
 async function getCoinsDataAsync(url) {
     try{
         let response = await fetch(url);
-        console.log(response);
+        //console.log(response);
         return await response.json();
     }catch(err){
         console.error(err);
@@ -16,6 +17,7 @@ async function getCoinsDataAsync(url) {
     }
 }
 
+//Function for rendering the main statistics table
 function renderStatisticsTable(data){
     let str = [];
     str.push(`<table class="table table-hover table-responsive table-fit">
@@ -34,7 +36,8 @@ function renderStatisticsTable(data){
     <tbody>
     `); 
     for(let coin of data){
-        str.push( `<tr class="${coin.id}"><td>${coin.market_cap_rank}</td>
+        str.push( `<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <td>${coin.market_cap_rank}</td>
         <td class="img-fluid align-middle"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
         <td class="align-middle">${coin.name}</td>
         <td class="align-middle">${coin.market_cap.toLocaleString('en-US')}</td>
@@ -49,20 +52,20 @@ function renderStatisticsTable(data){
     return str.join('');
 }
 
-async function drawChartAsync(coinId) {  
+//Function for showing the small charts in the main statistics table
+async function showSmallChartAsync(coinId) {  
 
     let currentUrl = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=1&interval=hourly`;
     let chartCanvas = document.getElementById(coinId);
     let ctx = chartCanvas.getContext("2d"); 
-    let config = await showChart(currentUrl);
+    let config = await getTableChartConfig(currentUrl);
     new Chart(
         ctx,
         config
     );
 }
 
-
-
+//Event for loading the statistics table
 window.addEventListener('load', async (event) => {
     let data = [];
     try{
@@ -70,18 +73,18 @@ window.addEventListener('load', async (event) => {
         let statisticsTableContainer = document.getElementById("statisticsTableContainer");
         statisticsTableContainer.innerHTML = renderStatisticsTable(data);
         data.forEach(async coin => {
-            console.log(document.getElementById(coin.id).getContext("2d"));
-            await drawChartAsync(coin.id)
+            //console.log(document.getElementById(coin.id).getContext("2d"));
+            await showSmallChartAsync(coin.id)
         });
     }
     catch(err){
         console.log("Error");
     }
-    console.log(data);
+    //console.log(data);
   });
 
 
-
+//Function for converting the unix number to date format
 function convertUnixToDate(unix) {
     let date = new Date(unix);
 
@@ -89,7 +92,8 @@ function convertUnixToDate(unix) {
     return formattedDate
 }
 
-async function showChart(url) {
+//Function for drawing the small chart in the statistics table
+async function getTableChartConfig(url) {
 
     let chartData = await getCoinsDataAsync(url)
     let priceResult = [];
