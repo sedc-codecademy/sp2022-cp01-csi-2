@@ -45,7 +45,7 @@ async function tableMaker(data) {
           <th scope="col">Logo</th>
           <th scope="col">Name</th>
           <th scope="col">Price</th>
-          <th scope="col">Gain in last 24H</th>
+          <th scope="col">Price change in % (last 24h)</th>
         </tr>
       </thead>
       <tbody>`)
