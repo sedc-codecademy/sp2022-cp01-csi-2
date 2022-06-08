@@ -28,3 +28,7 @@
 #statisticsTableContainer tr {
     cursor: pointer;
 }
+
+#prevPg, #nextPg {
+    cursor: pointer;
+}

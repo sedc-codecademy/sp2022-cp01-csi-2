@@ -16,7 +16,6 @@ async function getCoinsDataAsync(url) {
     }
 }
 
-
 //-------------------------------------------------------------------------------------------------------
 //#region  Stefan i Igor => TODO: Create statistics page best growing/falling tables
 
@@ -154,11 +153,11 @@ window.addEventListener('load', async (event) => {
     helpers.table.currentPage = 1;
     helpers.table.perPage = 10;
     helpers.table.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
-
+    
     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
+    helpers.table.totalPages = Math.ceil(totalCoins.length /helpers.table.perPage);
     try {
         //Function for loading top gainers and top losers goes here
-        
         await showGainersAndLosersTables();
         
         //Function for loading the table
@@ -173,26 +172,33 @@ window.addEventListener('load', async (event) => {
 
 //Function for handling the previous and next buttons
 function handlePrevNextButtons(){
+    let prevBtn = document.getElementById("prevPg");
+    let nextBtn = document.getElementById("nextPg");
+    let currentPg = document.getElementById("currentPg");
     if(helpers.table.currentPage == 1){
         document.getElementById("prevPg").setAttribute("disabled", true);
     }
-    document.getElementById("nextPg").addEventListener("click", async (event) => {
+    nextBtn.addEventListener("click", async (event) => {
         helpers.table.currentPage +=1;
         console.log(helpers.table.currentPage);
         await showStatisticsTable();
-        document.getElementById("prevPg").removeAttribute("disabled");
-        document.getElementById("prevPg").parentNode.classList.remove("disabled");
-        document.getElementById("currentPg").innerText = helpers.table.currentPage;
+        if(currentPg == helpers.table.totalPages){
+            nextBtn.setAttribute("disabled", true);
+            nextBtn.parentNode.classList.add("disabled");
+        }
+        prevBtn.removeAttribute("disabled");
+        prevBtn.parentNode.classList.remove("disabled");
+        currentPg.innerText = helpers.table.currentPage;
     })
     document.getElementById("prevPg").addEventListener("click", async (event) => {
         helpers.table.currentPage -=1;
         console.log(helpers.table.currentPage);
         await showStatisticsTable();
         if(helpers.table.currentPage == 1){
-            document.getElementById("prevPg").setAttribute("disabled", true);
-            document.getElementById("prevPg").parentNode.classList.add("disabled");
+            prevBtn.setAttribute("disabled", true);
+            prevBtn.parentNode.classList.add("disabled");
         }
-        document.getElementById("currentPg").innerText = helpers.table.currentPage;
+        currentPg.innerText = helpers.table.currentPage;
     });
 }
 
