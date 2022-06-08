@@ -3,10 +3,6 @@
     height: 20vh;
 }
 
-button{
-    background-color: aqua;
-}
-
 .increase, .decrease{
     font-size: 1.5em;
 }
@@ -27,4 +23,12 @@ button{
 
 .info-container {
     float: right;
+}
+
+#statisticsTableContainer tr {
+    cursor: pointer;
+}
+
+#prevPg, #nextPg {
+    cursor: pointer;
 }

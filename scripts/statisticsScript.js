@@ -1,23 +1,23 @@
-let currentPage = 1;
-let statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${currentPage}`;
 const tableContainer = document.getElementById('statisticsTableContainer');
-let coinsData = [];
+
+let helpers = {"table" : {}};
 
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
     try {
         let response = await fetch(url);
-        //console.log(response);
-        return await response.json();
+        let result = await response.json();
+        //console.log(result)
+        // return await response.json();
+        return result;
     } catch (err) {
         console.error(err);
         // Handle errors here
     }
 }
 
-
 //-------------------------------------------------------------------------------------------------------
-//#region  Stefan i Igor => Task :Create statistics page best growing/falling charts
+//#region  Stefan i Igor => TODO: Create statistics page best growing/falling tables
 
 //returns the sorted data for the top gainers
 async function returnResultForGainers(url) {
@@ -83,7 +83,7 @@ async function showGainersAndLosersTables() {
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
-//#region  Aneta  => Task :Create statistics page growth table
+//#region  Aneta  => TODO: Create statistics page - Main table with all cryptocurrencies including small charts for each
 
 //Function for rendering the main statistics table
 function renderStatisticsTable(data) {
@@ -110,7 +110,11 @@ function renderStatisticsTable(data) {
         <td class="align-middle">${coin.name}</td>
         <td class="align-middle">${coin.market_cap.toLocaleString('en-US')}</td>
         <td class="align-middle">${coin.current_price.toLocaleString('en-US')}</td>
-        <td class="align-middle">${coin.price_change_percentage_24h > 0 ? "<strong class='increase'>↑</strong>" : "<strong class='decrease'>↓</strong>"}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
+        <td class="align-middle">${coin.price_change_percentage_24h > 0 
+            ? "<strong class='increase'>↑</strong>" 
+            : coin.price_change_percentage_24h < 0 
+                ? "<strong class='decrease'>↓</strong>" 
+                : " "}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
         <td class="align-middle">${coin.total_supply != null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
         <td class="align-middle"><div class="smallChartContainer chart-container"></div><canvas id="${coin.id}" style ="max-width:200px !important; max-height:9vh"></canvas></div></td>
         </tr>
@@ -133,26 +137,70 @@ async function showSmallChartAsync(coinId) {
     );
 }
 
+//Function for loading and showing the table
+async function showStatisticsTable(){
+    data = await getCoinsDataAsync(helpers.table.statisticsTableUrl+`&per_page=${helpers.table.perPage}`+`&page=${helpers.table.currentPage}`);
+    let statisticsTableContainer = document.getElementById("statisticsTableContainer");
+    statisticsTableContainer.innerHTML = renderStatisticsTable(data);
+    data.forEach(async coin => {
+        await showSmallChartAsync(coin.id)
+    });
+}
+
 //Event for loading the statistics table (This event should be changed to load on 'click' when the statistics page will be clicked on the nav bar)
 window.addEventListener('load', async (event) => {
     let data = [];
+    helpers.table.currentPage = 1;
+    helpers.table.perPage = 10;
+    helpers.table.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
+    
+    let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
+    helpers.table.totalPages = Math.ceil(totalCoins.length /helpers.table.perPage);
     try {
         //Function for loading top gainers and top losers goes here
-        
-        showGainersAndLosersTables()
+        await showGainersAndLosersTables();
         
         //Function for loading the table
-        data = await getCoinsDataAsync(statisticsTableUrl);
-        let statisticsTableContainer = document.getElementById("statisticsTableContainer");
-        statisticsTableContainer.innerHTML = renderStatisticsTable(data);
-        data.forEach(async coin => {
-            await showSmallChartAsync(coin.id)
-        });
+        handlePrevNextButtons();
+        await showStatisticsTable();
     }
     catch (err) {
         console.log("Error");
+        console.log(err);
     }
 });
+
+//Function for handling the previous and next buttons
+function handlePrevNextButtons(){
+    let prevBtn = document.getElementById("prevPg");
+    let nextBtn = document.getElementById("nextPg");
+    let currentPg = document.getElementById("currentPg");
+    if(helpers.table.currentPage == 1){
+        prevBtn.setAttribute("disabled", true);
+    }
+    nextBtn.addEventListener("click", async (event) => {
+        helpers.table.currentPage +=1;
+        console.log(helpers.table.currentPage);
+        await showStatisticsTable();
+        if(currentPg == helpers.table.totalPages){
+            nextBtn.setAttribute("disabled", true);
+            nextBtn.parentNode.classList.add("disabled");
+        }
+        prevBtn.removeAttribute("disabled");
+        prevBtn.parentNode.classList.remove("disabled");
+        currentPg.innerText = helpers.table.currentPage;
+    })
+    document.getElementById("prevPg").addEventListener("click", async (event) => {
+        helpers.table.currentPage -=1;
+        console.log(helpers.table.currentPage);
+        await showStatisticsTable();
+        if(helpers.table.currentPage == 1){
+            prevBtn.setAttribute("disabled", true);
+            prevBtn.parentNode.classList.add("disabled");
+        }
+        currentPg.innerText = helpers.table.currentPage;
+    });
+}
 
 
 //Function for converting the unix number to date format
@@ -225,7 +273,7 @@ async function getTableChartConfig(url) {
 
 //#endregion
 
-//#region  KRISTIJAN => Task: Create statistics page growth chart
+//#region  KRISTIJAN => TODO: Create statistics page growth chart
 
 //Function for creating the config for the big chart in the modal
 
@@ -331,7 +379,7 @@ async function createSingleCoinInfoAsync(coinId) {
 
 // event listener to show the modal with chart and bonus info
 
-tableContainer.addEventListener('click', async (e) => {
+document.getElementById("statisticsTableContainer").addEventListener('click', async (e) => {
     if (e.target.nodeName === "TD") {
         let coinId = e.path[1].className
         let coinName = e.path[1].attributes[1].value
