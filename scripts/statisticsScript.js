@@ -176,7 +176,7 @@ function handlePrevNextButtons(){
     let nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
     if(helpers.table.currentPage == 1){
-        document.getElementById("prevPg").setAttribute("disabled", true);
+        prevBtn.setAttribute("disabled", true);
     }
     nextBtn.addEventListener("click", async (event) => {
         helpers.table.currentPage +=1;
