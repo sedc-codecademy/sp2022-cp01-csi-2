@@ -17,7 +17,7 @@ async function getCoinsDataAsync(url) {
 
 
 //-------------------------------------------------------------------------------------------------------
-//#region  Stefan i Igor => Task :Create statistics page best growing/falling charts
+//#region  Stefan i Igor => TODO: Create statistics page best growing/falling tables
 
 //returns the sorted data for the top gainers
 async function returnResultForGainers(url) {
@@ -83,7 +83,7 @@ async function showGainersAndLosersTables() {
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
-//#region  Aneta  => Task :Create statistics page growth table
+//#region  Aneta  => TODO: Create statistics page - Main table with all cryptocurrencies including small charts for each
 
 //Function for rendering the main statistics table
 function renderStatisticsTable(data) {
@@ -225,7 +225,7 @@ async function getTableChartConfig(url) {
 
 //#endregion
 
-//#region  KRISTIJAN => Task: Create statistics page growth chart
+//#region  KRISTIJAN => TODO: Create statistics page growth chart
 
 //Function for creating the config for the big chart in the modal
 
