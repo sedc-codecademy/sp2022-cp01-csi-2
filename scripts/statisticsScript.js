@@ -2,7 +2,6 @@ const tableContainer = document.getElementById('statisticsTableContainer');
 
 let helpers = {"table" : {}};
 
-
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
     try {
