@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CryptoSimulator</title>
+    <link rel="stylesheet" href="../sp2022-cp01-csi-2/styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 
 <body>
@@ -22,8 +24,51 @@
             <!-- This is SECTION 1 from the concept image of the home page (found on Trello)-->
         </section>
 
-        <section id="homePageTrendingCryptos">
+        <section id="homePageTrendingCryptos" class="container trendingCryptoMainContainer">
             <!-- SECTION 2 -->
+            <div class = "row trendingCryptosContainer">
+                <div class = "col trendingOne trendingCrypto">
+                    <h2 class = "trendingCryptoName" id="trendingCryptoNameOne">Crypto One</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartOne"></canvas>
+                </div>
+                <div class = "col trendingTwo trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Two</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartTwo"></canvas>
+                </div>
+                <div class = "col trendingThree trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Three</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartThree"></canvas>
+                </div>
+                <div class = "col trendingFour trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Four</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartFour"></canvas>
+                </div>
+                <div class = "col trendingFive trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Five</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartFive"></canvas>                    
+                </div>
+            </div>
+            <div class="row trendingCryptoBottomContainer">
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonOne">Most Popular</button>
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonTwo">Market Size</button>
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonThree">Best Selling</button>
+                <button class = "col trendingCryptoLearnMore">Learn More &#187</button>
+            </div>
         </section>
 
         <section id="homePageExtraInfo">
@@ -57,7 +102,7 @@
     <footer id="mainFooter">
         <!-- Here goes Footer Section (SECTION 4) -->
     </footer>
-
+    <script src="../sp2022-cp01-csi-2/scripts/script.js"></script>
 </body>
 
 </html>
