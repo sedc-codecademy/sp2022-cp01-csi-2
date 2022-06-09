@@ -1,17 +1,17 @@
-// ivana_stojadinovska
-// trending crypto
 
-let trendingCryptoNames = document.getElementsByClassName('trendingCryptoName');
-let trendingCryptoShortNames = document.getElementsByClassName('trendingCryptoShortName');
-let trendingCryptoCurentPrices = document.getElementsByClassName('trendingCryptoCurentPrice');
-let tendingCryptoPriceChanges = document.getElementsByClassName('tendingCryptoPriceChange');
-let trendingCryptoChartContainer = document.getElementsByClassName('trendingCryptoChartContainer');
-let tcButtonOne = document.getElementById('tcButtonOne');
-let tcButtonTwo = document.getElementById('tcButtonTwo');
-let tcButtonThree = document.getElementById('tcButtonThree');
-let trendingCryptoApiLink = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
-let trendingCryptoApiLink2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
-let trendingCryptoApiLink3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+//#region ivana stojadinovska - trending crypto
+
+const trendingCryptoNames = document.getElementsByClassName('trendingCryptoName');
+const trendingCryptoShortNames = document.getElementsByClassName('trendingCryptoShortName');
+const trendingCryptoCurentPrices = document.getElementsByClassName('trendingCryptoCurentPrice');
+const tendingCryptoPriceChanges = document.getElementsByClassName('tendingCryptoPriceChange');
+const trendingCryptoChartContainer = document.getElementsByClassName('trendingCryptoChartContainer');
+const tcButtonOne = document.getElementById('tcButtonOne');
+const tcButtonTwo = document.getElementById('tcButtonTwo');
+const tcButtonThree = document.getElementById('tcButtonThree');
+const trendingCryptoApiLink = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+const trendingCryptoApiLink2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+const trendingCryptoApiLink3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
 
 trendingCryptoApiCall(trendingCryptoApiLink)
 
@@ -71,7 +71,7 @@ tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCrypto
 tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
 tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 
-async function trendingCryptoApiCall(url) {
+function trendingCryptoApiCall(url) {
     fetch(url)
         .then((response) => {
             return response.json();
@@ -97,3 +97,124 @@ function trendingCryptoDisplayData(data) {
             );
     }
 }
+
+//#endregion
+
+//#region ILIJA => Create homepage extra info
+
+//Header and Footer elements
+const mainHeader = document.getElementById('mainHeader')
+const mainFooter = document.getElementById('mainFooter')
+
+// Home page main content elements
+const homePageGeneralInfo = document.getElementById('homePageGeneralInfo')
+const homePageTrendingCryptos = document.getElementById('homePageTrendingCryptos')
+const homePageExtraInfo = document.getElementById('homePageExtraInfo')
+const homePageMainContent = [homePageExtraInfo, homePageGeneralInfo, homePageTrendingCryptos]
+
+// Other pages elements
+const statisticsPage = document.getElementById('statisticsPage')
+const simulatorPage = document.getElementById('simulatorPage')
+const infoCenterPage = document.getElementById('infoCenterPage')
+const loginRegisterPage = document.getElementById('loginRegisterPage')
+const otherPagesDiv = document.getElementById('otherPagesDiv')
+
+
+const displayElements = {
+    hideElements: (...elements) => {
+        for (const element of elements) {
+            element.setAttribute('hidden', 'hidden')
+        }
+    },
+    showElements: (...elements) => {
+        for (const element of elements) {
+            element.removeAttribute('hidden', 'hidden')
+        }
+    },
+
+    showHomePage: function () {
+        this.showElements(...homePageMainContent)
+        this.hideElements(otherPagesDiv)
+    },
+    showStatisticsPage: function () {
+        this.showElements(statisticsPage, otherPagesDiv)
+        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage)
+    },
+    showSimulatorPage: function () {
+        this.showElements(simulatorPage, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
+    },
+    showInfoCenterPage: function () {
+        this.showElements(infoCenterPage, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
+    },
+    showLoginRegisterPage: function () {
+        this.showElements(loginRegisterPage, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage)
+    }
+}
+
+
+const cryptoInfo = {
+    factsElement: document.getElementById('facts'),
+    statsElement: document.getElementById('extraInfoStats'),
+
+    stats: ["$2.1 trillion", "18.000", "70 million", "$2.1 trillion"],
+    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets", "Total market cap"],
+
+    facts: [
+        "The maximum number of Bitcoins that can be mined is 21 million",
+        "Blockchain as we know it today was invented by an individual or a group of people using the pseudonym Satoshi Nakamoto",
+        "The first commercial bitcoin transaction was for pizza",
+        "Some of the world's largest banks are investing about $50 billion to build a blockchain-based digital cash settlement system",
+        "It takes an average of 10 minutes to verify a Bitcoin transaction",
+        "91.5% of all investments in cryptocurrencies are made by men",
+        "Most Bitcoin users are between 25 and 34 years old",
+        "More than 20 countries have adopted, rejected, or researched the concept of a national cryptocurrency",
+        "FBI owns 1.5% of the world's total bitcoins",
+        "0.5% of the world's population is using blockchain technology",
+        "Around 15% of IT professionals have invested in cryptocurrency, which makes them the largest group of investors",
+        "A post on Bitcoin surfaces on social media every three seconds",
+    ],
+
+    showCryptoFacts: function (element) {
+        setInterval(() => {
+            let i = Math.floor(Math.random() * this.facts.length)
+            element.innerHTML = `Fact &numero; ${i + 1} : <i>"${this.facts[i]}</i>"`
+        }, 12_000);
+    },
+
+    showCryptoStats: function () {
+        let stats = "";
+        for (let i = 0; i < this.stats.length; i++) {
+            stats = stats.concat(`
+                <div class="card" style="width: 17rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">${this.stats[i]}<span style="color: rgb(114, 112, 112); ">+</span>
+                        </h5>
+                        <p class="card-text">
+                            ${this.statsDescription[i]}
+                        </p>
+                    </div>
+                </div>`)
+        }
+        return stats
+    }
+}
+Object.freeze(cryptoInfo)
+
+
+// EVENTS
+
+window.addEventListener('load', () => {
+    cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
+    cryptoInfo.showCryptoFacts(cryptoInfo.factsElement);
+})
+
+document.getElementById('learnMoreBtn').addEventListener('click', () => {
+    displayElements.showInfoCenterPage()
+})
+
+
+
+//#endregion ILIJA => Create homepage extra info
