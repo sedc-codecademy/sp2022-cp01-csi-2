@@ -113,7 +113,32 @@ window.addEventListener('load', () => {
 document.getElementById('learnMoreBtn').addEventListener('click', () => {
     displayElements.showInfoCenterPage()
 })
+const homePageBtn = document.getElementsByClassName('homePageBtn')
 
+homePageBtn[0].addEventListener('click', () => {
+    displayElements.showHomePage()
+
+})
+
+homePageBtn[1].addEventListener('click', () => {
+    displayElements.showHomePage()
+})
+
+document.getElementById('statsBtn').addEventListener('click', () => {
+    displayElements.showStatisticsPage()
+})
+
+document.getElementById('simulatorBtn').addEventListener('click', () => {
+    displayElements.showSimulatorPage()
+})
+
+document.getElementById('infoCenterBtn').addEventListener('click', () => {
+    displayElements.showInfoCenterPage()
+})
+
+document.getElementById('loginBtn').addEventListener('click', () => {
+    displayElements.showLoginRegisterPage()
+})
 
 
 //#endregion ILIJA => Create homepage extra info
