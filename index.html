@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <header id="mainHeader" class="flexLayout header">
+    <header id="mainHeader" class="flexLayout header ">
         <!-- Here goes the Navigation bar -->
         <div id="top-bar">
             <nav class="navbar bg-warning p-0">
@@ -42,7 +42,7 @@
 
         <nav class="navbar navbar-expand-lg bg-dark sticky-top p-1">
             <div class="container">
-                <a class="navbar-brand" href="#top-bar">
+                <a class="navbar-brand homePageBtn" href="#top-bar">
                     <img src="assets/Bitcoin.png" alt="LOGO" height="36">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -53,19 +53,20 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link active text-light" aria-current="page" href="#top-bar">Home</a>
+                            <a class="nav-link active text-light homePageBtn" id="homeBtn" aria-current="page"
+                            href ="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#statisticsPage">Statistics</a>
+                            <a class="nav-link text-light" id="statsBtn"href ="#">Statistics</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#simulatorPage">Crypto Simulator</a>
+                            <a class="nav-link text-light" id="simulatorBtn"href ="#">Crypto Simulator</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" href="#infoCenterPage">Info Center</a>
+                        <li class=" nav-item">
+                            <a class="nav-link text-light" id="infoCenterBtn"href ="#">Info Center</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-warning text-light" href="#loginRegisterPage">Log In</a>
+                        <li class=" nav-item">
+                            <a class="btn btn-outline-warning text-light" id="loginBtn"href ="#">Log In</a>
                         </li>
                     </ul>
                 </div>
