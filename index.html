@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CryptoSimulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/statisticsTable.css">
     <link href="styles/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -79,13 +79,60 @@
 
     <!-- <main id="homePageMainContent"> -->
 
+       
     <section id="homePageGeneralInfo" class="flexLayout generalInfo">
         <!-- This is SECTION 1 from the concept image of the home page (found on Trello)-->
     </section>
 
-    <section id="homePageTrendingCryptos" class="flexLayout trendingCryptos">
+    <!-- <section id="homePageTrendingCryptos" class="flexLayout trendingCryptos"> -->
+        <section id="homePageTrendingCryptos" class="container flexLayout trendingCryptoMainContainer">
+            <!-- SECTION 2 -->
+            <div class = "row trendingCryptosContainer">
+                <div class = "col trendingOne trendingCrypto">
+                    <h2 class = "trendingCryptoName" id="trendingCryptoNameOne">Crypto One</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartOne"></canvas>
+                </div>
+                <div class = "col trendingTwo trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Two</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartTwo"></canvas>
+                </div>
+                <div class = "col trendingThree trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Three</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartThree"></canvas>
+                </div>
+                <div class = "col trendingFour trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Four</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartFour"></canvas>
+                </div>
+                <div class = "col trendingFive trendingCrypto">
+                    <h2 class = "trendingCryptoName">Crypto Five</h2>
+                    <h6 class = "trendingCryptoShortName">Crypto Short Name</h6>
+                    <h4 class = "trendingCryptoCurentPrice">Price: 22.985</h4>
+                    <h4 class = "tendingCryptoPriceChange">+100</h4>
+                    <canvas class = "trendingCryptoChartContainer" id="trendingCryptoChartFive"></canvas>                    
+                </div>
+            </div>
+            <div class="row trendingCryptoBottomContainer">
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonOne">Most Popular</button>
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonTwo">Market Size</button>
+                <button class = "col trendingCryptoLearnMore trendingCryptoChangeData" id="tcButtonThree">Best Selling</button>
+                <button class = "col trendingCryptoLearnMore">Learn More &#187</button>
+            </div>
+        </section>
         <!-- SECTION 2 -->
-    </section>
+    <!-- </section> -->
 
     <section id="homePageExtraInfo" class="flexLayout extraInfo">
         <!-- SECTION 3 -->
@@ -189,7 +236,7 @@
         <!-- Here goes Footer Section (SECTION 4) -->
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script> -->
     <script src="scripts/script.js"></script>
     <script src="scripts/statisticsScript.js"></script>
 </body>
