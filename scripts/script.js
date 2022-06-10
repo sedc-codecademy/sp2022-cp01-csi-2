@@ -92,7 +92,7 @@ const cryptoInfo = {
                         <h5 class="card-title">${this.stats[i]}<span style="color: rgb(114, 112, 112); ">+</span>
                         </h5>
                         <p class="card-text">
-                            ${this.statsDescription[i]}
+                            ${this.statsDescription[i] ?? ""}
                         </p>
                     </div>
                 </div>`)
