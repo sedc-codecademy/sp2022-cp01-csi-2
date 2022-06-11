@@ -1,14 +1,5 @@
 
 //#region ivana stojadinovska - trending crypto
-
-const trendingCryptoNames = document.getElementsByClassName('trendingCryptoName');
-const trendingCryptoShortNames = document.getElementsByClassName('trendingCryptoShortName');
-const trendingCryptoCurentPrices = document.getElementsByClassName('trendingCryptoCurentPrice');
-const tendingCryptoPriceChanges = document.getElementsByClassName('tendingCryptoPriceChange');
-const trendingCryptoChartContainer = document.getElementsByClassName('trendingCryptoChartContainer');
-const tcButtonOne = document.getElementById('tcButtonOne');
-const tcButtonTwo = document.getElementById('tcButtonTwo');
-const tcButtonThree = document.getElementById('tcButtonThree');
 const trendingCryptoApiLink = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
 const trendingCryptoApiLink2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
 const trendingCryptoApiLink3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
@@ -17,13 +8,26 @@ trendingCryptoApiCall(trendingCryptoApiLink)
 
 class trendingCryptoClass {
     constructor(index, name, short, price, change, graph) {
+        const trendingCryptoNames = document.getElementsByClassName('trendingCryptoName');
+        const trendingCryptoShortNames = document.getElementsByClassName('trendingCryptoShortName');
+        const trendingCryptoCurentPrices = document.getElementsByClassName('trendingCryptoCurentPrice');
+        const tendingCryptoPriceChanges = document.getElementsByClassName('tendingCryptoPriceChange');
+        const trendingCrypto = document.getElementsByClassName('trendingCrypto');
         trendingCryptoNames[index].innerText = name;
         trendingCryptoShortNames[index].innerText = short;
         trendingCryptoCurentPrices[index].innerText = price;
         tendingCryptoPriceChanges[index].innerText = change + " %";
         tendingCryptoPriceChanges[index].style.color = tendingCryptoPriceChanges[index].innerText.charAt(0) == "-" ? "red" : "green";
+        let chartCanvas;
 
-        new Chart(trendingCryptoChartContainer[index],
+        console.log(trendingCrypto[index].childElementCount)
+        if (trendingCrypto[index].childElementCount <= 4) {
+            chartCanvas = document.createElement('canvas')
+            trendingCrypto[index].appendChild(chartCanvas)
+            chartCanvas.classList.add("trendingCryptoChartContainer")
+        }
+
+        new Chart(chartCanvas,
             {
                 type: 'line',
                 data:
@@ -38,25 +42,31 @@ class trendingCryptoClass {
                     }]
                 },
                 options: {
-                    scales: {
-                        yAxes: [{
-                            gridLines: {
-                                display: false,
-                            },
-                            ticks: {
-                                display: false
-                            }
-                        }],
-                        xAxes: [{
-                            gridLines: {
-                                display: false,
-                            },
-                            ticks: {
-                                display: false
-                            }
-                        }]
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
                     },
-                    legend: { display: false },
+                    scales: {
+                        y: {
+                            ticks: {
+                                display: false,
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    },
                     elements: {
                         point: {
                             radius: 0
@@ -84,7 +94,9 @@ function trendingCryptoApiCall(url) {
 }
 
 function trendingCryptoDisplayData(data) {
-    console.log(data);
+    const tcButtonOne = document.getElementById('tcButtonOne');
+    const tcButtonTwo = document.getElementById('tcButtonTwo');
+    const tcButtonThree = document.getElementById('tcButtonThree'); 
     for (let i = 0; i <= 4; i++) {
         let asd = new trendingCryptoClass
             (
@@ -98,7 +110,7 @@ function trendingCryptoDisplayData(data) {
     }
 }
 
-//#endregion
+//#endregion Ivana_Stojadinovska
 
 //#region ILIJA => Create homepage extra info
 
