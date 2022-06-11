@@ -96,7 +96,7 @@ function trendingCryptoApiCall(url) {
 function trendingCryptoDisplayData(data) {
     const tcButtonOne = document.getElementById('tcButtonOne');
     const tcButtonTwo = document.getElementById('tcButtonTwo');
-    const tcButtonThree = document.getElementById('tcButtonThree'); 
+    const tcButtonThree = document.getElementById('tcButtonThree');
     for (let i = 0; i <= 4; i++) {
         let asd = new trendingCryptoClass
             (
@@ -159,6 +159,7 @@ const displayElements = {
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
+        displayInfoPageContent()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
@@ -193,7 +194,7 @@ const cryptoInfo = {
         setInterval(() => {
             let i = Math.floor(Math.random() * this.facts.length)
             element.innerHTML = `Fact &numero; ${i + 1} : <i>"${this.facts[i]}</i>"`
-        }, 12_000);
+        }, 10_000);
     },
 
     showCryptoStats: function () {
@@ -213,45 +214,25 @@ const cryptoInfo = {
         return stats
     }
 }
-Object.freeze(cryptoInfo)
 
 
-// EVENTS
+// HOMEPAGE EVENTS
 
 window.addEventListener('load', () => {
     cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
     cryptoInfo.showCryptoFacts(cryptoInfo.factsElement);
 })
 
-document.getElementById('learnMoreBtn').addEventListener('click', () => {
-    displayElements.showInfoCenterPage()
-})
+//Navbar events
 const homePageBtn = document.getElementsByClassName('homePageBtn')
+homePageBtn[0].addEventListener('click', () => displayElements.showHomePage())
+homePageBtn[1].addEventListener('click', () => displayElements.showHomePage())
+document.getElementById('statsBtn').addEventListener('click', () => displayElements.showStatisticsPage())
+document.getElementById('simulatorBtn').addEventListener('click', () => displayElements.showSimulatorPage())
+document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
+document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
-homePageBtn[0].addEventListener('click', () => {
-    displayElements.showHomePage()
-
-})
-
-homePageBtn[1].addEventListener('click', () => {
-    displayElements.showHomePage()
-})
-
-document.getElementById('statsBtn').addEventListener('click', () => {
-    displayElements.showStatisticsPage()
-})
-
-document.getElementById('simulatorBtn').addEventListener('click', () => {
-    displayElements.showSimulatorPage()
-})
-
-document.getElementById('infoCenterBtn').addEventListener('click', () => {
-    displayElements.showInfoCenterPage()
-})
-
-document.getElementById('loginBtn').addEventListener('click', () => {
-    displayElements.showLoginRegisterPage()
-})
-
+//Sections events
+document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 
 //#endregion ILIJA => Create homepage extra info
