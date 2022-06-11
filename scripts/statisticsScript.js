@@ -1,6 +1,6 @@
 const tableContainer = document.getElementById('statisticsTableContainer');
 
-let helpers = {"table" : {}};
+let helpers = {"statisticsTable" : {}};
 
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
@@ -139,7 +139,7 @@ async function showSmallChartAsync(coinId) {
 
 //Function for loading and showing the table
 async function showStatisticsTable(){
-    data = await getCoinsDataAsync(helpers.table.statisticsTableUrl+`&per_page=${helpers.table.perPage}`+`&page=${helpers.table.currentPage}`);
+    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl+`&per_page=${helpers.statisticsTable.perPage}`+`&page=${helpers.statisticsTable.currentPage}`);
     let statisticsTableContainer = document.getElementById("statisticsTableContainer");
     statisticsTableContainer.innerHTML = renderStatisticsTable(data);
     data.forEach(async coin => {
@@ -147,15 +147,15 @@ async function showStatisticsTable(){
     });
 }
 
-//Event for loading the statistics table (This event should be changed to load on 'click' when the statistics page will be clicked on the nav bar)
+//Event for loading the statistics table 
 window.addEventListener('load', async (event) => {
     let data = [];
-    helpers.table.currentPage = 1;
-    helpers.table.perPage = 10;
-    helpers.table.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
+    helpers.statisticsTable.currentPage = 1;
+    helpers.statisticsTable.perPage = 10;
+    helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
     
     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
-    helpers.table.totalPages = Math.ceil(totalCoins.length /helpers.table.perPage);
+    helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
     try {
         //Function for loading top gainers and top losers goes here
         await showGainersAndLosersTables();
@@ -170,35 +170,56 @@ window.addEventListener('load', async (event) => {
     }
 });
 
+//Function for setting a timeout for 2sec
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function showLoader(){
+    let tableWidth = tableContainer.getBoundingClientRect().width;
+    let tableHeight = tableContainer.getBoundingClientRect().height;
+    let loader = await (await fetch("assets/images/loader.html")).text();
+    tableContainer.innerHTML = loader;
+    tableContainer.style.height = `${tableHeight}px`;
+    document.getElementById("table-loader").style.height = `${tableHeight}px`;
+    document.getElementById("prevNextNav").style.display = "none";
+    await timeout(2000);
+    tableContainer.style.height = null;
+}
+
 //Function for handling the previous and next buttons
 function handlePrevNextButtons(){
     let prevBtn = document.getElementById("prevPg");
     let nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
-    if(helpers.table.currentPage == 1){
+    if(helpers.statisticsTable.currentPage == 1){
         prevBtn.setAttribute("disabled", true);
     }
     nextBtn.addEventListener("click", async (event) => {
-        helpers.table.currentPage +=1;
-        console.log(helpers.table.currentPage);
+        helpers.statisticsTable.currentPage +=1;
+        console.log(helpers.statisticsTable.currentPage);
+        await showLoader();
         await showStatisticsTable();
-        if(currentPg == helpers.table.totalPages){
+        document.getElementById("prevNextNav").style.display = "block";
+        if(currentPg == helpers.statisticsTable.totalPages){
             nextBtn.setAttribute("disabled", true);
             nextBtn.parentNode.classList.add("disabled");
         }
         prevBtn.removeAttribute("disabled");
         prevBtn.parentNode.classList.remove("disabled");
-        currentPg.innerText = helpers.table.currentPage;
+        currentPg.innerText = helpers.statisticsTable.currentPage;
     })
     document.getElementById("prevPg").addEventListener("click", async (event) => {
-        helpers.table.currentPage -=1;
-        console.log(helpers.table.currentPage);
+        helpers.statisticsTable.currentPage -=1;
+        console.log(helpers.statisticsTable.currentPage);
+        await showLoader();
         await showStatisticsTable();
-        if(helpers.table.currentPage == 1){
+        document.getElementById("prevNextNav").style.display = "block";
+        if(helpers.statisticsTable.currentPage == 1){
             prevBtn.setAttribute("disabled", true);
             prevBtn.parentNode.classList.add("disabled");
         }
-        currentPg.innerText = helpers.table.currentPage;
+        currentPg.innerText = helpers.statisticsTable.currentPage;
     });
 }
 
@@ -232,6 +253,7 @@ async function getTableChartConfig(url) {
             backgroundColor: 'rgb(255,215,0)',
             borderColor: 'rgb(218,165,32)',
             data: priceResult,
+            pointRadius: 0
         }]
     };
 
