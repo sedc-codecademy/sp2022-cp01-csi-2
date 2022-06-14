@@ -40,3 +40,8 @@
 #table-loader{
     transform: scale(3, 3);
 }
+
+.darkModal {
+    background-color: #17181D !important;
+    color: whitesmoke !important;
+}
