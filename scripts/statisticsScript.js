@@ -50,7 +50,7 @@ async function tableMaker(data) {
       </thead>
       <tbody>`)
 
-    for (let i = 0; i < data.length - data.length + 5; i++) {
+    for (let i = 0; i < 5; i++) {
 
         table.push(`        
             <tr>
@@ -75,8 +75,10 @@ async function showGainersAndLosersTables() {
     let baseUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250"
     let sortedGainersTable = await returnResultForGainers(baseUrl)
     let sortedLooserTable = await returnResultForLosers(baseUrl)
-    gainersDiv.innerHTML += await tableMaker(sortedGainersTable)
-    losersDiv.innerHTML += await tableMaker(sortedLooserTable)
+    gainersDiv.innerHTML = `<h3 class="text-center">TOP GAINERS</h3 >` + await tableMaker(sortedGainersTable)
+    losersDiv.innerHTML = `<h3 class="text-center">TOP LOSERS</h3>` + await tableMaker(sortedLooserTable)
+    
+   
 
 }
 
