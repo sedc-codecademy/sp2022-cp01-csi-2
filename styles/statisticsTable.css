@@ -39,6 +39,7 @@
 
 #table-loader{
     transform: scale(3, 3);
+    margin-top: 50%
 }
 
 .darkModal {
