@@ -57,12 +57,9 @@ async function tableMaker(data) {
               <th class="align-middle text-center" scope="row">${i + 1}</th>
               <td class="img-fluid align-middle text-center"><img src="${data[i].image}" height="30px" alt="${data[i].id}"}"></td>
               <td class="align-middle text-center">${data[i].name}</td>
-              <td class="align-middle text-center"> ${data[i].current_price.toFixed(5)}$</td>
+              <td class="align-middle text-center">&#36 ${data[i].current_price.toFixed(5)}$</td>
               <td class="align-middle text-center">% ${data[i].price_change_percentage_24h.toFixed(2)}</td>
-              
             </tr>`)
-
-
     }
     table.push(`</tbody></table>`)
 
@@ -77,9 +74,6 @@ async function showGainersAndLosersTables() {
     let sortedLooserTable = await returnResultForLosers(baseUrl)
     gainersDiv.innerHTML = `<h3 class="text-center">TOP GAINERS</h3 >` + await tableMaker(sortedGainersTable)
     losersDiv.innerHTML = `<h3 class="text-center">TOP LOSERS</h3>` + await tableMaker(sortedLooserTable)
-    
-   
-
 }
 
 //#endregion
@@ -110,8 +104,8 @@ function renderStatisticsTable(data) {
         <td class="align-middle text-center">${coin.market_cap_rank}</td>
         <td class="img-fluid align-middle text-center"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
         <td class="align-middle text-center">${coin.name}</td>
-        <td class="align-middle text-center">${coin.market_cap.toLocaleString('en-US')}</td>
-        <td class="align-middle text-center">${coin.current_price.toLocaleString('en-US')}</td>
+        <td class="align-middle text-center">&#36 ${coin.market_cap.toLocaleString('en-US')}</td>
+        <td class="align-middle text-center">&#36 ${coin.current_price.toLocaleString('en-US')}</td>
         <td class="align-middle text-center">${coin.price_change_percentage_24h > 0 
             ? "<strong class='increase'>↑</strong>" 
             : coin.price_change_percentage_24h < 0 
@@ -149,13 +143,13 @@ async function showStatisticsTable(){
     });
 }
 
-//Event for loading the statistics table 
-window.addEventListener('load', async (event) => {
+//Event for loading the statistics page
+document.getElementById("statsBtn").addEventListener('click', async (event) => {
     let data = [];
     helpers.statisticsTable.currentPage = 1;
     helpers.statisticsTable.perPage = 10;
     helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
-    
+
     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
     helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
     try {
@@ -172,21 +166,25 @@ window.addEventListener('load', async (event) => {
     }
 });
 
-//Function for setting a timeout for 2sec
+//Function for setting a timeout
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function showLoader(){
-    let tableWidth = tableContainer.getBoundingClientRect().width;
-    let tableHeight = tableContainer.getBoundingClientRect().height;
+async function showLoader(element, ms = null, prezerveSize = true){
+    let elementWidth = element.getBoundingClientRect().width;
+    let elementHeight = element.getBoundingClientRect().height;
     let loader = await (await fetch("assets/images/loader.html")).text();
-    tableContainer.innerHTML = loader;
-    tableContainer.style.height = `${tableHeight}px`;
-    document.getElementById("table-loader").style.height = `${tableHeight}px`;
-    document.getElementById("prevNextNav").style.display = "none";
-    await timeout(2000);
-    tableContainer.style.height = null;
+    element.innerHTML = loader;
+    if(!prezerveSize){
+        element.style.height = `${elementHeight}px`;
+    }
+    if(ms != null){
+        await timeout(ms);
+    }
+    if(!prezerveSize){
+        element.style.height = null;
+    }
 }
 
 //Function for handling the previous and next buttons
@@ -199,24 +197,29 @@ function handlePrevNextButtons(){
     }
     nextBtn.addEventListener("click", async (event) => {
         helpers.statisticsTable.currentPage +=1;
-        console.log(helpers.statisticsTable.currentPage);
-        await showLoader();
+        //Hide pagination controlls while loader is running
+        document.getElementById("prevNextNav").style.visibility = "collapse";
+        await showLoader(tableContainer, 2000, false);
         await showStatisticsTable();
-        document.getElementById("prevNextNav").style.display = "block";
+        //Bring back pagination controls
+        document.getElementById("prevNextNav").style.visibility = "visible";
         if(currentPg == helpers.statisticsTable.totalPages){
-            nextBtn.setAttribute("disabled", true);
+            nextBtn.setAttribute("disabled", false);
             nextBtn.parentNode.classList.add("disabled");
         }
         prevBtn.removeAttribute("disabled");
         prevBtn.parentNode.classList.remove("disabled");
         currentPg.innerText = helpers.statisticsTable.currentPage;
     })
+
     document.getElementById("prevPg").addEventListener("click", async (event) => {
         helpers.statisticsTable.currentPage -=1;
-        console.log(helpers.statisticsTable.currentPage);
-        await showLoader();
+        //Hide pagination controlls while loader is running
+        document.getElementById("prevNextNav").style.visibility = "collapse";
+        await showLoader(tableContainer, 2000, true);
         await showStatisticsTable();
-        document.getElementById("prevNextNav").style.display = "block";
+        //Bring back pagination controls
+        document.getElementById("prevNextNav").style.visibility = "visible";
         if(helpers.statisticsTable.currentPage == 1){
             prevBtn.setAttribute("disabled", true);
             prevBtn.parentNode.classList.add("disabled");
@@ -411,9 +414,11 @@ async function createSingleCoinInfoAsync(coinId) {
 // event listener to show the modal with chart and bonus info
 
 document.getElementById("statisticsTableContainer").addEventListener('click', async (e) => {
+    let modal = document.getElementById('coin-info');
     let coinId = "";
     let coinName = "";
 
+    await showLoader(modal, preserveSize = true);
     if (e.target.nodeName === "TD") {
         coinId = e.path[1].className
         coinName = e.path[1].attributes[1].value
@@ -425,7 +430,6 @@ document.getElementById("statisticsTableContainer").addEventListener('click', as
     let chart = await createSingleCoinChartAsync(coinId, coinName)
     let info = await createSingleCoinInfoAsync(coinId)
 
-    let modal = document.getElementById('coin-info')
     modal.innerHTML = '';
     modal.appendChild(chart)
     modal.appendChild(info)
