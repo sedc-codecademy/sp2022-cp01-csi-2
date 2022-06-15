@@ -143,7 +143,7 @@ async function showStatisticsTable(){
     });
 }
 
-//Event for loading the statistics table 
+//Event for loading the statistics page
 document.getElementById("statsBtn").addEventListener('click', async (event) => {
     let data = [];
     helpers.statisticsTable.currentPage = 1;
