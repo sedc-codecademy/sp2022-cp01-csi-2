@@ -144,7 +144,7 @@ async function showStatisticsTable(){
 }
 
 //Event for loading the statistics table 
-window.addEventListener('load', async (event) => {
+document.getElementById("statsBtn").addEventListener('click', async (event) => {
     let data = [];
     helpers.statisticsTable.currentPage = 1;
     helpers.statisticsTable.perPage = 10;
