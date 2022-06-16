@@ -1,6 +1,6 @@
 const tableContainer = document.getElementById('statisticsTableContainer');
 
-let helpers = {"table" : {}};
+let helpers = {"statisticsTable" : {}};
 
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
@@ -41,28 +41,25 @@ async function tableMaker(data) {
         <table class="table">
           <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Logo</th>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Price change in % (last 24h)</th>
+          <th scope="col" class="text-center">#</th>
+          <th scope="col" class="text-center">Logo</th>
+          <th scope="col" class="text-center">Name</th>
+          <th scope="col" class="text-center">Price</th>
+          <th scope="col" class="text-center">Price change in % <br> (last 24h)</th>
         </tr>
       </thead>
       <tbody>`)
 
-    for (let i = 0; i < data.length - data.length + 5; i++) {
+    for (let i = 0; i < 5; i++) {
 
         table.push(`        
             <tr>
-              <th class="align-middle" scope="row">${i + 1}</th>
-              <td class="img-fluid align-middle"><img src="${data[i].image}" height="30px" alt="${data[i].id}"}"></td>
-              <td class="align-middle">${data[i].name}</td>
-              <td class="align-middle"> ${data[i].current_price.toFixed(5)}$</td>
-              <td class="align-middle">% ${data[i].price_change_percentage_24h.toFixed(2)}</td>
-              
+              <th class="align-middle text-center" scope="row">${i + 1}</th>
+              <td class="img-fluid align-middle text-center"><img src="${data[i].image}" height="30px" alt="${data[i].id}"}"></td>
+              <td class="align-middle text-center">${data[i].name}</td>
+              <td class="align-middle text-center">&#36 ${data[i].current_price.toFixed(5)}$</td>
+              <td class="align-middle text-center">% ${data[i].price_change_percentage_24h.toFixed(2)}</td>
             </tr>`)
-
-
     }
     table.push(`</tbody></table>`)
 
@@ -75,9 +72,8 @@ async function showGainersAndLosersTables() {
     let baseUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250"
     let sortedGainersTable = await returnResultForGainers(baseUrl)
     let sortedLooserTable = await returnResultForLosers(baseUrl)
-    gainersDiv.innerHTML += await tableMaker(sortedGainersTable)
-    losersDiv.innerHTML += await tableMaker(sortedLooserTable)
-
+    gainersDiv.innerHTML = `<h3 class="text-center">TOP GAINERS</h3 >` + await tableMaker(sortedGainersTable)
+    losersDiv.innerHTML = `<h3 class="text-center">TOP LOSERS</h3>` + await tableMaker(sortedLooserTable)
 }
 
 //#endregion
@@ -91,32 +87,32 @@ function renderStatisticsTable(data) {
     strArr.push(`<table class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
-        <th scope="col">Rank</th>
-        <th scope="col">Logo</th>
-        <th scope="col">Name</th>
-        <th scope="col">Market Cap</th>
-        <th scope="col">Price</th>
-        <th scope="col">Price change in % <br>(last 24h)</th>
-        <th scope="col">Total supply</th>
-        <th scope="col">Price change<br>(last 7 days)</th>
+        <th scope="col" class="text-center">Rank</th>
+        <th scope="col" class="text-center">Logo</th>
+        <th scope="col" class="text-center">Name</th>
+        <th scope="col" class="text-center">Market Cap</th>
+        <th scope="col" class="text-center">Price</th>
+        <th scope="col" class="text-center">Price change in % <br>(last 24h)</th>
+        <th scope="col" class="text-center">Total supply</th>
+        <th scope="col" class="text-center">Price change<br>(last 7 days)</th>
       </tr>
     </thead>
     <tbody>
     `);
     for (let coin of data) {
         strArr.push(`<tr class="${coin.id}" value="${coin.name}" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        <td>${coin.market_cap_rank}</td>
-        <td class="img-fluid align-middle"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
-        <td class="align-middle">${coin.name}</td>
-        <td class="align-middle">${coin.market_cap.toLocaleString('en-US')}</td>
-        <td class="align-middle">${coin.current_price.toLocaleString('en-US')}</td>
-        <td class="align-middle">${coin.price_change_percentage_24h > 0 
+        <td class="align-middle text-center">${coin.market_cap_rank}</td>
+        <td class="img-fluid align-middle text-center"><img src="${coin.image}" height="50px" alt="${coin.id}"}"></td>
+        <td class="align-middle text-center">${coin.name}</td>
+        <td class="align-middle text-center">&#36 ${coin.market_cap.toLocaleString('en-US')}</td>
+        <td class="align-middle text-center">&#36 ${coin.current_price.toLocaleString('en-US')}</td>
+        <td class="align-middle text-center">${coin.price_change_percentage_24h > 0 
             ? "<strong class='increase'>↑</strong>" 
             : coin.price_change_percentage_24h < 0 
                 ? "<strong class='decrease'>↓</strong>" 
                 : " "}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
-        <td class="align-middle">${coin.total_supply != null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
-        <td class="align-middle"><div class="smallChartContainer chart-container"></div><canvas id="${coin.id}" style ="max-width:200px !important; max-height:9vh"></canvas></div></td>
+        <td class="align-middle text-center">${coin.total_supply != null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
+        <td class="align-middle text-center"><div class="smallChartContainer chart-container"></div><canvas id="${coin.id}" style ="max-width:200px !important; max-height:9vh"></canvas></div></td>
         </tr>
         `)
     }
@@ -139,7 +135,7 @@ async function showSmallChartAsync(coinId) {
 
 //Function for loading and showing the table
 async function showStatisticsTable(){
-    data = await getCoinsDataAsync(helpers.table.statisticsTableUrl+`&per_page=${helpers.table.perPage}`+`&page=${helpers.table.currentPage}`);
+    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl+`&per_page=${helpers.statisticsTable.perPage}`+`&page=${helpers.statisticsTable.currentPage}`);
     let statisticsTableContainer = document.getElementById("statisticsTableContainer");
     statisticsTableContainer.innerHTML = renderStatisticsTable(data);
     data.forEach(async coin => {
@@ -147,15 +143,15 @@ async function showStatisticsTable(){
     });
 }
 
-//Event for loading the statistics table (This event should be changed to load on 'click' when the statistics page will be clicked on the nav bar)
-window.addEventListener('load', async (event) => {
+//Event for loading the statistics page
+document.getElementById("statsBtn").addEventListener('click', async (event) => {
     let data = [];
-    helpers.table.currentPage = 1;
-    helpers.table.perPage = 10;
-    helpers.table.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
-    
+    helpers.statisticsTable.currentPage = 1;
+    helpers.statisticsTable.perPage = 10;
+    helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
+
     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
-    helpers.table.totalPages = Math.ceil(totalCoins.length /helpers.table.perPage);
+    helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
     try {
         //Function for loading top gainers and top losers goes here
         await showGainersAndLosersTables();
@@ -170,35 +166,65 @@ window.addEventListener('load', async (event) => {
     }
 });
 
+//Function for setting a timeout
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function showLoader(element, ms = null, prezerveSize = true){
+    let elementWidth = element.getBoundingClientRect().width;
+    let elementHeight = element.getBoundingClientRect().height;
+    let loader = await (await fetch("assets/images/loader.html")).text();
+    element.innerHTML = loader;
+    if(!prezerveSize){
+        element.style.height = `${elementHeight}px`;
+    }
+    if(ms != null){
+        await timeout(ms);
+    }
+    if(!prezerveSize){
+        element.style.height = null;
+    }
+}
+
 //Function for handling the previous and next buttons
 function handlePrevNextButtons(){
     let prevBtn = document.getElementById("prevPg");
     let nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
-    if(helpers.table.currentPage == 1){
+    if(helpers.statisticsTable.currentPage == 1){
         prevBtn.setAttribute("disabled", true);
     }
     nextBtn.addEventListener("click", async (event) => {
-        helpers.table.currentPage +=1;
-        console.log(helpers.table.currentPage);
+        helpers.statisticsTable.currentPage +=1;
+        //Hide pagination controlls while loader is running
+        document.getElementById("prevNextNav").style.visibility = "collapse";
+        await showLoader(tableContainer, 2000, false);
         await showStatisticsTable();
-        if(currentPg == helpers.table.totalPages){
-            nextBtn.setAttribute("disabled", true);
+        //Bring back pagination controls
+        document.getElementById("prevNextNav").style.visibility = "visible";
+        if(currentPg == helpers.statisticsTable.totalPages){
+            nextBtn.setAttribute("disabled", false);
             nextBtn.parentNode.classList.add("disabled");
         }
         prevBtn.removeAttribute("disabled");
         prevBtn.parentNode.classList.remove("disabled");
-        currentPg.innerText = helpers.table.currentPage;
+        currentPg.innerText = helpers.statisticsTable.currentPage;
     })
+
     document.getElementById("prevPg").addEventListener("click", async (event) => {
-        helpers.table.currentPage -=1;
-        console.log(helpers.table.currentPage);
+        helpers.statisticsTable.currentPage -=1;
+        //Hide pagination controlls while loader is running
+        document.getElementById("prevNextNav").style.visibility = "collapse";
+        await showLoader(tableContainer, 2000, true);
         await showStatisticsTable();
-        if(helpers.table.currentPage == 1){
+        //Bring back pagination controls
+        document.getElementById("prevNextNav").style.visibility = "visible";
+        if(helpers.statisticsTable.currentPage == 1){
             prevBtn.setAttribute("disabled", true);
             prevBtn.parentNode.classList.add("disabled");
         }
-        currentPg.innerText = helpers.table.currentPage;
+        currentPg.innerText = helpers.statisticsTable.currentPage;
     });
 }
 
@@ -207,7 +233,7 @@ function handlePrevNextButtons(){
 function convertUnixToDate(unix) {
     let date = new Date(unix);
 
-    let formattedDate = date.toLocaleString("en-US", { day: "numeric", month: "long", hour: "numeric", minute: 'numeric', year: 'numeric' });
+    let formattedDate = date.toLocaleString("en-US", { day: "numeric", month: "numeric", hour: "numeric", minute: 'numeric', year: 'numeric' });
     return formattedDate
 }
 
@@ -232,6 +258,7 @@ async function getTableChartConfig(url) {
             backgroundColor: 'rgb(255,215,0)',
             borderColor: 'rgb(218,165,32)',
             data: priceResult,
+            pointRadius: 0
         }]
     };
 
@@ -279,7 +306,7 @@ async function getTableChartConfig(url) {
 
 async function GetSingleCoinChartConfig(id, coinName) {
 
-    let chartUrl = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1&interval=minutely`
+    let chartUrl = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=5&interval=hourly`
     let chartData = await getCoinsDataAsync(chartUrl)
     let priceResult = [];
     let timeResult = [];
@@ -295,8 +322,8 @@ async function GetSingleCoinChartConfig(id, coinName) {
         labels: timeResult,
         datasets: [{
             label: `${coinName} Price Chart`,
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(70,130,180)',
+            borderColor: 'rgb(70,130,180)',
             data: priceResult,
         }]
     };
@@ -311,11 +338,18 @@ async function GetSingleCoinChartConfig(id, coinName) {
                 x: {
                     grid: {
                         display: false,
+                        borderColor: 'rgb(255,255,255)'
                     }
                 },
                 y: {
                     grid: {
                         display: false,
+                        borderColor: 'rgb(255,255,255)'
+                    },
+                    ticks: {
+                        callback: function(value, index, ticks) {
+                            return '$' + value;
+                        }
                     }
                 }
             }
@@ -356,21 +390,21 @@ async function createSingleCoinInfoAsync(coinId) {
     infoContainer.setAttribute('class', 'info-container mx-4')
 
     infoContainer.innerHTML = `
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h1 class="card-title"><img src="${data.image.small}"alt="${data.id}"}"> ${data.name}</h1>
-                <h3 class="card-text">${data.symbol.toUpperCase()} Price Statistics</h3>
+        <div class="card darkModal" style="width: 18rem;">
+            <div class="card-body darkModal">
+                <h1 class="card-title darkModal"><img src="${data.image.small}"alt="${data.id}"}"> ${data.name}</h1>
+                <h3 class="card-text darkModal">${data.symbol.toUpperCase()} Price Statistics</h3>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Price: $${data.market_data.current_price.usd.toLocaleString('en-US')}</li>
-                <li class="list-group-item">Market cap: $${data.market_data.market_cap.usd.toLocaleString('en-US')}</li>
-                <li class="list-group-item">Market cap rank: ${data.market_cap_rank}</li>
-                <li class="list-group-item">Circulating Supply: ${data.market_data.circulating_supply.toLocaleString('en-US')}</li>
-                <li class="list-group-item">Total Supply: ${data.market_data.total_supply != null ? data.market_data.total_supply.toLocaleString('en-US') : data.market_data.circulating_supply.toLocaleString('en-US')}</li>
-                <li class="list-group-item">Trading volume: $${data.market_data.total_volume.usd.toLocaleString('en-US')}</li>
-                <li class="list-group-item">All-Time High: $${data.market_data.ath.usd.toLocaleString('en-US')}</li>
-                <li class="list-group-item">All-Time Low: $${data.market_data.atl.usd}</li>
-                <li class="list-group-item">24h Low / 24h High: $${data.market_data.low_24h.usd.toLocaleString('en-US')} / $${data.market_data.high_24h.usd.toLocaleString('en-US')}</li>
+            <ul class="list-group list-group-flush darkModal">
+                <li class="list-group-item darkModal">Price: $${data.market_data.current_price.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">Market cap: $${data.market_data.market_cap.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">Market cap rank: ${data.market_cap_rank}</li>
+                <li class="list-group-item darkModal">Circulating Supply: ${data.market_data.circulating_supply.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">Total Supply: ${data.market_data.total_supply != null ? data.market_data.total_supply.toLocaleString('en-US') : data.market_data.circulating_supply.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">Trading volume: $${data.market_data.total_volume.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">All-Time High: $${data.market_data.ath.usd.toLocaleString('en-US')}</li>
+                <li class="list-group-item darkModal">All-Time Low: $${data.market_data.atl.usd}</li>
+                <li class="list-group-item darkModal">24h Low / 24h High: $${data.market_data.low_24h.usd.toLocaleString('en-US')} / $${data.market_data.high_24h.usd.toLocaleString('en-US')}</li>
             </ul>
         </div>
     `
@@ -380,18 +414,25 @@ async function createSingleCoinInfoAsync(coinId) {
 // event listener to show the modal with chart and bonus info
 
 document.getElementById("statisticsTableContainer").addEventListener('click', async (e) => {
+    let modal = document.getElementById('coin-info');
+    let coinId = "";
+    let coinName = "";
+
+    await showLoader(modal, preserveSize = true);
     if (e.target.nodeName === "TD") {
-        let coinId = e.path[1].className
-        let coinName = e.path[1].attributes[1].value
-
-        let chart = await createSingleCoinChartAsync(coinId, coinName)
-        let info = await createSingleCoinInfoAsync(coinId)
-
-        let modal = document.getElementById('coin-info')
-        modal.innerHTML = '';
-        modal.appendChild(chart)
-        modal.appendChild(info)
+        coinId = e.path[1].className
+        coinName = e.path[1].attributes[1].value
+    } else if(e.target.parentNode.nodeName === "TD"){    
+        coinId = e.path[2].className
+        coinName = e.path[2].attributes[1].value
     }
+
+    let chart = await createSingleCoinChartAsync(coinId, coinName)
+    let info = await createSingleCoinInfoAsync(coinId)
+
+    modal.innerHTML = '';
+    modal.appendChild(chart)
+    modal.appendChild(info)
 })
 
 //#endregion

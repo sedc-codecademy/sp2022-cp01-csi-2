@@ -1,3 +1,6 @@
+*{
+    color: white;
+}
 
 .td {
     height: 20vh;
@@ -31,4 +34,15 @@
 
 #prevPg, #nextPg {
     cursor: pointer;
+    width: 8vw;
+}
+
+#table-loader{
+    transform: scale(3, 3);
+    margin-top: 50%
+}
+
+.darkModal {
+    background-color: #17181D !important;
+    color: whitesmoke !important;
 }
