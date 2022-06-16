@@ -43,7 +43,7 @@
         <nav class="navbar navbar-dark navbar-expand-lg bg-dark sticky-top p-1">
             <div class="container">
                 <a class="navbar-brand homePageBtn" href="#top-bar">
-                    <img src="assets/Bitcoin.png" alt="LOGO" height="36">
+                    <img src="assets/images/logo2.png" class="img-fluid" alt="LOGO" id="logoImg">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -74,14 +74,28 @@
         </nav>
     </header>
 
-
-
-
     <!-- <main id="homePageMainContent"> -->
 
-
     <section id="homePageGeneralInfo" class="flexLayout generalInfo">
-        <!-- This is SECTION 1 from the concept image of the home page (found on Trello)-->
+        <div class="d-flex justify-content-around">       
+            <div class="float-left" id="generalInfoTextContainer">
+                <h1 class="display-1 text-center my-3">
+                    Enter the crypto world!
+                </h1>
+    
+                <p class="lead text-center my-5">
+                    Use our simulator to learn everything about crypto trading.
+                </p>
+    
+                <div class="text-center">
+                    <button type="button" id="getStartedBtn" class="btn btn-lg btn-outline-warning my-5">Get Started</button>
+                </div>
+            </div>
+    
+            <div class="float-right" id="generalInfoImgContainer">
+                <img src="/sp2022-cp01-csi-2/assets/images/generalinfoimg.png" class="img-fluid" alt="generalinfoimg">
+            </div>
+        </div>
     </section>
 
     <section id="homePageTrendingCryptos" class="container flexLayout trendingCryptoMainContainer">

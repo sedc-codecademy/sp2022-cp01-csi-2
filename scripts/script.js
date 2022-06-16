@@ -233,6 +233,7 @@ document.getElementById('infoCenterBtn').addEventListener('click', () => display
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
 //Sections events
+document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 
 //#endregion ILIJA => Create homepage extra info

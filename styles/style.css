@@ -29,11 +29,38 @@ body {
     /* background-color: #272830; */
 }
 
+#logoImg {
+    height: 50px;
+}
+
+/* general info css */
+
 .flexLayout.generalInfo {
     width: 80%;
-    height: 500px;
-    background-color: #32333d;
+    height: 80vh;
+    /* background-color: #32333d; */
 }
+
+#homePageGeneralInfo>div{
+    height: 100%;
+}
+
+#generalInfoImgContainer{
+    width: 40%;
+    height: 100%;
+    /* background-color: yellow; */
+}
+#generalInfoImgContainer > img {
+    height: 100%;
+}
+
+#generalInfoTextContainer{
+    width: 60%;
+    height: 100%;
+    /* background-color: red; */
+}
+
+/* trending crypto css */
 
 .flexLayout.trendingCryptos {
     width: 80%;
