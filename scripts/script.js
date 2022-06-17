@@ -77,10 +77,6 @@ class trendingCryptoClass {
     }
 }
 
-tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
-tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
-tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
-
 function trendingCryptoApiCall(url) {
     fetch(url)
         .then((response) => {
@@ -112,7 +108,7 @@ function trendingCryptoDisplayData(data) {
 
 //#endregion Ivana_Stojadinovska
 
-//#region ILIJA => Create homepage extra info
+//#region ILIJA => Create homepage extra info and Display elements functionality
 
 //Header and Footer elements
 const mainHeader = document.getElementById('mainHeader')
@@ -159,7 +155,7 @@ const displayElements = {
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
-        displayInfoPageContent()
+        displayInfoPage()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
@@ -214,6 +210,7 @@ const cryptoInfo = {
         return stats
     }
 }
+//#endregion ILIJA => Create homepage extra info and Display elements functionality
 
 
 // HOMEPAGE EVENTS
@@ -235,5 +232,7 @@ document.getElementById('loginBtn').addEventListener('click', () => displayEleme
 //Sections events
 document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
+tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
+tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
+tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 
-//#endregion ILIJA => Create homepage extra info
