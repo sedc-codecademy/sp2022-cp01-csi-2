@@ -179,6 +179,11 @@ body {
     border-radius: 20px;
 }
 
+#learnMoreBtn>a {
+    color: inherit;
+    text-decoration: none;
+}
+
 /* To use the fadingText animation just add the class .fadingText to the desired html element */
 .fadingText {
     animation-name: fadingText;
@@ -276,5 +281,3 @@ body {
 .trendingCryptoBottomContainer :hover {
     color: rgba(255, 185, 1, 255);
 }
-
-

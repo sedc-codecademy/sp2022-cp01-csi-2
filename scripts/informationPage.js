@@ -1,18 +1,9 @@
 //#region ILIJA => Create Information Page
-const infoPageElements = {
-    //Blockchain
-    whatIsBlockchain: document.querySelector('.whatIsBlockchain'),
-    howBlockchainWorks: document.querySelector('.howBlockchainWorks'),
-    //Cryptocurrency
-    whatIsCryptocurrency: document.querySelector('.whatIsCryptocurrency'),
-    proofCards: document.getElementById('proofCards'),
-    // Useful links
-    usefulLinks: document.querySelector('#usefulLinks')
-}
 
-
-let carouselCounter = 0
+// This object contains functions for creating components with html elements
+let carouselCounter = 0  //help variable for the function createCarouselSlideshow
 const createContent = {
+
     // Function for dynamically creating bootstrap's carousels (SLIDESHOWS)
     createCarouselSlideshow: function (title = "", topicsArray = []) {
         if (arguments.length == 0 || !Array.isArray(topicsArray)) return ""
@@ -45,14 +36,6 @@ const createContent = {
                         </button>
                     </div>`
         return carousel
-    },
-
-    // Function for dynamically creating bootstrap's carousels (FADING on interval)
-    createCarouselFading: function (params) {
-        if (arguments.length == 0) return ""
-        let carousel = ``
-        carousel += ``
-        // Work in progress ***
     },
 
     // Function for dynamically creating Unordered List with links as list items,
@@ -101,6 +84,7 @@ const createContent = {
 }
 
 
+// This object contains properties with the page blockchain content
 const infoPageBlockchainContent = {
     whatIsBlockchain: createContent.createCarouselSlideshow("What is blockchain ?",
         [
@@ -241,7 +225,7 @@ const infoPageBlockchainContent = {
       `,
 }
 
-
+// This object contains properties with the page crypto content
 const infoPageCryptoContent = {
     whatIsCryptocurrency: createContent.createCarouselSlideshow('What is Cryptocurrency ?',
         [
@@ -293,16 +277,53 @@ const infoPageCryptoContent = {
 }
 
 
-const displayInfoPageContent = () => {
-    //Blockchain section
-    infoPageElements.whatIsBlockchain.innerHTML = infoPageBlockchainContent.whatIsBlockchain
-    infoPageElements.howBlockchainWorks.innerHTML = infoPageBlockchainContent.howBlockchainWorks
-
-    //Cryptocurrencies section
-    infoPageElements.whatIsCryptocurrency.innerHTML = infoPageCryptoContent.whatIsCryptocurrency
-    infoPageElements.proofCards.innerHTML = infoPageCryptoContent.proofCards
-
-    //Useful links
-    infoPageElements.usefulLinks.innerHTML = infoPageCryptoContent.usefulLinks
+// Function for displaying the overall Information Page
+const displayInfoPage = () => {
+    const infoPage = document.getElementById('infoCenterPage')
+    // Here you can change the info page font size 
+    infoPage.style.fontSize = '14px'
+    infoPage.innerHTML = ` 
+        <img src="assets/images/infoPage/blockChainBackground.png" id="blockchainBackgroundImg"
+            alt="blockchainBackgroundImg">
+        <section id="blockchainSection">
+            <article class="blockchainSection whatIsBlockchain">
+               ${infoPageBlockchainContent.whatIsBlockchain}
+            </article><br>
+            <article class="blockchainSection howBlockchainWorks">
+                ${infoPageBlockchainContent.howBlockchainWorks}
+            </article>
+        </section>
+        <section id="cryptoSection">
+            <article class="cryptoSection whatIsCryptocurrency">
+                ${infoPageCryptoContent.whatIsCryptocurrency}
+            </article>
+            <article class="cryptoSection proofOfWorkAndStake">
+                <h2 class="text-center">
+                    <span>.......</span><br>
+                    Proof of Work vs. Proof of Stake
+                </h2><br>
+                <div class="alignContentCenter">
+                    <p class="text-center" style="width: 70%; font-size: 1.5em;">
+                        Proof of work and proof of stake are the two most widely used consensus mechanisms to verify
+                        transactions before adding them to a blockchain. <br> Verifiers are then rewarded with
+                        cryptocurrency for their efforts
+                    </p>
+                </div>
+                <div class="alignContentCenter">
+                    <div id="proofCards" class="text-center">
+                       ${infoPageCryptoContent.proofCards}
+                    </div>
+                </div>
+            </article>
+            <aside>
+                <h2 class="text-center">
+                    <span>.......</span><br>
+                    Useful links
+                </h2>
+                <div id="usefulLinks" class="alignContentCenter">
+                    ${infoPageCryptoContent.usefulLinks}
+                </div>
+            </aside>
+        </section>`
 }
 //#endregion ILIJA => Create Information Page
