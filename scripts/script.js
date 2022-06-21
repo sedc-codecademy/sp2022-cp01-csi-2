@@ -77,10 +77,6 @@ class trendingCryptoClass {
     }
 }
 
-tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
-tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
-tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
-
 function trendingCryptoApiCall(url) {
     fetch(url)
         .then((response) => {
@@ -112,7 +108,7 @@ function trendingCryptoDisplayData(data) {
 
 //#endregion Ivana_Stojadinovska
 
-//#region ILIJA => Create homepage extra info
+//#region ILIJA => Create homepage extra info and Display elements functionality
 
 //Header and Footer elements
 const mainHeader = document.getElementById('mainHeader')
@@ -159,7 +155,7 @@ const displayElements = {
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
-        displayInfoPageContent()
+        displayInfoPage()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
@@ -169,7 +165,7 @@ const displayElements = {
 
 
 const cryptoInfo = {
-    factsElement: document.getElementById('facts'),
+    factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
     stats: ["$2.1 trillion", "18.000", "70 million", "$2.1 trillion"],
@@ -190,11 +186,15 @@ const cryptoInfo = {
         "A post on Bitcoin surfaces on social media every three seconds",
     ],
 
-    showCryptoFacts: function (element) {
-        setInterval(() => {
-            let i = Math.floor(Math.random() * this.facts.length)
-            element.innerHTML = `Fact &numero; ${i + 1} : <i>"${this.facts[i]}</i>"`
-        }, 10_000);
+    showCryptoFacts: function () {
+        let carousel = ``
+        for (let i = 0; i < this.facts.length; i++) {
+            carousel += `
+            <div class="carousel-item ${i == 0 ? 'active' : ''}">
+                <p>Fact &numero; ${i + 1}: <i>"${this.facts[i]}"</i></p>
+            </div>`
+        }
+        return carousel
     },
 
     showCryptoStats: function () {
@@ -214,13 +214,14 @@ const cryptoInfo = {
         return stats
     }
 }
+//#endregion ILIJA => Create homepage extra info and Display elements functionality
 
 
 // HOMEPAGE EVENTS
 
 window.addEventListener('load', () => {
     cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
-    cryptoInfo.showCryptoFacts(cryptoInfo.factsElement);
+    cryptoInfo.factsElement.innerHTML = cryptoInfo.showCryptoFacts();
 })
 
 //Navbar events
@@ -233,7 +234,11 @@ document.getElementById('infoCenterBtn').addEventListener('click', () => display
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
 //Sections events
+document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
+tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
+tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
+tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 
 //#endregion ILIJA => Create homepage extra info
 

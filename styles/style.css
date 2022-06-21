@@ -29,11 +29,39 @@ body {
     /* background-color: #272830; */
 }
 
+#logoImg {
+    height: 50px;
+}
+
+/* general info css */
+
 .flexLayout.generalInfo {
     width: 80%;
-    height: 500px;
-    background-color: #32333d;
+    height: 80vh;
+    /* background-color: #32333d; */
 }
+
+#homePageGeneralInfo>div {
+    height: 100%;
+}
+
+#generalInfoImgContainer {
+    width: 40%;
+    height: 100%;
+    /* background-color: yellow; */
+}
+
+#generalInfoImgContainer>img {
+    height: 100%;
+}
+
+#generalInfoTextContainer {
+    width: 60%;
+    height: 100%;
+    /* background-color: red; */
+}
+
+/* trending crypto css */
 
 .flexLayout.trendingCryptos {
     width: 80%;
@@ -46,18 +74,6 @@ body {
     height: 900px;
     position: relative;
 }
-
-.flexLayout.footer {
-    width: 80%;
-    height: 500px;
-    background-color: #32333d;
-}
-
-/* .flexLayout.otherPages {
-    width: 80%;
-    height: auto;
-} */
-
 
 #statisticsPage {
     width: 80vw;
@@ -138,11 +154,14 @@ body {
     overflow: hidden;
 }
 
-#facts {
+#extraInfoArticle .facts {
     width: 100%;
     height: 70px;
-    color: goldenrod;
     text-align: center;
+}
+
+#extraInfoArticle .facts p {
+    color: goldenrod;
     font-size: 1.45em;
     overflow: hidden;
 }
@@ -152,28 +171,9 @@ body {
     border-radius: 20px;
 }
 
-/* To use the fadingText animation just add the class .fadingText to the desired html element */
-.fadingText {
-    animation-name: fadingText;
-    animation-timing-function: ease-in-out;
-    animation-duration: 10s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-
-/* Animations */
-@keyframes fadingText {
-    0% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
+#learnMoreBtn>a {
+    color: inherit;
+    text-decoration: none;
 }
 
 /* #endregion ILIJA => Create homepage extra info */
@@ -383,3 +383,4 @@ div {
 .form__link:hover {
     text-decoration: underline;
 }
+
