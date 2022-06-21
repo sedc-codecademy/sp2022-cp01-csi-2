@@ -139,7 +139,7 @@ function trendingCryptoDisplayData(data) {
 
 //#endregion Ivana_Stojadinovska
 
-//#region ILIJA => Create homepage extra info
+//#region ILIJA => Create homepage extra info and Display elements functionality
 
 //Header and Footer elements
 const mainHeader = document.getElementById('mainHeader')
@@ -186,7 +186,7 @@ const displayElements = {
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
-        displayInfoPageContent()
+        displayInfoPage()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
@@ -196,7 +196,7 @@ const displayElements = {
 
 
 const cryptoInfo = {
-    factsElement: document.getElementById('facts'),
+    factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
     stats: ["$2.1 trillion", "18.000", "70 million", "$2.1 trillion"],
@@ -217,11 +217,15 @@ const cryptoInfo = {
         "A post on Bitcoin surfaces on social media every three seconds",
     ],
 
-    showCryptoFacts: function (element) {
-        setInterval(() => {
-            let i = Math.floor(Math.random() * this.facts.length)
-            element.innerHTML = `Fact &numero; ${i + 1} : <i>"${this.facts[i]}</i>"`
-        }, 10_000);
+    showCryptoFacts: function () {
+        let carousel = ``
+        for (let i = 0; i < this.facts.length; i++) {
+            carousel += `
+            <div class="carousel-item ${i == 0 ? 'active' : ''}">
+                <p>Fact &numero; ${i + 1}: <i>"${this.facts[i]}"</i></p>
+            </div>`
+        }
+        return carousel
     },
 
     showCryptoStats: function () {
@@ -241,13 +245,14 @@ const cryptoInfo = {
         return stats
     }
 }
+//#endregion ILIJA => Create homepage extra info and Display elements functionality
 
 
 // HOMEPAGE EVENTS
 
 window.addEventListener('load', () => {
     cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
-    cryptoInfo.showCryptoFacts(cryptoInfo.factsElement);
+    cryptoInfo.factsElement.innerHTML = cryptoInfo.showCryptoFacts();
 })
 
 //Navbar events
@@ -260,6 +265,92 @@ document.getElementById('infoCenterBtn').addEventListener('click', () => display
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
 //Sections events
+document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
-
+tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
+tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
+tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 //#endregion ILIJA => Create homepage extra info
+
+// Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
+window.addEventListener("scroll", scrollFunction);
+const timer = null;
+
+function scrollFunction() {
+    hideNavigationOnFooter();
+    setNavigationTransparentOnScroll();
+}
+
+function hideNavigationOnFooter() {
+    const scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
+    if (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY) {
+        document.getElementById("mainHeader").style.display = "none";
+    } else {
+        document.getElementById("mainHeader").style.display = "inline";
+    }
+}
+
+function setNavigationTransparentOnScroll() {
+    document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgba(255,193,7,0.2)", "important");
+    document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgba(33, 37, 41,0.2)", "important");
+    if (timer !== null) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+        document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgb(255,193,7)", "important");
+        document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgb(33, 37, 41)", "important");
+    }, 700);
+}
+
+// Here goes js.scr for login/register form - Aleksandar Zhivkovikj
+function setFormMessage(formElement, type, message) {
+    const messageElement = formElement.querySelector(".form__message");
+
+    messageElement.textContent = message;
+    messageElement.classList.remove("form__message--success", "form__message--error");
+    messageElement.classList.add(`form__message--${type}`);
+}
+
+function setInputError(inputElement, message) {
+    inputElement.classList.add("form__input--error");
+    inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
+}
+
+function clearInputError(inputElement) {
+    inputElement.classList.remove("form__input--error");
+    inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.querySelector("#login");
+    const registerForm = document.querySelector("#Register");
+
+    document.querySelector("#linkRegister").addEventListener("click", e => {
+        e.preventDefault();
+        loginForm.classList.add("form--hidden");
+        registerForm.classList.remove("form--hidden");
+    });
+
+    document.querySelector("#linkLogin").addEventListener("click", e => {
+        e.preventDefault();
+        loginForm.classList.remove("form--hidden");
+        registerForm.classList.add("form--hidden");
+    });
+
+    loginForm.addEventListener("submit", e => {
+        e.preventDefault();
+        setFormMessage(loginForm, "error", "Invalid username/password combination");
+    });
+
+    document.querySelectorAll(".form__input").forEach(inputElement => {
+        inputElement.addEventListener("blur", e => {
+            if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
+                setInputError(inputElement, "Username must be at least 10 characters in length");
+            }
+        });
+
+        inputElement.addEventListener("input", e => {
+            clearInputError(inputElement);
+        });
+    });
+});

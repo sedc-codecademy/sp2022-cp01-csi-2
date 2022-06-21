@@ -69,6 +69,9 @@ async function tableMaker(data) {
 async function showGainersAndLosersTables() {
     let gainersDiv = document.getElementById("gainers");
     let losersDiv = document.getElementById("losers");
+    let gainersLoader = showLoaderAsync(gainersDiv);
+    let losersLoader = showLoaderAsync(losersDiv);
+    await Promise.all([gainersLoader, losersLoader]);
     let baseUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250"
     let sortedGainersTable = await returnResultForGainers(baseUrl)
     let sortedLooserTable = await returnResultForLosers(baseUrl)
@@ -135,9 +138,12 @@ async function showSmallChartAsync(coinId) {
 
 //Function for loading and showing the table
 async function showStatisticsTable(){
-    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl+`&per_page=${helpers.statisticsTable.perPage}`+`&page=${helpers.statisticsTable.currentPage}`);
     let statisticsTableContainer = document.getElementById("statisticsTableContainer");
+    document.getElementById("prevNextNav").style.visibility = "collapse";
+    await showLoaderAsync(statisticsTableContainer, 2000);
+    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl+`&per_page=${helpers.statisticsTable.perPage}`+`&page=${helpers.statisticsTable.currentPage}`);
     statisticsTableContainer.innerHTML = renderStatisticsTable(data);
+    document.getElementById("prevNextNav").style.visibility = "visible";
     data.forEach(async coin => {
         await showSmallChartAsync(coin.id)
     });
@@ -146,6 +152,7 @@ async function showStatisticsTable(){
 //Event for loading the statistics page
 document.getElementById("statsBtn").addEventListener('click', async (event) => {
     let data = [];
+    document.getElementById("prevNextNav").style.visibility = "collapse";
     helpers.statisticsTable.currentPage = 1;
     helpers.statisticsTable.perPage = 10;
     helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
@@ -157,8 +164,8 @@ document.getElementById("statsBtn").addEventListener('click', async (event) => {
         await showGainersAndLosersTables();
         
         //Function for loading the table
-        handlePrevNextButtons();
         await showStatisticsTable();
+        handlePrevNextButtons();
     }
     catch (err) {
         console.log("Error");
@@ -171,6 +178,7 @@ function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+//Function for creating a loader with svg
 async function showLoader(element, ms = null, prezerveSize = true){
     let elementWidth = element.getBoundingClientRect().width;
     let elementHeight = element.getBoundingClientRect().height;
@@ -187,8 +195,27 @@ async function showLoader(element, ms = null, prezerveSize = true){
     }
 }
 
+//Function for creating a loader with bootstrap
+async function showLoaderAsync(element, ms = null){
+    let loader = `<div class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>`;
+    element.innerHTML = loader;
+    if(ms != null){
+        await timeout(ms);
+    }
+}
+
+
 //Function for handling the previous and next buttons
 function handlePrevNextButtons(){
+    let prevNextButtons = `<ul class="pagination justify-content-center">
+    <button type="button" class="btn btn-outline-warning" id="prevPg">Previous</button>
+    <li class="btn btn-outline-warning" id="currentPg">1</li>
+    <button type="button" class="btn btn-outline-warning" id="nextPg">Next</button>
+</ul>`;
     let prevBtn = document.getElementById("prevPg");
     let nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
@@ -197,12 +224,7 @@ function handlePrevNextButtons(){
     }
     nextBtn.addEventListener("click", async (event) => {
         helpers.statisticsTable.currentPage +=1;
-        //Hide pagination controlls while loader is running
-        document.getElementById("prevNextNav").style.visibility = "collapse";
-        await showLoader(tableContainer, 2000, false);
         await showStatisticsTable();
-        //Bring back pagination controls
-        document.getElementById("prevNextNav").style.visibility = "visible";
         if(currentPg == helpers.statisticsTable.totalPages){
             nextBtn.setAttribute("disabled", false);
             nextBtn.parentNode.classList.add("disabled");
@@ -214,12 +236,7 @@ function handlePrevNextButtons(){
 
     document.getElementById("prevPg").addEventListener("click", async (event) => {
         helpers.statisticsTable.currentPage -=1;
-        //Hide pagination controlls while loader is running
-        document.getElementById("prevNextNav").style.visibility = "collapse";
-        await showLoader(tableContainer, 2000, true);
         await showStatisticsTable();
-        //Bring back pagination controls
-        document.getElementById("prevNextNav").style.visibility = "visible";
         if(helpers.statisticsTable.currentPage == 1){
             prevBtn.setAttribute("disabled", true);
             prevBtn.parentNode.classList.add("disabled");
@@ -418,7 +435,7 @@ document.getElementById("statisticsTableContainer").addEventListener('click', as
     let coinId = "";
     let coinName = "";
 
-    await showLoader(modal, preserveSize = true);
+    await showLoaderAsync(modal);
     if (e.target.nodeName === "TD") {
         coinId = e.path[1].className
         coinName = e.path[1].attributes[1].value
