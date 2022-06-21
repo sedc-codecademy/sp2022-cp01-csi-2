@@ -185,7 +185,7 @@ body {
 /* trending crypto */
 
 .tcMainContainer  {
-    margin-top: 150px;
+    margin-top: 50px;
     font-family: "Gotham"
 }
 
@@ -201,6 +201,7 @@ body {
 }
 
 .trendingCryptoName {
+    margin-top: 7px;
     color: white;
 }
 
