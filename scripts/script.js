@@ -1,12 +1,9 @@
 
 //#region ivana stojadinovska - trending crypto
-const trendingCryptoApiLink = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
-const trendingCryptoApiLink2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
-const trendingCryptoApiLink3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+
 const tcTopContainer = document.getElementById('tcTop');
 
-trendingCryptoApiCall(trendingCryptoApiLink)
-
+tcSetup()
 
 function tcCreateElements(name, short, price, change, graph) {
 
@@ -26,7 +23,7 @@ function tcCreateElements(name, short, price, change, graph) {
 
     let tcPrice = document.createElement('h4')
     tcPrice.classList.add("trendingCryptoCurentPrice")
-    tcPrice.innerText = price;
+    tcPrice.innerText = price + " $";
     tcDataContainer.appendChild(tcPrice);
 
     let tcChange = document.createElement('h4')
@@ -37,7 +34,7 @@ function tcCreateElements(name, short, price, change, graph) {
     tcChange.style.color = tcChange.innerText.charAt(0) == "-" ? "red" : "green";
 
     let chartCon = document.createElement("div");
-    chartCon.classList.add("trendingCryptoChartContainer");
+    chartCon.classList.add("row","trendingCryptoChartContainer");
     tcDataContainer.appendChild(chartCon);
 
     let chartCanvas = document.createElement('canvas')
@@ -93,12 +90,22 @@ function tcCreateElements(name, short, price, change, graph) {
             }
         });
 }
-const tcButtonOne = document.getElementById('tcButtonOne');
-const tcButtonTwo = document.getElementById('tcButtonTwo');
-const tcButtonThree = document.getElementById('tcButtonThree');
-tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
-tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
-tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
+
+function tcSetup(){
+    const tcButtonOne = document.getElementById('tcButtonOne');
+    const tcButtonTwo = document.getElementById('tcButtonTwo');
+    const tcButtonThree = document.getElementById('tcButtonThree');
+
+    const trendingCryptoApiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+    const trendingCryptoApiUrl2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+    const trendingCryptoApiUrl3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+    
+    tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl));
+    tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl2));
+    tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl3));
+    
+    trendingCryptoApiCall(trendingCryptoApiUrl);
+}
 
 function trendingCryptoApiCall(url) {
     fetch(url)

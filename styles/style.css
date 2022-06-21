@@ -202,6 +202,7 @@ body {
     box-shadow: 11px 10px 30px -2px rgba(20, 20, 20, 0.86);
     text-align: center;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 .trendingCryptoName {
@@ -214,24 +215,25 @@ body {
 
 .trendingCryptoCurentPrice {
     color: white;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .tendingCryptoPriceChange {
     color: white;
-    font-size: 20px;
+    font-size: 18px;
 }
 .tcDataContainer
 {
     text-align: center;
     align-items: center;
+    min-width: 200px;
 }
 
 .trendingCryptoChartContainer {
-    max-width: 280px;
     height: 150px;
     margin-bottom: 8px;
 }
+
 
 .trendingCryptoBottomContainer {
     width: 100%;
@@ -258,3 +260,11 @@ body {
 .tcMainContainer {
     max-width: 82% !important;
  }
+
+ @media (max-width: 1400px) {
+    .trendingCryptoName {
+      font-size: 22px;
+    }
+}
+
+/* #endregion ivana_stojadinovska */
