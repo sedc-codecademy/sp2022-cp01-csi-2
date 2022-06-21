@@ -75,18 +75,6 @@ body {
     position: relative;
 }
 
-.flexLayout.footer {
-    width: 80%;
-    height: 500px;
-    background-color: #32333d;
-}
-
-/* .flexLayout.otherPages {
-    width: 80%;
-    height: auto;
-} */
-
-
 #statisticsPage {
     width: 80vw;
     height: auto;
