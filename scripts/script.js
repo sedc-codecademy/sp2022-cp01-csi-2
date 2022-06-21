@@ -239,9 +239,37 @@ document.getElementById('learnMoreBtn').addEventListener('click', () => displayE
 tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
 tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
 tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
-
 //#endregion ILIJA => Create homepage extra info
 
+// Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
+window.addEventListener("scroll", scrollFunction);
+const timer = null;
+
+function scrollFunction() {
+    hideNavigationOnFooter();
+    setNavigationTransparentOnScroll();
+}
+
+function hideNavigationOnFooter() {
+    const scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
+    if (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY) {
+        document.getElementById("mainHeader").style.display = "none";
+    } else {
+        document.getElementById("mainHeader").style.display = "inline";
+    }
+}
+
+function setNavigationTransparentOnScroll() {
+    document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgba(255,193,7,0.2)", "important");
+    document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgba(33, 37, 41,0.2)", "important");
+    if (timer !== null) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+        document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgb(255,193,7)", "important");
+        document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgb(33, 37, 41)", "important");
+    }, 700);
+}
 
 // Here goes js.scr for login/register form - Aleksandar Zhivkovikj
 function setFormMessage(formElement, type, message) {
