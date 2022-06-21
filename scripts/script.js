@@ -165,7 +165,7 @@ const displayElements = {
 
 
 const cryptoInfo = {
-    factsElement: document.getElementById('facts'),
+    factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
     stats: ["$2.1 trillion", "18.000", "70 million", "$2.1 trillion"],
@@ -186,11 +186,15 @@ const cryptoInfo = {
         "A post on Bitcoin surfaces on social media every three seconds",
     ],
 
-    showCryptoFacts: function (element) {
-        setInterval(() => {
-            let i = Math.floor(Math.random() * this.facts.length)
-            element.innerHTML = `Fact &numero; ${i + 1} : <i>"${this.facts[i]}</i>"`
-        }, 10_000);
+    showCryptoFacts: function () {
+        let carousel = ``
+        for (let i = 0; i < this.facts.length; i++) {
+            carousel += `
+            <div class="carousel-item ${i == 0 ? 'active' : ''}">
+                <p>Fact &numero; ${i + 1}: <i>"${this.facts[i]}"</i></p>
+            </div>`
+        }
+        return carousel
     },
 
     showCryptoStats: function () {
@@ -217,7 +221,7 @@ const cryptoInfo = {
 
 window.addEventListener('load', () => {
     cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
-    cryptoInfo.showCryptoFacts(cryptoInfo.factsElement);
+    cryptoInfo.factsElement.innerHTML = cryptoInfo.showCryptoFacts();
 })
 
 //Navbar events

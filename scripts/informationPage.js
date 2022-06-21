@@ -1,13 +1,13 @@
 //#region ILIJA => Create Information Page
 
 // This object contains functions for creating components with html elements
-let carouselCounter = 0  //help variable for the function createCarouselSlideshow
-const createContent = {
+let createContent = {
+    carouselCounter: 0,  //help variable for the function createCarouselSlideshow
 
     // Function for dynamically creating bootstrap's carousels (SLIDESHOWS)
     createCarouselSlideshow: function (title = "", topicsArray = []) {
         if (arguments.length == 0 || !Array.isArray(topicsArray)) return ""
-        let counter = ++carouselCounter
+        let counter = ++this.carouselCounter
         let carousel = ""
         carousel += `<h2 class="text-center"><span>.......</span><br>${title || 'No heading provided'}</h2> <div id="carouselExampleIndicators" class="carousel slide carouselExampleIndicators${counter}" data-bs-ride="carousel"><div class="carousel-indicators">`
         for (let i = 0; i < topicsArray.length; i++) {

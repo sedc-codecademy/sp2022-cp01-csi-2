@@ -41,20 +41,21 @@ body {
     /* background-color: #32333d; */
 }
 
-#homePageGeneralInfo>div{
+#homePageGeneralInfo>div {
     height: 100%;
 }
 
-#generalInfoImgContainer{
+#generalInfoImgContainer {
     width: 40%;
     height: 100%;
     /* background-color: yellow; */
 }
-#generalInfoImgContainer > img {
+
+#generalInfoImgContainer>img {
     height: 100%;
 }
 
-#generalInfoTextContainer{
+#generalInfoTextContainer {
     width: 60%;
     height: 100%;
     /* background-color: red; */
@@ -165,11 +166,14 @@ body {
     overflow: hidden;
 }
 
-#facts {
+#extraInfoArticle .facts {
     width: 100%;
     height: 70px;
-    color: goldenrod;
     text-align: center;
+}
+
+#extraInfoArticle .facts p {
+    color: goldenrod;
     font-size: 1.45em;
     overflow: hidden;
 }
@@ -182,30 +186,6 @@ body {
 #learnMoreBtn>a {
     color: inherit;
     text-decoration: none;
-}
-
-/* To use the fadingText animation just add the class .fadingText to the desired html element */
-.fadingText {
-    animation-name: fadingText;
-    animation-timing-function: ease-in-out;
-    animation-duration: 10s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-
-/* Animations */
-@keyframes fadingText {
-    0% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
 }
 
 /* #endregion ILIJA => Create homepage extra info */
