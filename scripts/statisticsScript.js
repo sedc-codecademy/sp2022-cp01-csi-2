@@ -150,7 +150,30 @@ async function showStatisticsTable(){
 }
 
 //Event for loading the statistics page
-document.getElementById("statsBtn").addEventListener('click', async (event) => {
+// document.getElementById("statsBtn").addEventListener('click', async (event) => {
+//     let data = [];
+//     document.getElementById("prevNextNav").style.visibility = "collapse";
+//     helpers.statisticsTable.currentPage = 1;
+//     helpers.statisticsTable.perPage = 10;
+//     helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
+
+//     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
+//     helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
+//     try {
+//         //Function for loading top gainers and top losers goes here
+//         await showGainersAndLosersTables();
+        
+//         //Function for loading the table
+//         await showStatisticsTable();
+//         handlePrevNextButtons();
+//     }
+//     catch (err) {
+//         console.log("Error");
+//         console.log(err);
+//     }
+// });
+
+async function renderStatsPage(){
     let data = [];
     document.getElementById("prevNextNav").style.visibility = "collapse";
     helpers.statisticsTable.currentPage = 1;
@@ -171,7 +194,7 @@ document.getElementById("statsBtn").addEventListener('click', async (event) => {
         console.log("Error");
         console.log(err);
     }
-});
+}
 
 //Function for setting a timeout
 function timeout(ms) {
