@@ -3,80 +3,99 @@
 const trendingCryptoApiLink = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
 const trendingCryptoApiLink2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
 const trendingCryptoApiLink3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
+const tcTopContainer = document.getElementById('tcTop');
 
 trendingCryptoApiCall(trendingCryptoApiLink)
 
-class trendingCryptoClass {
-    constructor(index, name, short, price, change, graph) {
-        const trendingCryptoNames = document.getElementsByClassName('trendingCryptoName');
-        const trendingCryptoShortNames = document.getElementsByClassName('trendingCryptoShortName');
-        const trendingCryptoCurentPrices = document.getElementsByClassName('trendingCryptoCurentPrice');
-        const tendingCryptoPriceChanges = document.getElementsByClassName('tendingCryptoPriceChange');
-        const trendingCrypto = document.getElementsByClassName('trendingCrypto');
-        trendingCryptoNames[index].innerText = name;
-        trendingCryptoShortNames[index].innerText = short;
-        trendingCryptoCurentPrices[index].innerText = price;
-        tendingCryptoPriceChanges[index].innerText = change + " %";
-        tendingCryptoPriceChanges[index].style.color = tendingCryptoPriceChanges[index].innerText.charAt(0) == "-" ? "red" : "green";
-        let chartCanvas;
 
-        console.log(trendingCrypto[index].childElementCount)
-        if (trendingCrypto[index].childElementCount <= 4) {
-            chartCanvas = document.createElement('canvas')
-            trendingCrypto[index].appendChild(chartCanvas)
-            chartCanvas.classList.add("trendingCryptoChartContainer")
-        }
+function tcCreateElements(name, short, price, change, graph) {
 
-        new Chart(chartCanvas,
+    let tcDataContainer = document.createElement("div");
+    tcDataContainer.classList.add("col", "tcDataContainer");
+    tcTopContainer.appendChild(tcDataContainer);
+
+    let tcName = document.createElement('h2')
+    tcName.classList.add("trendingCryptoName")
+    tcName.innerText = name;
+    tcDataContainer.appendChild(tcName);
+
+    let tcShort = document.createElement('h6')
+    tcShort.classList.add("trendingCryptoShortName")
+    tcShort.innerText = short;
+    tcDataContainer.appendChild(tcShort);
+
+    let tcPrice = document.createElement('h4')
+    tcPrice.classList.add("trendingCryptoCurentPrice")
+    tcPrice.innerText = price;
+    tcDataContainer.appendChild(tcPrice);
+
+    let tcChange = document.createElement('h4')
+    tcChange.classList.add("tendingCryptoPriceChange")
+    tcChange.innerText = change + " %";
+    tcDataContainer.appendChild(tcChange);
+
+    tcChange.style.color = tcChange.innerText.charAt(0) == "-" ? "red" : "green";
+
+    let chartCon = document.createElement("div");
+    chartCon.classList.add("trendingCryptoChartContainer");
+    tcDataContainer.appendChild(chartCon);
+
+    let chartCanvas = document.createElement('canvas')
+    chartCon.appendChild(chartCanvas);
+
+    new Chart(chartCanvas,
+        {
+            type: 'line',
+            data:
             {
-                type: 'line',
-                data:
-                {
-                    labels: [...Array(graph.length - 0 + 1).keys()].map(x => x + 0),
-                    datasets: [{
-                        label: 'USD',
-                        data: graph,
-                        fill: false,
-                        borderColor: 'rgba(255,185,1,255)',
-                        tension: 0.1
-                    }]
+                labels: [...Array(graph.length - 0 + 1).keys()].map(x => x + 0),
+                datasets: [{
+                    label: 'USD',
+                    data: graph,
+                    fill: false,
+                    borderColor: 'rgba(255,185,1,255)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
                 },
-                options: {
-                    plugins: {
-                        legend: {
+                scales: {
+                    y: {
+                        ticks: {
+                            display: false,
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
                             display: false
                         },
-                    },
-                    scales: {
-                        y: {
-                            ticks: {
-                                display: false,
-                            },
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                display: false
-                            },
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 0
+                        grid: {
+                            display: false,
+                            drawBorder: false
                         }
                     }
+                },
+                elements: {
+                    point: {
+                        radius: 0
+                    }
                 }
-            });
-    }
+            }
+        });
 }
-
+const tcButtonOne = document.getElementById('tcButtonOne');
+const tcButtonTwo = document.getElementById('tcButtonTwo');
+const tcButtonThree = document.getElementById('tcButtonThree');
 tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
 tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
 tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
@@ -94,13 +113,14 @@ function trendingCryptoApiCall(url) {
 }
 
 function trendingCryptoDisplayData(data) {
-    const tcButtonOne = document.getElementById('tcButtonOne');
-    const tcButtonTwo = document.getElementById('tcButtonTwo');
-    const tcButtonThree = document.getElementById('tcButtonThree');
+    while (tcTopContainer.firstChild) {
+        tcTopContainer.removeChild(tcTopContainer.firstChild);
+    }
+
     for (let i = 0; i <= 4; i++) {
-        let asd = new trendingCryptoClass
+        console.log(data[i].name);
+        tcCreateElements
             (
-                i,
                 data[i].name,
                 data[i].symbol.toUpperCase(),
                 data[i].current_price,
