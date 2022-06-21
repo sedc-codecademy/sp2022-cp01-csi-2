@@ -3,7 +3,7 @@
 
 const tcTopContainer = document.getElementById('tcTop');
 
-tcSetup()
+tcSetup();
 
 function tcCreateElements(name, short, price, change, graph) {
 
@@ -92,17 +92,17 @@ function tcCreateElements(name, short, price, change, graph) {
 }
 
 function tcSetup(){
-    const tcButtonOne = document.getElementById('tcButtonOne');
-    const tcButtonTwo = document.getElementById('tcButtonTwo');
-    const tcButtonThree = document.getElementById('tcButtonThree');
-
     const trendingCryptoApiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
     const trendingCryptoApiUrl2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
     const trendingCryptoApiUrl3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
     
-    tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl));
-    tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl2));
-    tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl3));
+    document.getElementById('tcButtonOne').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl));
+    document.getElementById('tcButtonTwo').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl2));
+    document.getElementById('tcButtonThree').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl3));
+    document.getElementById('tcButtonFour').addEventListener('click', async () =>{
+        displayElements.showStatisticsPage()
+        await renderStatsPage()
+    } )
     
     trendingCryptoApiCall(trendingCryptoApiUrl);
 }
@@ -270,9 +270,9 @@ document.getElementById('loginBtn').addEventListener('click', () => displayEleme
 //Sections events
 document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
-tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
-tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
-tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
+// tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
+// tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
+// tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 //#endregion ILIJA => Create homepage extra info
 
 // Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
