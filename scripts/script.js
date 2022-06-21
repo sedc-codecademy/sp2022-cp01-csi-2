@@ -240,3 +240,32 @@ tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCrypto
 tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
 tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
 
+window.addEventListener("scroll", scrollFunction);
+const timer = null;
+
+function scrollFunction() {
+    hideNavigationOnFooter();
+    setNavigationTransparentOnScroll();
+}
+
+function hideNavigationOnFooter() {
+    const scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
+    if (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY) {
+        document.getElementById("mainHeader").style.display = "none";
+    } else {
+        document.getElementById("mainHeader").style.display = "inline";
+    }
+}
+
+function setNavigationTransparentOnScroll() {
+    document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgba(255,193,7,0.2)", "important");
+    document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgba(33, 37, 41,0.2)", "important");
+    if (timer !== null) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+        document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgb(255,193,7)", "important");
+        document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgb(33, 37, 41)", "important");
+    }, 700);
+}
+
