@@ -149,30 +149,7 @@ async function showStatisticsTable(){
     });
 }
 
-//Event for loading the statistics page
-// document.getElementById("statsBtn").addEventListener('click', async (event) => {
-//     let data = [];
-//     document.getElementById("prevNextNav").style.visibility = "collapse";
-//     helpers.statisticsTable.currentPage = 1;
-//     helpers.statisticsTable.perPage = 10;
-//     helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
-
-//     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
-//     helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
-//     try {
-//         //Function for loading top gainers and top losers goes here
-//         await showGainersAndLosersTables();
-        
-//         //Function for loading the table
-//         await showStatisticsTable();
-//         handlePrevNextButtons();
-//     }
-//     catch (err) {
-//         console.log("Error");
-//         console.log(err);
-//     }
-// });
-
+//Main function for rendering the Statistics page
 async function renderStatsPage(){
     let data = [];
     document.getElementById("prevNextNav").style.visibility = "collapse";
@@ -239,13 +216,18 @@ function handlePrevNextButtons(){
     <li class="btn btn-outline-warning" id="currentPg">1</li>
     <button type="button" class="btn btn-outline-warning" id="nextPg">Next</button>
 </ul>`;
-    let prevBtn = document.getElementById("prevPg");
-    let nextBtn = document.getElementById("nextPg");
+let prevBtn = document.getElementById("prevPg");
+let nextBtn = document.getElementById("nextPg");
+    //Replacing previous and next buttons with vanilla ones without event listener to avoid duplicating events
+    nextBtn.parentNode.replaceChild(nextBtn.cloneNode(true), nextBtn);
+    prevBtn.parentNode.replaceChild(prevBtn.cloneNode(true), prevBtn);
+    prevBtn = document.getElementById("prevPg");
+    nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
     if(helpers.statisticsTable.currentPage == 1){
         prevBtn.setAttribute("disabled", true);
     }
-    nextBtn.addEventListener("click", async (event) => {
+    document.getElementById("nextPg").addEventListener("click", async (event) => {
         helpers.statisticsTable.currentPage +=1;
         await showStatisticsTable();
         if(currentPg == helpers.statisticsTable.totalPages){
