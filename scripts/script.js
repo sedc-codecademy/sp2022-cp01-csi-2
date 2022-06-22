@@ -1,9 +1,6 @@
-
 //#region ivana stojadinovska - trending crypto
 
 const tcTopContainer = document.getElementById('tcTop');
-
-tcSetup();
 
 function tcCreateElements(name, short, price, change, graph) {
 
@@ -247,12 +244,12 @@ const cryptoInfo = {
 }
 //#endregion ILIJA => Create homepage extra info and Display elements functionality
 
-
 // HOMEPAGE EVENTS
 
 window.addEventListener('load', () => {
     cryptoInfo.statsElement.innerHTML = cryptoInfo.showCryptoStats();
     cryptoInfo.factsElement.innerHTML = cryptoInfo.showCryptoFacts();
+    tcSetup();
 })
 
 //Navbar events
@@ -277,7 +274,6 @@ document.getElementById('learnMoreBtn').addEventListener('click', () => displayE
 
 // Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
 window.addEventListener("scroll", scrollFunction);
-const timer = null;
 
 function scrollFunction() {
     hideNavigationOnFooter();
@@ -294,6 +290,7 @@ function hideNavigationOnFooter() {
 }
 
 function setNavigationTransparentOnScroll() {
+    let timer = null;
     document.getElementsByClassName("navbar")[0].style.setProperty("background-color", "rgba(255,193,7,0.2)", "important");
     document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgba(33, 37, 41,0.2)", "important");
     if (timer !== null) {
