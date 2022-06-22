@@ -1,6 +1,7 @@
-//#region ivana stojadinovska - trending crypto
+//#region Ivana - TODO: trending cryptos table
 
-const tcTopContainer = document.getElementById('tcTop');
+
+tcTopContainer = document.getElementById('tcTop');
 
 function tcCreateElements(name, short, price, change, graph) {
 
@@ -122,7 +123,7 @@ function trendingCryptoDisplayData(data) {
     }
 
     for (let i = 0; i <= 4; i++) {
-        console.log(data[i].name);
+
         tcCreateElements
             (
                 data[i].name,
@@ -136,7 +137,7 @@ function trendingCryptoDisplayData(data) {
 
 //#endregion Ivana_Stojadinovska
 
-//#region ILIJA => Create homepage extra info and Display elements functionality
+//#region ILIJA => TODO: Create homepage extra info and Display elements functionality
 
 //Header and Footer elements
 const mainHeader = document.getElementById('mainHeader')
@@ -267,10 +268,8 @@ document.getElementById('loginBtn').addEventListener('click', () => displayEleme
 //Sections events
 document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
-// tcButtonOne.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink));
-// tcButtonTwo.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink2));
-// tcButtonThree.addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiLink3));
-//#endregion ILIJA => Create homepage extra info
+
+//#endregion ILIJA => TODO: Create homepage extra info
 
 // Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
 window.addEventListener("scroll", scrollFunction);
