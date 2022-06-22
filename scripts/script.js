@@ -281,9 +281,11 @@ function scrollFunction() {
 }
 
 function hideNavigationOnFooter() {
-    const scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
-    if (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY) {
-        document.getElementById("mainHeader").style.display = "none";
+    const scrollMaxY = window.scrollMaxY || 
+        (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    if (scrollMaxY != 0 &&
+        (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY)) {
+            document.getElementById("mainHeader").style.display = "none";
     } else {
         document.getElementById("mainHeader").style.display = "inline";
     }
