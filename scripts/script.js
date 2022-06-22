@@ -269,8 +269,6 @@ document.getElementById('loginBtn').addEventListener('click', () => displayEleme
 document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 
-//#endregion ILIJA => TODO: Create homepage extra info
-
 // Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
 window.addEventListener("scroll", scrollFunction);
 
