@@ -1,0 +1,35 @@
+#simulatorPage{
+    width: 90vw;
+    height: auto;
+}
+
+#sim-page-nav-bar {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid green;
+}
+
+.top-info-cards {
+    width: 50%;
+    height: 10vh;
+    border: 1px solid red;
+}
+
+#main-sim-page-div{
+    width: 100%;
+    height: 68vh;
+    border: 1px pink solid
+}
+
+/* ostajte go ova vaka ke se odkomentira koga ke se naprai hide/show na divovite kade sto ke se prikazuvaat site raboti vo simulatorot */
+/* .sim-views {
+    height: 100%;
+    position: relative;
+    width: 100%;
+} */
+
+#sim-page-side-market{
+    width: 100%;
+    height: 80vh;
+    border: 1px solid yellow;
+}
