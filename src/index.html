@@ -195,36 +195,59 @@
         </section>
 
         <section id="simulatorPage">
-
-            <!-- Here goes content for the Simulator page -->
-            <!-- --------------------------------------------------------------------------------------------------------->
+        <!-- Here goes content for the Simulator page -->
+            <div class="row">
+                
             <!-- #region  Aleksandar Dojchinovski => TODO: Create Secondary Navigation Bar And Top Info cards -->
-            <!-- #endregion -->
+                <div class="col-1">
+                    <div class="d-flex align-items-center flex-column" id="sim-page-nav-bar">                            
+                        <!-- here goes navigation buttons (portfolio, wallet settings, statistics, activity log) -->
+                    </div>
+                </div>
 
-            <!-- --------------------------------------------------------------------------------------------------------->
-            <!-- #region  Ilija Mitev => TODO: Create side Market bar -->
-            <!-- #endregion -->
+                <div class="col-7 container"> 
 
             <!-- --------------------------------------------------------------------------------------------------------->
             <!-- #region  Aneta Stankovska => TODO: Create Portfolio in Simulator -->
             <div id="portfolioContainer"></div>
             <!-- #endregion -->
 
-            <!-- --------------------------------------------------------------------------------------------------------->
-            <!-- #region  Ilija Mitev and Aneta Stankovska => TODO: Create Buy and Sell confirmation modal -->
-            <!-- #endregion -->
+                    <div class="container my-3" id="main-sim-page-div">
 
-            <!-- --------------------------------------------------------------------------------------------------------->
-            <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->
-            <!-- #endregion -->
+                        <!-- #region  Aneta Stankovska => TODO: Create Portfolio in Simulator -->    
+                        <div id="portfolio" class="sim-views">
+                            <!-- here goes portfolio content  -->
+                        </div>
+                        <!-- #endregion -->
 
-            <!-- --------------------------------------------------------------------------------------------------------->
-            <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log -->
-            <!-- #endregion -->
+                        <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->    
+                        <div id="wallet-settings" class="sim-views">
+                            <!-- here goes wallet settings content  -->
+                        </div>
+                        <!-- #endregion -->
 
-            <!-- --------------------------------------------------------------------------------------------------------->
-            <!-- #region  Ivana Stojadinovska => TODO: Create User statistics -->
-            <!-- #endregion --> 
+                        <!-- #region  Ivana Stojadinovska => TODO: Create User statistics -->
+                        <div id="wallet-stats" class="sim-views">
+                            <!-- here goes wallet statistics content  -->
+                        </div>
+                        <!-- #endregion --> 
+
+                        <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->
+                        <div id="activity-log" class="sim-views">
+                            <!-- here goes activity log content  -->
+                        </div>
+                        <!-- #endregion -->
+                    </div>
+                </div>
+            
+                <!-- #region  Ilija Mitev => TODO: Create side Market bar -->
+                <div class="col-4 container">
+                    <div id="sim-page-side-market">
+                        <!-- here goes side market content-->
+                    </div>
+                </div>
+                <!-- #endregion -->
+            </div>
         </section>
 
         <section id="infoCenterPage">
@@ -325,6 +348,7 @@
     <script src="scripts/backToTop.js"></script>
     <script src="scripts/informationPage.js"></script>
     <script src="scripts/simulatorPage/models.js"></script>
+    <script src="scripts/simulatorPage/simulatorPage.js"></script>
 </body>
 
 </html>
