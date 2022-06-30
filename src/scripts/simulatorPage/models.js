@@ -1,3 +1,27 @@
+// Stefan Ivanovski TODO: Create local storage services 
+
+const localStorageService = {
+
+    getAllUsersFromLocalStorage : function(){
+       let users = localStorage.getItem("users") == null ? [] : JSON.parse(localStorage.getItem("users"));
+       return users
+   },
+    
+    
+    addUserToLocalStorage : function(user){
+        let users = this.getAllUsersFromLocalStorage();
+        users.push(user);
+        localStorage.setItem("users", JSON.stringify(users));
+    },
+    
+    getUserFromLocalStorage :function(username,password){
+        let users = this.getAllUsersFromLocalStorage();
+        let user = users.filter(x=>x.username === username && x.password === password)
+        return user[0]
+    }
+}
+// da se napravi da raboti so localstorage :D
+
 const idGenerator = {
     idCounter: 1,
     generate() {
@@ -48,8 +72,3 @@ console.log([bob, pink])
 
 window.localStorage.setItem("bob", JSON.stringify(bob));
 window.localStorage.setItem("pink", JSON.stringify(pink));
-
-// Stefan's task 
-const localStorageService = {
-
-}
