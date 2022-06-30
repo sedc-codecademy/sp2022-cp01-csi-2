@@ -66,7 +66,7 @@ function renderPortfolioTable(){
   }
 }
 
-renderPortfolioTable();
+// renderPortfolioTable();
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -133,6 +133,47 @@ function showSellModal(title) {
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings
+const cardNumberInput = document.getElementById("floatingCardNumber");
+const cvvNumberInput = document.getElementById('floatingCvvNumber');
+const ammountInput = document.getElementById("floatingAmmount");
+
+const addFundsBtn = document.getElementById("add-funds-confirm-btn")
+
+ammountInput.addEventListener("keyup", () =>{
+  const ammountErrorText = document.getElementById("error-text");
+  if(ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000 ){
+    ammountErrorText.innerText = "entered ammount must be between 15$ and 10.000$"
+    addFundsBtn.disabled = true;
+  }
+  else{
+    addFundsBtn.disabled = false;
+    ammountErrorText.innerText = "";
+  }
+})
+
+ammountInput.addEventListener("keypress", function(e) {
+  if(e.key == "e" || e.key == "+" || e.key == "-") {
+      e.preventDefault()
+  }
+})
+
+cardNumberInput.addEventListener("keypress", function(e) {
+  if(cardNumberInput.value.length == 16 || e.key == "e" || e.key == "+" || e.key == "-") {
+      e.preventDefault()
+  }
+})
+
+cvvNumberInput.addEventListener("keypress", function(e) {
+  if(cvvNumberInput.value.length == 3 || e.key == "e" || e.key == "+" || e.key == "-") {
+      e.preventDefault()
+  }
+})
+
+addFundsBtn.addEventListener("click", async (e) => {
+  let cashAmmount = parseInt(ammountInput.value); 
+  // da se dodade logikata za userot
+})
+
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
