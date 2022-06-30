@@ -46,7 +46,8 @@ pink.wallet.coins.push(sedcCoin)
 
 console.log([bob, pink])
 
-
+window.localStorage.setItem("bob", JSON.stringify(bob));
+window.localStorage.setItem("pink", JSON.stringify(pink));
 
 // Stefan's task 
 const localStorageService = {
