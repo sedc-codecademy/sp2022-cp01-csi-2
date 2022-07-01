@@ -195,98 +195,122 @@
         </section>
 
         <section id="simulatorPage">
-        <!-- Here goes content for the Simulator page -->
+            <!-- Here goes content for the Simulator page -->
             <div class="row">
-                
+
                 <!-- #region  Aleksandar Dojchinovski => TODO: Create Secondary Navigation Bar And Top Info cards -->
                 <div class="col-1">
-                    <div class="d-flex align-items-center flex-column" id="sim-page-nav-bar">                            
+                    <div class="d-flex align-items-center flex-column" id="sim-page-nav-bar">
                         <!-- here goes navigation buttons (portfolio, wallet settings, statistics, activity log) -->
                     </div>
                 </div>
 
-                <div class="col-7 container"> 
+                <div class="col-7 container">
 
                     <div class="d-flex justify-content-around" id="sim-page-top-info-cards">
                         <div class="top-info-cards text-center">
-                             <!-- here goes total available cash -->
+                            <!-- here goes total available cash -->
                         </div>
                         <div class="top-info-cards text-center">
-                             <!-- here goes overall wallet progress  -->
+                            <!-- here goes overall wallet progress  -->
                         </div>
                     </div>
-                <!-- #endregion -->       
+                    <!-- #endregion -->
 
                     <div class="container my-3" id="main-sim-page-div">
 
-                        <!-- #region  Aneta Stankovska => TODO: Create Portfolio in Simulator -->    
+                        <!-- #region  Aneta Stankovska => TODO: Create Portfolio in Simulator -->
                         <div id="portfolio" class="sim-views">
                             <!-- here goes portfolio content  -->
                         </div>
                         <!-- #endregion -->
 
-                        <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->    
+                        <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->
                         <div id="wallet-settings" class="sim-views">
-                            <!-- here goes wallet settings content  -->       
-                            <div class="accordion accordion-flush" id="walletAccordion">
-                                
+                            <!-- here goes wallet settings content  -->
+                            <div class="accordion mh-100" id="walletAccordion">
+
                                 <div class="accordion-item my-3">
-                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFunds" aria-controls="collapseFunds">
-                                      - Add Funds
+                                    <button class="btn btn-outline-warning accordionBtn" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseFunds"
+                                        aria-controls="collapseFunds" id="add-funds">
+                                        - Add Funds
                                     </button>
-                                    <div id="collapseFunds" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
+
+                                    <div id="collapseFunds" class="accordion-collapse collapse"
+                                        data-bs-parent="#walletAccordion">
+
                                         <div class="accordion-body bg-dark" id="accordion-container">
                                             <h4 class="text-center mb-2">Payment details</h4>
-                                            <img class="img-fluid rounded mx-auto d-block mb-4" src="assets/images/card-logos.png" alt="card logos" id="card-logos-img">
+                                            <img class="img-fluid rounded mx-auto d-block mb-4"
+                                                src="assets/images/card-logos.png" alt="card logos" id="card-logos-img">
+                                            <form action="" id="payment-form">
                                                 <div class="form-floating mb-3">
-                                                    <input type="number" class="form-control bg-dark text-light" id="floatingAmmount" placeholder="Bob Bobsky" required>
+                                                    <input type="number" class="form-control bg-dark text-light"
+                                                        id="floatingAmmount" placeholder="Bob Bobsky" required>
                                                     <label for="floatingAmmount">Ammount</label>
-                                                    <p id="error-text" class="text-danger"></p>
+                                                    <p id="ammount-error-text" class="text-danger"></p>
                                                 </div>
-    
+
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control bg-dark text-light" id="floatingName" placeholder="Bob Bobsky" required>
+                                                    <input type="text" class="form-control bg-dark text-light"
+                                                        id="floatingName" placeholder="Bob Bobsky" required>
                                                     <label for="floatingName">Card holder name</label>
+                                                    <p id="name-error-text" class="text-danger"></p>
                                                 </div>
-    
+
                                                 <div class="form-floating mb-3">
-                                                    <input type="number" class="form-control bg-dark text-light" id="floatingCardNumber" placeholder="1111-2222-3333-4444" required>
+                                                    <input type="number" class="form-control bg-dark text-light"
+                                                        id="floatingCardNumber" placeholder="1111-2222-3333-4444"
+                                                        required>
                                                     <label for="floatingCardNumber">Card number</label>
+                                                    <p id="cardNumber-error-text" class="text-danger"></p>
                                                 </div>
-    
+
                                                 <div class="form-floating mb-3">
-                                                    <input type="number" class="form-control bg-dark text-light" id="floatingCvvNumber" placeholder="123" required>
-                                                    <label for="floatingCvvNumber">Cvv number</label>
+                                                    <input type="number" class="form-control bg-dark text-light"
+                                                        id="floatingCvvNumber" placeholder="123" required>
+                                                    <label for="floatingCvvNumber">CVV number</label>
+                                                    <p id="cvv-error-text" class="text-danger"></p>
                                                 </div>
-    
-                                                <button type="submit" id="add-funds-confirm-btn" class="btn btn-outline-warning my-3 rounded mx-auto d-block">Confirm</button>
+
+                                                <button type="button" id="add-funds-confirm-btn"
+                                                    class="btn btn-outline-warning my-3 rounded mx-auto d-block">Confirm</button>
+                                                <div id="payment-loader" class="text-center text-light"></div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="accordion-item my-3">
-                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCryptoLimit" aria-controls="collapseCryptoLimit">
-                                      - Limit the number of cryptocurrencies in the wallet
+                                    <button class="btn btn-outline-warning accordionBtn" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseCryptoLimit"
+                                        aria-controls="collapseCryptoLimit" id="limit-crypto">
+                                        - Limit the number of cryptocurrencies in the wallet
                                     </button>
-                                    <div id="collapseCryptoLimit" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
+                                    <div id="collapseCryptoLimit" class="accordion-collapse collapse"
+                                        data-bs-parent="#walletAccordion">
                                         <div class="accordion-body bg-dark" id="accordion-container">
-                                            <h1>crypto limit</h1>
+
+                                            <p class="lead" id="current-number-of-coins"></p>
+                                            <p class="lead" id="current-number-of-limit"></p>
+
+                                            <form action="" id="cryptolimit-form">
+                                                <div class="form-floating mb-3">
+                                                    <input type="number" class="form-control bg-dark text-light w-25"
+                                                        id="floatingCryptoLimit" placeholder="10" required>
+                                                    <label for="floatingCryptoLimit">Enter amount</label>
+                                                </div>
+
+                                                <button type="button" id="limit-crypto-confirm-btn"
+                                                    class="btn btn-outline-warning my-3">Confirm
+                                                </button>
+
+                                                <p id="crypto-limit-msg" class="text-light"></p>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="accordion-item my-3">
-                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCashLimit" aria-controls="collapseCashLimit">
-                                      - Limit the number of cash spent per day
-                                    </button>
-                                    <div id="collapseCashLimit" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
-                                        <div class="accordion-body bg-dark" id="accordion-container">
-                                            <h1>cash limit</h1>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At mollitia corporis maiores unde veniam molestias impedit ab cumque, explicabo ea facilis nihil? Doloremque quidem magnam est animi. Aliquid, qui ullam!</p>
                             </div>
                         </div>
                         <!-- #endregion -->
@@ -295,7 +319,7 @@
                         <div id="wallet-stats" class="sim-views">
                             <!-- here goes wallet statistics content  -->
                         </div>
-                        <!-- #endregion --> 
+                        <!-- #endregion -->
 
                         <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->
                         <div id="activity-log" class="sim-views">
@@ -304,7 +328,7 @@
                         <!-- #endregion -->
                     </div>
                 </div>
-            
+
                 <!-- #region  Ilija Mitev => TODO: Create side Market bar -->
                 <div class="col-4 container">
                     <div id="sim-page-side-market">
@@ -316,7 +340,7 @@
                 <!-- #region  Aneta Stankovska and Ilija Mitev => TODO: Create modals for buy and sell coins -->
                 <!--Everything happens in simulatorPage.js-->
                 <div id="modal-container"></div>
-                <!-- #endregion -->   
+                <!-- #endregion -->
             </div>
         </section>
 
@@ -378,7 +402,7 @@
     </div>
 
 
-    <footer id="mainFooter" class="footer">
+    <footer id="mainFooter" class="footer container">
         <div class="container">
             <div class="row">
                 <div class="footer-col">

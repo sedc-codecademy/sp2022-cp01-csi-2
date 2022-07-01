@@ -30,7 +30,7 @@ class Wallet {
     constructor(userId) {
         this.userId = userId
         this.coins = [] // niza od Coin objekti
-        this.maxCoins = Infinity
+        this.maxCoins = 10
         this.cash = 100_000
     }
 }
