@@ -39,3 +39,33 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.accordionBtn {
+    width: 100%;
+    background-color: #17181D;
+    text-align: left;
+    border-radius: 0px;
+    border: none;
+    color: whitesmoke;
+}
+
+.accordionBtn:hover{
+    background-color: #17181D;
+    color: goldenrod;
+}
+
+.accordion-item{
+    border: none
+}
+
+.accordion-body{
+    border: 1px solid goldenrod
+}
+
+#card-logos-img{
+    height: 30px;
+}
+
+#walletAccordion{
+    margin-bottom: 20px;
+}

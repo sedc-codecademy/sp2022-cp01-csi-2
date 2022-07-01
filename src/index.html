@@ -227,15 +227,17 @@
 
                         <!-- #region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings -->    
                         <div id="wallet-settings" class="sim-views">
-                            <!-- here goes wallet settings content  -->
-                            <div class="accordion accordion-flush" id="accordionExample">
-                                <div class="accordion-item">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-controls="collapseOne">
-                                      1. Add Funds
+                            <!-- here goes wallet settings content  -->       
+                            <div class="accordion accordion-flush" id="walletAccordion">
+                                
+                                <div class="accordion-item my-3">
+                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFunds" aria-controls="collapseFunds">
+                                      - Add Funds
                                     </button>
-                                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div id="collapseFunds" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
                                         <div class="accordion-body bg-dark" id="accordion-container">
-                                            <form action="">
+                                            <h4 class="text-center mb-2">Payment details</h4>
+                                            <img class="img-fluid rounded mx-auto d-block mb-4" src="assets/images/card-logos.png" alt="card logos" id="card-logos-img">
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light" id="floatingAmmount" placeholder="Bob Bobsky" required>
                                                     <label for="floatingAmmount">Ammount</label>
@@ -257,11 +259,34 @@
                                                     <label for="floatingCvvNumber">Cvv number</label>
                                                 </div>
     
-                                                <button type="submit" id="add-funds-confirm-btn" class="btn btn-outline-warning my-3">Confirm</button>
-                                            </form>
+                                                <button type="submit" id="add-funds-confirm-btn" class="btn btn-outline-warning my-3 rounded mx-auto d-block">Confirm</button>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="accordion-item my-3">
+                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCryptoLimit" aria-controls="collapseCryptoLimit">
+                                      - Limit the number of cryptocurrencies in the wallet
+                                    </button>
+                                    <div id="collapseCryptoLimit" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
+                                        <div class="accordion-body bg-dark" id="accordion-container">
+                                            <h1>crypto limit</h1>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item my-3">
+                                    <button class="btn btn-outline-warning accordionBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCashLimit" aria-controls="collapseCashLimit">
+                                      - Limit the number of cash spent per day
+                                    </button>
+                                    <div id="collapseCashLimit" class="accordion-collapse collapse" data-bs-parent="#walletAccordion">
+                                        <div class="accordion-body bg-dark" id="accordion-container">
+                                            <h1>cash limit</h1>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At mollitia corporis maiores unde veniam molestias impedit ab cumque, explicabo ea facilis nihil? Doloremque quidem magnam est animi. Aliquid, qui ullam!</p>
                             </div>
                         </div>
                         <!-- #endregion -->

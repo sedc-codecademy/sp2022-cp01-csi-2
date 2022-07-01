@@ -136,11 +136,10 @@ function showSellModal(title) {
 const cardNumberInput = document.getElementById("floatingCardNumber");
 const cvvNumberInput = document.getElementById('floatingCvvNumber');
 const ammountInput = document.getElementById("floatingAmmount");
-
 const addFundsBtn = document.getElementById("add-funds-confirm-btn")
 
 ammountInput.addEventListener("keyup", () =>{
-  const ammountErrorText = document.getElementById("error-text");
+  let ammountErrorText = document.getElementById("error-text");
   if(ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000 ){
     ammountErrorText.innerText = "entered ammount must be between 15$ and 10.000$"
     addFundsBtn.disabled = true;
