@@ -1,9 +1,36 @@
+// Stefan Ivanovski TODO: Create local storage services 
+
+const localStorageService = {
+
+    getAllUsersFromLocalStorage : function(){
+       let users = localStorage.getItem("users") == null ? [] : JSON.parse(localStorage.getItem("users"));
+       return users
+   },
+    
+    
+    addUserToLocalStorage : function(user){
+        let users = this.getAllUsersFromLocalStorage();
+        users.push(user);
+        localStorage.setItem("users", JSON.stringify(users));
+    },
+    
+    getUserFromLocalStorage :function(username,password){
+        let users = this.getAllUsersFromLocalStorage();
+        let user = users.filter(x=>x.username === username && x.password === password)
+        return user[0]
+    }
+};
+
+// da se napravi da raboti so localstorage :D
+
 const idGenerator = {
     idCounter: 1,
     generate() {
         return this.idCounter++;
-    }
-}
+    },
+};
+
+console.log(idGenerator.users);
 
 class User {
     constructor(username, password, email) {
@@ -33,23 +60,31 @@ class Wallet {
         this.maxCoins = Infinity
         this.cash = 100_000
     }
-}
+};
 
 
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
 
-let bob = new User("bobbobsky", 1234, "bobmajmuncebobski@bob.com")
-bob.wallet.coins.push(sedcCoin)
+let bob = new User("bobbobsky", 1234, "bobmajmuncebobski@bob.com");
+bob.wallet.coins.push(sedcCoin);
 
-let pink = new User("pinkpanther", 0000, "pink@panther.com")
-pink.wallet.coins.push(sedcCoin)
+let pink = new User("pinkpanther", 0000, "pink@panther.com");
+pink.wallet.coins.push(sedcCoin);
 
-console.log([bob, pink])
+let jill = new User("jillwayne", 4321, "jillwayne@jill.com");
+bob.wallet.coins.push(sedcCoin);
 
-window.localStorage.setItem("bob", JSON.stringify(bob));
-window.localStorage.setItem("pink", JSON.stringify(pink));
+localStorage.setItem("users", JSON.stringify([bob,pink])); 
+localStorageService.addUserToLocalStorage(jill);
 
-// Stefan's task 
-const localStorageService = {
+console.log(localStorageService.getAllUsersFromLocalStorage());
+console.log(idGenerator.idCounter);
 
-}
+// let users = localStorageService.getAllUsersFromLocalStorage();
+// console.log(users);
+// let users = localStorageService.getAllUsersFromLocalStorage();
+// console.log(users);
+
+
+
+
