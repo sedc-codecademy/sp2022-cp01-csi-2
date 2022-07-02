@@ -172,7 +172,7 @@ function renderPortfolioTable(user) {
 getWalletCoinsCurrentPrice(pinkUser);
 
 //addCoinsToPinkUser();
-renderPortfolioTable(pinkUser);
+//renderPortfolioTable(pinkUser);
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
