@@ -18,6 +18,7 @@ const renderSideMarketData = async (data) => {
   for (const coin of data) {
     coinBar.push(`
         <div class="marketTable">
+            <span><img src="${coin.image}" height="30px" alt="${coin.id}"}"></span>
             <span>${coin.name}</span>
             <span>${coin.current_price.toLocaleString('en-US')}</span>
             <span  style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">${coin.price_change_percentage_24h.toFixed(2)}%</span>
