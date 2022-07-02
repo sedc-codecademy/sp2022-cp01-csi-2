@@ -32,7 +32,7 @@ const renderSideMarketData = async (data) => {
 const renderSideMarketBar = async (pageNumber = 1) => {
   let url = sideMarketBarHelpers.getApiUrl(pageNumber)
   let data = await getCoinsDataAsync(url)
-  console.log(data);
+  // console.log(data);
   sideMarketBarHelpers.coinsElement.innerHTML += await renderSideMarketData(data)
 }
 
@@ -43,10 +43,8 @@ const sideMarketInfinityScroll = async (e) => {
   let bottom = Math.round(scrollTop + clientHeight) == scrollHeight
 
   if (bottom && sideMarketBarHelpers.pageNumber <= 5) {  // limit the shown coins to 100
-    console.log("YOU'VE REACHED THE BOTTOM")
     displayElements.showElements(sideMarketBarHelpers.loader)
     setTimeout(async () => {
-      console.log("PAGE NUMBER " + sideMarketBarHelpers.pageNumber);
       await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
       displayElements.hideElements(sideMarketBarHelpers.loader)
       ++sideMarketBarHelpers.pageNumber
@@ -60,14 +58,11 @@ const showSimulatorSideMarket = async () => {
   sideMarketBarHelpers.pageNumber = 1
   await renderSideMarketBar()
   sideMarketBarHelpers.pageNumber++
-
   //In case there isn't a scroll bar (ex. larger viewport => projector) 
   if (sideMarketBarHelpers.coinsElement.scrollHeight <= sideMarketBarHelpers.coinsElement.clientHeight) {
-    console.log("Scrollbar: I'm completly lost");
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
     sideMarketBarHelpers.pageNumber++
   }
-
   //Events for the Side Market
   sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
   // buying event ...
