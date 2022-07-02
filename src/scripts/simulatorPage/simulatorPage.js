@@ -12,14 +12,16 @@ let portfolioHelpers = {
     "portfolio" : {} //Placeholder for portfolio variables
 };
 
+const pinkUser = localStorageService.getAllUsersFromLocalStorage().find(e=>e.username == "pinkpanther");
+console.log(pinkUser);
+
 function calculateSingleCoinValue(coins) {
 };
 
-function generatePortfolioTable() {
+
+function generatePortfolioTable(user) {
     let counter = 1;
     let strArr = [];
-    let user = JSON.parse(localStorage.getItem("bob"))
-    console.log(user);
     let wallet = user.wallet;
     console.log(wallet);
     strArr.push(`<table id="dtBasicExample" class="table table-hover table-responsive table-fit">
@@ -54,7 +56,7 @@ function generatePortfolioTable() {
 };
 
 function renderPortfolioTable(){
-  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable());
+  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable(pinkUser));
   let sellBtns = document.getElementsByClassName("sellCoin");
   for(let btn of sellBtns){
     let coinName = btn.parentNode.getElementsByTagName("td")[2].innerHTML;
@@ -64,7 +66,22 @@ function renderPortfolioTable(){
   }
 };
 
-//renderPortfolioTable();
+function getUserCoinIds(user){
+  let userCoins = user.wallet.coins.map(x => x.id);
+  return userCoins;
+}
+
+function getWalletCoinsCurrentPrice(user){
+  let userCoinIds = getUserCoinIds(user);
+  let userCoinIdsStr = userCoinIds.join(",");
+  console.log(userCoinIdsStr);
+}
+
+getWalletCoinsCurrentPrice(pinkUser);
+
+addCoinsToPinkUser();
+renderPortfolioTable();
+console.log(getUserCoinIds(pinkUser));
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
