@@ -32,7 +32,7 @@ function tcCreateElements(name, short, price, change, graph) {
     tcChange.style.color = tcChange.innerText.charAt(0) == "-" ? "red" : "green";
 
     let chartCon = document.createElement("div");
-    chartCon.classList.add("row","trendingCryptoChartContainer");
+    chartCon.classList.add("row", "trendingCryptoChartContainer");
     tcDataContainer.appendChild(chartCon);
 
     let chartCanvas = document.createElement('canvas')
@@ -89,19 +89,19 @@ function tcCreateElements(name, short, price, change, graph) {
         });
 }
 
-function tcSetup(){
+function tcSetup() {
     const trendingCryptoApiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
     const trendingCryptoApiUrl2 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=gecko_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
     const trendingCryptoApiUrl3 = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=5&page=1&sparkline=true&price_change_percentage=24h"
-    
+
     document.getElementById('tcButtonOne').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl));
     document.getElementById('tcButtonTwo').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl2));
     document.getElementById('tcButtonThree').addEventListener("click", () => trendingCryptoApiCall(trendingCryptoApiUrl3));
-    document.getElementById('tcButtonFour').addEventListener('click', async () =>{
+    document.getElementById('tcButtonFour').addEventListener('click', async () => {
         displayElements.showStatisticsPage()
         await renderStatsPage()
-    } )
-    
+    })
+
     trendingCryptoApiCall(trendingCryptoApiUrl);
 }
 
@@ -185,6 +185,7 @@ const displayElements = {
     showSimulatorPage: function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
+        showSimulatorSideMarket()
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -195,15 +196,15 @@ const displayElements = {
         this.showElements(loginRegisterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage)
     },
-    showPortfolio: function (){
+    showPortfolio: function () {
         this.showElements(portfolioDiv)
         this.hideElements(walletSettingsDiv, walletStatsDiv, activityLogDiv)
     },
-    showWalletSettings: function(){
+    showWalletSettings: function () {
         this.showElements(walletSettingsDiv)
         this.hideElements(portfolioDiv, walletStatsDiv, activityLogDiv)
     },
-    showWalletStatistics: function (){
+    showWalletStatistics: function () {
         this.showElements(walletStatsDiv)
         this.hideElements(portfolioDiv, walletSettingsDiv, activityLogDiv)
     },
@@ -278,10 +279,10 @@ window.addEventListener('load', () => {
 const homePageBtn = document.getElementsByClassName('homePageBtn')
 homePageBtn[0].addEventListener('click', () => displayElements.showHomePage())
 homePageBtn[1].addEventListener('click', () => displayElements.showHomePage())
-document.getElementById('statsBtn').addEventListener('click', async () =>{
+document.getElementById('statsBtn').addEventListener('click', async () => {
     displayElements.showStatisticsPage()
     await renderStatsPage()
-} )
+})
 document.getElementById('simulatorBtn').addEventListener('click', () => {
     displayElements.showSimulatorPage();
     displayElements.showPortfolio();
@@ -302,11 +303,11 @@ function scrollFunction() {
 }
 
 function hideNavigationOnFooter() {
-    const scrollMaxY = window.scrollMaxY || 
+    const scrollMaxY = window.scrollMaxY ||
         (document.documentElement.scrollHeight - document.documentElement.clientHeight);
     if (scrollMaxY != 0 &&
         (document.documentElement.scrollTop >= scrollMaxY || document.body.scrollTop >= scrollMaxY)) {
-            document.getElementById("mainHeader").style.display = "none";
+        document.getElementById("mainHeader").style.display = "none";
     } else {
         document.getElementById("mainHeader").style.display = "inline";
     }
