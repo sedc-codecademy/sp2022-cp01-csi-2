@@ -247,14 +247,13 @@ cvvNumberInput.addEventListener("focusout", () => {
 confirmAddFundsBtn.addEventListener("click", async () => {
   if (cvvNumberInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
     let cashAmmount = parseInt(ammountInput.value);
-    let user = bob // da se zeme logiraniot
-    console.log(user.wallet.cash);
     await showLoaderAsync(loaderContainer, 2000)
-    user.wallet.cash += cashAmmount;
-    console.log(user.wallet.cash);
+    loggedUser.user.wallet.cash += cashAmmount;
+
     document.getElementById("payment-form").reset()
     loaderContainer.innerHTML = "succesfully added funds to your wallet!"
-    // da se smeni i userot vo localstorage
+    localStorageService.addUserToLocalStorage(loggedUser.user);
+    console.log(loggedUser.user);
   }
   else {
     document.getElementById("payment-form").reportValidity();
@@ -270,12 +269,11 @@ document.getElementById("add-funds").addEventListener("click", () => {
 document.getElementById("limit-crypto").addEventListener("click", () => {
   document.getElementById("crypto-limit-msg").innerText = ""
 
-  let user = bob; // da se zeme logiraniot
   let currentNumber = document.getElementById("current-number-of-coins");
   let currentLimit = document.getElementById("current-number-of-limit");
 
-  currentNumber.innerHTML = `Current number of coins in the wallet: ${user.wallet.coins.length}`
-  currentLimit.innerHTML = `Current limit of cryptos you can have in the wallet: ${user.wallet.maxCoins}`
+  currentNumber.innerHTML = `Current number of coins in the wallet: ${loggedUser.user.wallet.coins.length}`
+  currentLimit.innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
 })
 
 cryptoLimitInput.addEventListener("keypress", (e) => {
@@ -289,15 +287,14 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
   let msg = document.getElementById("crypto-limit-msg")
 
   if (cryptoLimitInput.checkValidity()) {
-    let user = bob;  // da se zeme logiraniot
 
-    if (cryptoLimitInput.value >= user.wallet.coins.length) {
-      user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
+    if (cryptoLimitInput.value >= loggedUser.user.wallet.coins.length) {
+      loggedUser.user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
 
       msg.setAttribute("class", "text-light")
       msg.innerText = "Succesfully changed the limit!"
-      document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${user.wallet.maxCoins}`
-
+      document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
+      localStorageService.addUserToLocalStorage(loggedUser.user);
       form.reset();
     } else {
       msg.setAttribute("class", "text-danger")

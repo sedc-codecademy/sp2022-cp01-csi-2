@@ -22,6 +22,7 @@ const localStorageService = {
     
     getUserFromLocalStorage :function(username,password){
         let users = this.getAllUsersFromLocalStorage();
+        console.log(users)
         let user = users.filter(x=>x.username === username && x.password === password)
         return user[0]
     }
@@ -35,8 +36,6 @@ const idGenerator = {
         return this.idCounter++;
     },
 };
-
-console.log(idGenerator.users);
 
 class User {
     constructor(username, password, email) {
@@ -68,16 +67,19 @@ class Wallet {
     }
 };
 
+const loggedUser = {
+    user: null
+}
 
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
 let bitcoin = new Coin("bitcoin", "Bitcoin", 19116, 1);
 let ethereum = new Coin("ethereum", "Ethereum", 1041, 2);
 let tether = new Coin("tether", "Tether", 1, 5);
 
-let bob = new User("bobbobsky", 1234, "bobmajmuncebobski@bob.com");
+let bob = new User("bobbobsky", "1234", "bobmajmuncebobski@bob.com");
 bob.wallet.coins.push(sedcCoin);
 
-let pink = new User("pinkpanther", 0000, "pink@panther.com");
+let pink = new User("pinkpanther", "0000", "pink@panther.com");
 
 
 function addCoinsToPinkUser(){
@@ -88,18 +90,9 @@ function addCoinsToPinkUser(){
     localStorageService.addUserToLocalStorage(pink);
 }
 
-
-let jill = new User("jillwayne", 4321, "jillwayne@jill.com");
+let jill = new User("jillwayne", "4321", "jillwayne@jill.com");
 jill.wallet.coins.push(sedcCoin);
 
-//localStorage.setItem("users", JSON.stringify([bob,pink])); 
-//localStorageService.addUserToLocalStorage(jill);
-//localStorageService.addUserToLocalStorage(pink);
-
-//console.log(localStorageService.getAllUsersFromLocalStorage());
-//console.log(idGenerator.idCounter);
-
-
-
-
-
+// localStorageService.addUserToLocalStorage(bob)
+// localStorageService.addUserToLocalStorage(pink); 
+// localStorageService.addUserToLocalStorage(jill);
