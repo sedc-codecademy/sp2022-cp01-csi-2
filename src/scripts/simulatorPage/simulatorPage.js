@@ -55,8 +55,8 @@ function generatePortfolioTable(user) {
   return content;
 };
 
-function renderPortfolioTable(){
-  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable(pinkUser));
+function renderPortfolioTable(user){
+  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable(user));
   let sellBtns = document.getElementsByClassName("sellCoin");
   for (let btn of sellBtns) {
     let coinName = btn.parentNode.getElementsByTagName("td")[2].innerHTML;
@@ -80,7 +80,7 @@ function getWalletCoinsCurrentPrice(user){
 getWalletCoinsCurrentPrice(pinkUser);
 
 addCoinsToPinkUser();
-renderPortfolioTable();
+renderPortfolioTable(pinkUser);
 console.log(getUserCoinIds(pinkUser));
 //#endregion
 
