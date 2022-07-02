@@ -182,3 +182,7 @@ input::-webkit-inner-spin-button {
 #accordion-container {
     height: 100%;
 }
+
+#portfolio{
+    overflow:auto !important
+}
