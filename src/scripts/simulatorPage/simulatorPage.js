@@ -4,6 +4,70 @@
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Ilija Mitev => TODO: Create side Market bar
+
+const sideMarketBarHelpers = {
+  coinsElement: document.getElementById("sideMarketBarCoins"),
+  pageNumber: 1,
+  getApiUrl: (pageNumber) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=20&page=${pageNumber}`,
+  loader: document.getElementById('sideMarketLoader'),
+}
+
+//Function for creating the coin info bars
+const renderSideMarketData = async (data) => {
+  let coinBar = [];
+  for (const coin of data) {
+    coinBar.push(`
+        <div class="marketTable">
+            <span><img src="${coin.image}" height="30px" alt="${coin.id}"}"></span>
+            <span>${coin.name}</span>
+            <span>${coin.current_price.toLocaleString('en-US')}</span>
+            <span  style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <span id="${coin.id}">Buy</span>
+        </div>`)
+  };
+  return coinBar.join('');
+}
+
+// Function for adding the appropriate data to the element
+const renderSideMarketBar = async (pageNumber = 1) => {
+  let url = sideMarketBarHelpers.getApiUrl(pageNumber)
+  let data = await getCoinsDataAsync(url)
+  // console.log(data);
+  sideMarketBarHelpers.coinsElement.innerHTML += await renderSideMarketData(data)
+}
+
+// Function for creating the 'infinity' scroll
+const sideMarketInfinityScroll = async (e) => {
+  e.preventDefault()
+  let { scrollTop, scrollHeight, clientHeight } = sideMarketBarHelpers.coinsElement
+  let bottom = Math.round(scrollTop + clientHeight) == scrollHeight
+
+  if (bottom && sideMarketBarHelpers.pageNumber <= 5) {  // limit the shown coins to 100
+    displayElements.showElements(sideMarketBarHelpers.loader)
+    setTimeout(async () => {
+      await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
+      displayElements.hideElements(sideMarketBarHelpers.loader)
+      ++sideMarketBarHelpers.pageNumber
+    }, 2000);
+  }
+}
+
+//Wrap Function for initializing the side market
+const showSimulatorSideMarket = async () => {
+  sideMarketBarHelpers.coinsElement.innerHTML = ``
+  sideMarketBarHelpers.pageNumber = 1
+  await renderSideMarketBar()
+  sideMarketBarHelpers.pageNumber++
+  //In case there isn't a scroll bar (ex. larger viewport => projector) 
+  if (sideMarketBarHelpers.coinsElement.scrollHeight <= sideMarketBarHelpers.coinsElement.clientHeight) {
+    await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
+    sideMarketBarHelpers.pageNumber++
+  }
+  //Events for the Side Market
+  sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
+  // buying event ...
+}
+
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -27,7 +91,6 @@ async function getWalletCoinsCurrentPrice(user) {
   let userCoinIds = getUserCoinIds(user);
   let userCoinIdsStr = userCoinIds.join(",");
   let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
-  console.log(userCoinIdsStr);
 
   try {
     let response = await fetch(url);
@@ -45,9 +108,7 @@ async function generatePortfolioTable(user) {
   let counter = 1;
   let strArr = [];
   let wallet = user.wallet;
-  console.log(wallet);
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPrice(user);
-  console.log(walletCoinsCurrentPrice);
   strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
@@ -110,9 +171,8 @@ function renderPortfolioTable(user) {
 
 getWalletCoinsCurrentPrice(pinkUser);
 
-addCoinsToPinkUser();
+//addCoinsToPinkUser();
 renderPortfolioTable(pinkUser);
-console.log(getUserCoinIds(pinkUser));
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------

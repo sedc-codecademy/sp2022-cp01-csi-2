@@ -201,19 +201,23 @@
                 <div class="col-1">
                     <!-- here goes navigation buttons (portfolio, wallet settings, statistics, activity log) -->
                     <div class="flex-column">
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn" id="portfolio-navbtn">
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                            id="portfolio-navbtn">
                             Portfolio
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn text-center" id="walletsettings-navbtn">
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn text-center"
+                            id="walletsettings-navbtn">
                             Wallet Settings
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn" id="walletstatistics-navbtn">
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                            id="walletstatistics-navbtn">
                             Statistics
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn" id="activitylog-navbtn">
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                            id="activitylog-navbtn">
                             Activity log
                         </button>
                     </div>
@@ -347,6 +351,17 @@
                 <div class="col-4 container">
                     <div id="sim-page-side-market">
                         <!-- here goes side market content-->
+                        <h4 style="margin: 20px 0px; font-size: 1.3em;" class="text-center text-warning">Crypto Market
+                        </h4>
+                        <div class="marketTableHeader">
+                            <span>Logo</span>
+                            <span>Coin</span>
+                            <span>Price</span>
+                            <span>Change</span>
+                            <span>Action</span>
+                        </div>
+                        <div id="sideMarketBarCoins"></div>
+                        <div hidden class="spinner-border text-warning" id="sideMarketLoader" role="status"> </div>
                     </div>
                 </div>
                 <!-- #endregion -->
