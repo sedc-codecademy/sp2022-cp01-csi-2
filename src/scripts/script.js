@@ -156,6 +156,11 @@ const infoCenterPage = document.getElementById('infoCenterPage')
 const loginRegisterPage = document.getElementById('loginRegisterPage')
 const otherPagesDiv = document.getElementById('otherPagesDiv')
 
+// simulator page elements
+const portfolioDiv = document.getElementById("portfolio");
+const walletSettingsDiv = document.getElementById("wallet-settings");
+const walletStatsDiv = document.getElementById("wallet-stats");
+const activityLogDiv = document.getElementById("activity-log");
 
 const displayElements = {
     hideElements: (...elements) => {
@@ -189,6 +194,22 @@ const displayElements = {
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage)
+    },
+    showPortfolio: function (){
+        this.showElements(portfolioDiv)
+        this.hideElements(walletSettingsDiv, walletStatsDiv, activityLogDiv)
+    },
+    showWalletSettings: function(){
+        this.showElements(walletSettingsDiv)
+        this.hideElements(portfolioDiv, walletStatsDiv, activityLogDiv)
+    },
+    showWalletStatistics: function (){
+        this.showElements(walletStatsDiv)
+        this.hideElements(portfolioDiv, walletSettingsDiv, activityLogDiv)
+    },
+    showActivityLog: function () {
+        this.showElements(activityLogDiv)
+        this.hideElements(portfolioDiv, walletSettingsDiv, walletStatsDiv)
     }
 }
 
@@ -197,8 +218,8 @@ const cryptoInfo = {
     factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
-    stats: ["$2.1 trillion", "18.000", "70 million", "$2.1 trillion"],
-    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets", "Total market cap"],
+    stats: ["$2.1 trillion", "18.000", "70 million"],
+    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets"],
 
     facts: [
         "The maximum number of Bitcoins that can be mined is 21 million",
@@ -261,7 +282,10 @@ document.getElementById('statsBtn').addEventListener('click', async () =>{
     displayElements.showStatisticsPage()
     await renderStatsPage()
 } )
-document.getElementById('simulatorBtn').addEventListener('click', () => displayElements.showSimulatorPage())
+document.getElementById('simulatorBtn').addEventListener('click', () => {
+    displayElements.showSimulatorPage();
+    displayElements.showPortfolio();
+})
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
@@ -274,7 +298,7 @@ window.addEventListener("scroll", scrollFunction);
 
 function scrollFunction() {
     hideNavigationOnFooter();
-    setNavigationTransparentOnScroll();
+    // setNavigationTransparentOnScroll();
 }
 
 function hideNavigationOnFooter() {
@@ -320,36 +344,45 @@ function clearInputError(inputElement) {
     inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.querySelector("#login");
-    const registerForm = document.querySelector("#Register");
+// document.addEventListener("DOMContentLoaded", () => {
+//     const loginForm = document.querySelector("#login");
+//     const registerForm = document.querySelector("#Register");
 
-    document.querySelector("#linkRegister").addEventListener("click", e => {
-        e.preventDefault();
-        loginForm.classList.add("form--hidden");
-        registerForm.classList.remove("form--hidden");
-    });
+//     document.querySelector("#linkRegister").addEventListener("click", e => {
+//         e.preventDefault();
+//         loginForm.classList.add("form--hidden");
+//         registerForm.classList.remove("form--hidden");
+//     });
 
-    document.querySelector("#linkLogin").addEventListener("click", e => {
-        e.preventDefault();
-        loginForm.classList.remove("form--hidden");
-        registerForm.classList.add("form--hidden");
-    });
+//     document.querySelector("#linkLogin").addEventListener("click", e => {
+//         e.preventDefault();
+//         loginForm.classList.remove("form--hidden");
+//         registerForm.classList.add("form--hidden");
+//     });
 
-    loginForm.addEventListener("submit", e => {
-        e.preventDefault();
-        setFormMessage(loginForm, "error", "Invalid username/password combination");
-    });
+//     loginForm.addEventListener("submit", e => {
+//         e.preventDefault();
+//         setFormMessage(loginForm, "error", "Invalid username/password combination");
+//     });
 
-    document.querySelectorAll(".form__input").forEach(inputElement => {
-        inputElement.addEventListener("blur", e => {
-            if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
-                setInputError(inputElement, "Username must be at least 10 characters in length");
-            }
-        });
+//     document.querySelectorAll(".form__input").forEach(inputElement => {
+//         inputElement.addEventListener("blur", e => {
+//             if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
+//                 setInputError(inputElement, "Username must be at least 10 characters in length");
+//             }
+//         });
 
-        inputElement.addEventListener("input", e => {
-            clearInputError(inputElement);
-        });
-    });
-});
+//         inputElement.addEventListener("input", e => {
+//             clearInputError(inputElement);
+//         });
+//     });
+// });
+
+document.getElementById("login-btn").addEventListener("click", () => {
+    let username = document.getElementById("login-username").value
+    let password = document.getElementById("login-password").value
+
+    let user = localStorageService.getUserFromLocalStorage(username, password)
+    loggedUser.user = user
+    console.log(loggedUser.user);
+})
