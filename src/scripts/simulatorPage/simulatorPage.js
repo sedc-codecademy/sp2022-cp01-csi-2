@@ -9,7 +9,7 @@
 //-------------------------------------------------------------------------------------------------------
 //#region  Aneta Stankovska => TODO: Create Portfolio in Simulator
 let portfolioHelpers = {
-  portfolio: {}, //Placeholder for portfolio variables
+  "portfolio": {} //Placeholder for portfolio variables
 };
 
 const pinkUser = localStorageService
@@ -110,6 +110,7 @@ function renderPortfolioTable(user) {
 
 getWalletCoinsCurrentPrice(pinkUser);
 
+addCoinsToPinkUser();
 renderPortfolioTable(pinkUser);
 console.log(getUserCoinIds(pinkUser));
 //#endregion
@@ -146,28 +147,23 @@ function ShowModal(
   let modal = document.getElementById("newModal");
   document.getElementById("newModal").style.display = "block";
   //When user clicks the "Close" button
-  document.getElementById("myClose-btn").addEventListener("click", () => {
-    modal.remove();
-  });
+  document.getElementById("myClose-btn").addEventListener("click", () => { modal.remove() });
   //When user clicks the "X" button
-  document.getElementById("myClose-x").addEventListener("click", () => {
-    modal.remove();
-  });
+  document.getElementById("myClose-x").addEventListener("click", () => { modal.remove() });
   //When the user clicks anywhere outside the modal
-  window.addEventListener("click", function (event) {
+  window.addEventListener('click', function (event) {
     if (event.target == modal) {
       modal.remove();
     }
-  });
-}
+  })
+};
 
 function showBuyModal() {
-  content =
-    "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Buy</button>";
-  ShowModal("Buy coins", content);
-  document.getElementById("amount").addEventListener("change", () => {});
+  content = "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Buy</button>"
+  ShowModal("Buy coins", content)
+  document.getElementById("amount").addEventListener("change", () => { });
   document.getElementById("btn-accept").addEventListener("click", () => {
-    // magic code happens here
+    // magic code happens here 
     document.getElementById("newModal").remove();
   });
 }
@@ -176,9 +172,9 @@ function showSellModal(title) {
   content =
     "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Sell</button>";
   ShowModal(`Sell ${title}`, content);
-  document.getElementById("amount").addEventListener("change", () => {});
+  document.getElementById("amount").addEventListener("change", () => { });
   document.getElementById("btn-accept").addEventListener("click", () => {
-    // magic code happens here
+    // magic code happens here 
     document.getElementById("newModal").remove();
   });
 }
@@ -187,6 +183,162 @@ function showSellModal(title) {
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Wallet settings
+const cardNumberInput = document.getElementById("floatingCardNumber");
+const cvvNumberInput = document.getElementById('floatingCvvNumber');
+const ammountInput = document.getElementById("floatingAmmount");
+const nameInput = document.getElementById("floatingName");
+const confirmAddFundsBtn = document.getElementById("add-funds-confirm-btn");
+const loaderContainer = document.getElementById("payment-loader");
+const cryptoLimitInput = document.getElementById("floatingCryptoLimit");
+
+function validateNumberInput(event) {
+  if (event.key === "e" || event.key === "+" || event.key === "-") {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+// add funds
+ammountInput.addEventListener("keypress", function (e) {
+  if (!validateNumberInput(e)) {
+    e.preventDefault();
+  }
+})
+
+ammountInput.addEventListener("focusout", () => {
+  let ammountErrorText = document.getElementById("ammount-error-text");
+
+  if (ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
+    ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
+    confirmAddFundsBtn.disabled = true;
+  }
+  else {
+    confirmAddFundsBtn.disabled = false;
+    ammountErrorText.innerText = "";
+  }
+})
+
+nameInput.addEventListener("keypress", (e) => {
+  let regex = new RegExp(`^[a-zA-Z]`);
+
+  if (!regex.test(e.key)) {
+    e.preventDefault();
+  }
+})
+
+nameInput.addEventListener("focusout", () => {
+  let errortext = document.getElementById("name-error-text")
+
+  if (nameInput.value.length < 3) {
+    errortext.innerText = "name must have more then 2 characters"
+    confirmAddFundsBtn.disabled = true;
+  }
+  else {
+    confirmAddFundsBtn.disabled = false;
+    errortext.innerText = "";
+  }
+})
+
+cardNumberInput.addEventListener("keydown", function (e) {
+  if (!validateNumberInput(e) || cardNumberInput.value.length === 16) {
+    e.preventDefault()
+  }
+})
+
+cardNumberInput.addEventListener("focusout", () => {
+  let errortext = document.getElementById("cardNumber-error-text");
+
+  if (cardNumberInput.value.length > 0 && cardNumberInput.value.length < 16) {
+    errortext.innerText = "enter valid card number. Ex: 1111 2222 3333 4444"
+    confirmAddFundsBtn.disabled = true;
+  }
+  else {
+    confirmAddFundsBtn.disabled = false;
+    errortext.innerText = "";
+  }
+})
+
+cvvNumberInput.addEventListener("keypress", function (e) {
+  if (!validateNumberInput(e) || cvvNumberInput.value.length === 3) {
+    e.preventDefault();
+  }
+})
+
+cvvNumberInput.addEventListener("focusout", () => {
+  let errortext = document.getElementById("cvv-error-text");
+
+  if (cvvNumberInput.value.length > 0 && cvvNumberInput.value.length < 3) {
+    errortext.innerText = "enter valid cvv number. Ex: 123"
+    confirmAddFundsBtn.disabled = true;
+  }
+  else {
+    confirmAddFundsBtn.disabled = false;
+    errortext.innerText = "";
+  }
+})
+
+confirmAddFundsBtn.addEventListener("click", async () => {
+  if (cvvNumberInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
+    let cashAmmount = parseInt(ammountInput.value);
+    await showLoaderAsync(loaderContainer, 2000)
+    loggedUser.user.wallet.cash += cashAmmount;
+
+    document.getElementById("payment-form").reset()
+    loaderContainer.innerHTML = "succesfully added funds to your wallet!"
+    localStorageService.addUserToLocalStorage(loggedUser.user);
+    console.log(loggedUser.user);
+  }
+  else {
+    document.getElementById("payment-form").reportValidity();
+  }
+})
+
+document.getElementById("add-funds").addEventListener("click", () => {
+  loaderContainer.innerHTML = "";
+})
+
+// ***** crypto limit ***** //
+
+document.getElementById("limit-crypto").addEventListener("click", () => {
+  document.getElementById("crypto-limit-msg").innerText = ""
+
+  let currentNumber = document.getElementById("current-number-of-coins");
+  let currentLimit = document.getElementById("current-number-of-limit");
+
+  currentNumber.innerHTML = `Current number of coins in the wallet: ${loggedUser.user.wallet.coins.length}`
+  currentLimit.innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
+})
+
+cryptoLimitInput.addEventListener("keypress", (e) => {
+  if (!validateNumberInput(e)) {
+    e.preventDefault();
+  }
+})
+
+document.getElementById("limit-crypto-confirm-btn").addEventListener("click", () => {
+  let form = document.getElementById("cryptolimit-form");
+  let msg = document.getElementById("crypto-limit-msg")
+
+  if (cryptoLimitInput.checkValidity()) {
+
+    if (cryptoLimitInput.value >= loggedUser.user.wallet.coins.length) {
+      loggedUser.user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
+
+      msg.setAttribute("class", "text-light")
+      msg.innerText = "Succesfully changed the limit!"
+      document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
+      localStorageService.addUserToLocalStorage(loggedUser.user);
+      form.reset();
+    } else {
+      msg.setAttribute("class", "text-danger")
+      msg.innerText = "You have more coins in your wallet now. Try again"
+    }
+  } else {
+    form.reportValidity();
+  }
+})
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -196,3 +348,8 @@ function showSellModal(title) {
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 //#endregion
+
+document.getElementById("portfolio-navbtn").addEventListener("click", () => displayElements.showPortfolio())
+document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())

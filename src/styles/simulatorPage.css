@@ -17,7 +17,7 @@
 
 #main-sim-page-div{
     width: 100%;
-    height: 68vh;
+    /* height: 68vh; */
     border: 1px pink solid
 }
 
@@ -28,12 +28,57 @@
     width: 100%;
 } */
 
+.sim-nav-btn{
+    width: 100%;
+    word-break: break-word;
+    font-size: medium;
+    
+}
+
 #sim-page-side-market{
     width: 100%;
     height: 80vh;
     border: 1px solid yellow;
 }
 
-#portfolio-heading{
-    margin-top: 1.5%;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.accordionBtn {
+    width: 100%;
+    background-color: #17181D;
+    text-align: left;
+    border-radius: 0px;
+    border: none;
+    color: whitesmoke;
+}
+
+.accordionBtn:hover{
+    background-color: #17181D;
+    color: goldenrod;
+}
+
+.accordion-item{
+    border: none
+}
+
+.accordion-body{
+    border: 1px solid goldenrod;
+    height: 30vh;
+}
+
+#card-logos-img{
+    height: 30px;
+}
+
+#walletAccordion{
+    position: relative;
+    height: 100%;
+}
+
+#accordion-container{
+    height: 100%;
 }
