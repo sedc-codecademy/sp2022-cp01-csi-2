@@ -12,19 +12,19 @@ let portfolioHelpers = {
   "portfolio": {} //Placeholder for portfolio variables
 };
 
+const pinkUser = localStorageService.getAllUsersFromLocalStorage().find(e=>e.username == "pinkpanther");
+console.log(pinkUser);
+
 function calculateSingleCoinValue(coins) {
 };
 
-portfolioHelpers.portfolio["Kiro"] = 1;
 
-function generatePortfolioTable() {
-  let counter = 1;
-  let strArr = [];
-  let user = JSON.parse(localStorage.getItem("bob"))
-  console.log(user);
-  let wallet = user.wallet;
-  console.log(wallet);
-  strArr.push(`<table id="dtBasicExample" class="table table-hover table-responsive table-fit">
+function generatePortfolioTable(user) {
+    let counter = 1;
+    let strArr = [];
+    let wallet = user.wallet;
+    console.log(wallet);
+    strArr.push(`<table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
         <th scope="col" class="table-sm">#</th>
@@ -46,17 +46,17 @@ function generatePortfolioTable() {
       <td>${coin.name}</td>
       <td>${coin.quantity}</td>
       <td>${coin.currentPrice * coin.quantity}</td>
-      <td>${(coin.currentPrice - coin.priceBought) * 100}</td>
-      <td class="sellCoin"><button class="btn btn-secondary btn-warning">Sell</button></td>
+      <td>${(coin.currentPrice - coin.priceBought)*100}</td>
+      <td class="sellCoin"><button class="btn btn-outline-warning">Sell</button></td>
       </tr>`)
-  }
+    };
 
   let content = strArr.join("");
   return content;
 };
 
-function renderPortfolioTable() {
-  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable());
+function renderPortfolioTable(){
+  document.getElementById("portfolio").insertAdjacentHTML("beforeend", generatePortfolioTable(pinkUser));
   let sellBtns = document.getElementsByClassName("sellCoin");
   for (let btn of sellBtns) {
     let coinName = btn.parentNode.getElementsByTagName("td")[2].innerHTML;
@@ -64,9 +64,24 @@ function renderPortfolioTable() {
       showSellModal(coinName);
     })
   }
+};
+
+function getUserCoinIds(user){
+  let userCoins = user.wallet.coins.map(x => x.id);
+  return userCoins;
 }
 
-// renderPortfolioTable();
+function getWalletCoinsCurrentPrice(user){
+  let userCoinIds = getUserCoinIds(user);
+  let userCoinIdsStr = userCoinIds.join(",");
+  console.log(userCoinIdsStr);
+}
+
+getWalletCoinsCurrentPrice(pinkUser);
+
+addCoinsToPinkUser();
+renderPortfolioTable();
+console.log(getUserCoinIds(pinkUser));
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -79,11 +94,11 @@ function ShowModal(title, content, parent = document.getElementById("modal-conta
           <!-- Modal content -->
           <div class="modal-content">
           <div class="modal-header darkModal">
-              <h5 class="modal-title" id="buyModalLabel">${title}</h5>
+              <h5 class="modal-title" id=",odalLabel">${title}</h5>
               <button id="myClose-x" type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body darkModal">
-              <div id="coin-buy" class="container d-flex justify-content-around">
+              <div class="container d-flex justify-content-around">
                   ${content}
               </div>
           </div>
@@ -106,7 +121,7 @@ function ShowModal(title, content, parent = document.getElementById("modal-conta
       modal.remove();
     }
   })
-}
+};
 
 function showBuyModal() {
   content = "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Buy</button>"
@@ -116,17 +131,17 @@ function showBuyModal() {
     // magic code happens here 
     document.getElementById("newModal").remove();
   });
-}
+};
 
 function showSellModal(title) {
-  content = "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Buy</button>";
+  content = "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Sell</button>";
   ShowModal(`Sell ${title}`, content);
   document.getElementById("amount").addEventListener("change", () => { });
   document.getElementById("btn-accept").addEventListener("click", () => {
     // magic code happens here 
     document.getElementById("newModal").remove();
   });
-}
+};
 
 
 //#endregion
