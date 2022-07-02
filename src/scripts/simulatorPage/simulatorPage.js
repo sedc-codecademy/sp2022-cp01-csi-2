@@ -159,7 +159,7 @@ ammountInput.addEventListener("keypress", function (e) {
 
 ammountInput.addEventListener("focusout", () => {
   let ammountErrorText = document.getElementById("ammount-error-text");
-  
+
   if (ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
     ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
     confirmAddFundsBtn.disabled = true;
@@ -172,7 +172,7 @@ ammountInput.addEventListener("focusout", () => {
 
 nameInput.addEventListener("keypress", (e) => {
   let regex = new RegExp(`^[a-zA-Z]`);
-  
+
   if (!regex.test(e.key)) {
     e.preventDefault();
   }
@@ -180,7 +180,7 @@ nameInput.addEventListener("keypress", (e) => {
 
 nameInput.addEventListener("focusout", () => {
   let errortext = document.getElementById("name-error-text")
-  
+
   if (nameInput.value.length < 3) {
     errortext.innerText = "name must have more then 2 characters"
     confirmAddFundsBtn.disabled = true;
@@ -199,7 +199,7 @@ cardNumberInput.addEventListener("keydown", function (e) {
 
 cardNumberInput.addEventListener("focusout", () => {
   let errortext = document.getElementById("cardNumber-error-text");
-  
+
   if (cardNumberInput.value.length > 0 && cardNumberInput.value.length < 16) {
     errortext.innerText = "enter valid card number. Ex: 1111 2222 3333 4444"
     confirmAddFundsBtn.disabled = true;
@@ -218,7 +218,7 @@ cvvNumberInput.addEventListener("keypress", function (e) {
 
 cvvNumberInput.addEventListener("focusout", () => {
   let errortext = document.getElementById("cvv-error-text");
-  
+
   if (cvvNumberInput.value.length > 0 && cvvNumberInput.value.length < 3) {
     errortext.innerText = "enter valid cvv number. Ex: 123"
     confirmAddFundsBtn.disabled = true;
@@ -254,11 +254,11 @@ document.getElementById("add-funds").addEventListener("click", () => {
 
 document.getElementById("limit-crypto").addEventListener("click", () => {
   document.getElementById("crypto-limit-msg").innerText = ""
-  
+
   let user = bob; // da se zeme logiraniot
   let currentNumber = document.getElementById("current-number-of-coins");
   let currentLimit = document.getElementById("current-number-of-limit");
-  
+
   currentNumber.innerHTML = `Current number of coins in the wallet: ${user.wallet.coins.length}`
   currentLimit.innerHTML = `Current limit of cryptos you can have in the wallet: ${user.wallet.maxCoins}`
 })
@@ -272,17 +272,17 @@ cryptoLimitInput.addEventListener("keypress", (e) => {
 document.getElementById("limit-crypto-confirm-btn").addEventListener("click", () => {
   let form = document.getElementById("cryptolimit-form");
   let msg = document.getElementById("crypto-limit-msg")
-  
+
   if (cryptoLimitInput.checkValidity()) {
     let user = bob;  // da se zeme logiraniot
-    
+
     if (cryptoLimitInput.value >= user.wallet.coins.length) {
       user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
-      
+
       msg.setAttribute("class", "text-light")
       msg.innerText = "Succesfully changed the limit!"
       document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${user.wallet.maxCoins}`
-      
+
       form.reset();
     } else {
       msg.setAttribute("class", "text-danger")
@@ -301,3 +301,8 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 //#endregion
+
+document.getElementById("portfolio-navbtn").addEventListener("click", () => displayElements.showPortfolio())
+document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())

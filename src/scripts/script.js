@@ -156,6 +156,11 @@ const infoCenterPage = document.getElementById('infoCenterPage')
 const loginRegisterPage = document.getElementById('loginRegisterPage')
 const otherPagesDiv = document.getElementById('otherPagesDiv')
 
+// simulator page elements
+const portfolioDiv = document.getElementById("portfolio");
+const walletSettingsDiv = document.getElementById("wallet-settings");
+const walletStatsDiv = document.getElementById("wallet-stats");
+const activityLogDiv = document.getElementById("activity-log");
 
 const displayElements = {
     hideElements: (...elements) => {
@@ -189,6 +194,22 @@ const displayElements = {
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage)
+    },
+    showPortfolio: function (){
+        this.showElements(portfolioDiv)
+        this.hideElements(walletSettingsDiv, walletStatsDiv, activityLogDiv)
+    },
+    showWalletSettings: function(){
+        this.showElements(walletSettingsDiv)
+        this.hideElements(portfolioDiv, walletStatsDiv, activityLogDiv)
+    },
+    showWalletStatistics: function (){
+        this.showElements(walletStatsDiv)
+        this.hideElements(portfolioDiv, walletSettingsDiv, activityLogDiv)
+    },
+    showActivityLog: function () {
+        this.showElements(activityLogDiv)
+        this.hideElements(portfolioDiv, walletSettingsDiv, walletStatsDiv)
     }
 }
 
@@ -261,7 +282,10 @@ document.getElementById('statsBtn').addEventListener('click', async () =>{
     displayElements.showStatisticsPage()
     await renderStatsPage()
 } )
-document.getElementById('simulatorBtn').addEventListener('click', () => displayElements.showSimulatorPage())
+document.getElementById('simulatorBtn').addEventListener('click', () => {
+    displayElements.showSimulatorPage();
+    displayElements.showPortfolio();
+})
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
