@@ -80,11 +80,11 @@ let portfolioHelpers = {
   "portfolio": {} //Placeholder for portfolio variables
 };
 
-const pinkUser = localStorageService
-  .getAllUsersFromLocalStorage()
-  .find((e) => e.username == "pinkpanther");
-console.log(pinkUser);
-addCoinsToPinkUser();
+// const pinkUser = localStorageService
+//   .getAllUsersFromLocalStorage()
+//   .find((e) => e.username == "pinkpanther");
+// console.log(pinkUser);
+// addCoinsToPinkUser();
 
 function getUserCoinIds(user) {
   let userCoins = user.wallet.coins.map((x) => x.id);
@@ -174,7 +174,7 @@ function renderPortfolioTable(user) {
 //   }
 // };
 
-getWalletCoinsCurrentPrice(pinkUser);
+// getWalletCoinsCurrentPrice(pinkUser);
 
 //addCoinsToPinkUser();
 //renderPortfolioTable(pinkUser);
