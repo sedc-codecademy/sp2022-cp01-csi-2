@@ -160,6 +160,7 @@ bob.wallet.coins.push(sedcCoin);
 let pink = new User("pinkpanther", "0000", "pink@panther.com");
 
 function addCoinsToPinkUser() {
+    pink.wallet.cash += 200
     pink.wallet.coins.push(bitcoin);
     pink.wallet.coins.push(ethereum);
     pink.wallet.coins.push(tether);
