@@ -346,39 +346,39 @@ function clearInputError(inputElement) {
     inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
 }
 
-// document.addEventListener("DOMContentLoaded", () => {
-//     const loginForm = document.querySelector("#login");
-//     const registerForm = document.querySelector("#Register");
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.querySelector("#login");
+    const registerForm = document.querySelector("#Register");
 
-//     document.querySelector("#linkRegister").addEventListener("click", e => {
-//         e.preventDefault();
-//         loginForm.classList.add("form--hidden");
-//         registerForm.classList.remove("form--hidden");
-//     });
+    document.querySelector("#linkRegister").addEventListener("click", e => {
+        e.preventDefault();
+        loginForm.classList.add("form--hidden");
+        registerForm.classList.remove("form--hidden");
+    });
 
-//     document.querySelector("#linkLogin").addEventListener("click", e => {
-//         e.preventDefault();
-//         loginForm.classList.remove("form--hidden");
-//         registerForm.classList.add("form--hidden");
-//     });
+    document.querySelector("#linkLogin").addEventListener("click", e => {
+        e.preventDefault();
+        loginForm.classList.remove("form--hidden");
+        registerForm.classList.add("form--hidden");
+    });
 
-//     loginForm.addEventListener("submit", e => {
-//         e.preventDefault();
-//         setFormMessage(loginForm, "error", "Invalid username/password combination");
-//     });
+    loginForm.addEventListener("submit", e => {
+        e.preventDefault();
+        setFormMessage(loginForm, "error", "Invalid username/password combination");
+    });
 
-//     document.querySelectorAll(".form__input").forEach(inputElement => {
-//         inputElement.addEventListener("blur", e => {
-//             if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
-//                 setInputError(inputElement, "Username must be at least 10 characters in length");
-//             }
-//         });
+    document.querySelectorAll(".form__input").forEach(inputElement => {
+        inputElement.addEventListener("blur", e => {
+            if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
+                setInputError(inputElement, "Username must be at least 10 characters in length");
+            }
+        });
 
-//         inputElement.addEventListener("input", e => {
-//             clearInputError(inputElement);
-//         });
-//     });
-// });
+        inputElement.addEventListener("input", e => {
+            clearInputError(inputElement);
+        });
+    });
+});
 
 document.getElementById("login-btn").addEventListener("click", () => {
     let username = document.getElementById("login-username").value

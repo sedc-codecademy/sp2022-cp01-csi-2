@@ -105,6 +105,12 @@ div.marketTable>span {
     word-wrap: break-word;
 }
 
+div.marketTable>span>.increase,
+div.marketTable>span>.decrease {
+    font-size: 1.25em;
+    line-height: 10px;
+}
+
 .marketTableHeader>span:nth-of-type(1),
 div.marketTable>span:nth-of-type(1) {
     width: 10%;
@@ -212,4 +218,14 @@ input::-webkit-inner-spin-button {
 #exceedingAmountError{
     height: 30px;
     font-size: small;
+}
+
+.activitySideBuy {
+    color: green;
+    text-shadow: 0px 0px 2px green;
+}
+
+.activitySideSell {
+    color: red;
+    text-shadow: 0px 0px 2px red;
 }

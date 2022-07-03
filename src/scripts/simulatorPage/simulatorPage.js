@@ -21,19 +21,20 @@ const renderSideMarketData = async (data) => {
             <span><img src="${coin.image}" height="30px" alt="${coin.id}"}"></span>
             <span>${coin.name}</span>
             <span>${coin.current_price.toLocaleString('en-US')}</span>
-            <span  style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <span>${coin.price_change_percentage_24h >= 0 ? "<strong class='increase small-font-size'>↑</strong>&nbsp" : "<strong class='decrease small-font-size'>↓</strong>"} ${coin.price_change_percentage_24h.toFixed(2)}%</span>
             <span id="${coin.id}">Buy</span>
         </div>`)
   };
-  return coinBar.join('');
+  return coinBar.join("");
 }
 
 // Function for adding the appropriate data to the element
 const renderSideMarketBar = async (pageNumber = 1) => {
   let url = sideMarketBarHelpers.getApiUrl(pageNumber)
   let data = await getCoinsDataAsync(url)
-  // console.log(data);
-  sideMarketBarHelpers.coinsElement.innerHTML += await renderSideMarketData(data)
+  console.log("Page Number " + sideMarketBarHelpers.pageNumber);
+  console.log(data);
+  sideMarketBarHelpers.coinsElement.insertAdjacentHTML("beforeend", await renderSideMarketData(data))
 }
 
 // Function for creating the 'infinity' scroll
@@ -56,8 +57,11 @@ const sideMarketInfinityScroll = async (e) => {
 const showSimulatorSideMarket = async () => {
   sideMarketBarHelpers.coinsElement.innerHTML = ``
   sideMarketBarHelpers.pageNumber = 1
+  displayElements.showElements(sideMarketBarHelpers.loader)
   await renderSideMarketBar()
+  displayElements.hideElements(sideMarketBarHelpers.loader)
   sideMarketBarHelpers.pageNumber++
+
   //In case there isn't a scroll bar (ex. larger viewport => projector) 
   if (sideMarketBarHelpers.coinsElement.scrollHeight <= sideMarketBarHelpers.coinsElement.clientHeight) {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
@@ -136,7 +140,7 @@ async function generatePortfolioTable(user) {
       <td class="align-middle text-center">${coin.name}</td>
       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
       <td class="align-middle text-center">${value.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">${changeInPercent > 0 
+      <td class="align-middle text-center">${changeInPercent > 0
         ? "<strong class='increase'>↑</strong>" : changeInPercent < 0 ? "<strong class='decrease'>↓</strong>" : " "}&nbsp &nbsp${changeInPercent}% </td></td>
       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
       </tr>`);
@@ -452,6 +456,22 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log
+function createActivityLogTable() {
+  let element = document.getElementById("activity-log-table-content");
+  element.innerHTML = "";
+  for(transaction of loggedUser.user.activityLog.transactionHistory)
+  {
+    element.innerHTML += `
+    <tr>
+    <td scope="col" class="text-center">${transaction.name}</td>
+    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
+    <td scope="col" class="text-center">${transaction.quantity}</td>
+    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    </tr>
+    `
+  }
+}
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -461,4 +481,7 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => {displayElements.showPortfolio(); await renderPortfolioTableAsync(pink)})
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
-document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => {
+  displayElements.showActivityLog()
+  createActivityLogTable()
+})
