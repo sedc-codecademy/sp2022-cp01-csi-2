@@ -1,0 +1,170 @@
+/* #region ILIJA => Create Information Page (Blockchain part)*/
+#blockchainBackgroundImg {
+    width: 99vw;
+    opacity: 0.18;
+    z-index: -1;
+    background: transparent;
+    position: fixed;
+}
+
+#infoCenterPage h2 {
+    margin-top: 40px;
+    color: goldenrod;
+    font-size: 3.7em;
+}
+
+#infoCenterPage a {
+    color: white;
+    font-style: italic;
+    text-decoration: none;
+}
+
+#infoCenterPage a:hover {
+    color: gold;
+    font-style: italic;
+    text-decoration: none;
+}
+
+#infoCenterPage h2 span {
+    font-size: 1.4em;
+    color: gold;
+}
+
+#infoCenterPage h3 {
+    color: goldenrod;
+    font-size: 3.7em;
+}
+
+#infoCenterPage h3 span {
+    font-size: 1.4em;
+    color: gold;
+}
+
+#blockchainSection {
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    row-gap: 30px;
+}
+
+
+/* Carousel (Slideshow) element */
+
+#infoCenterPage #carouselExampleIndicators {
+    height: 580px;
+    overflow: hidden;
+}
+
+#infoCenterPage #carouselExampleIndicators p {
+    padding: 5% 12%;
+    font-size: 2em;
+    text-align: center;
+    color: #c7c7c7;
+}
+
+#infoCenterPage #carouselExampleIndicators p b {
+    font-size: 1.1em;
+    color: rgba(218, 165, 32, 0.922);
+}
+
+
+/* How blockchain works */
+
+.howBlockchainWorks {
+    margin-top: 70px;
+    margin-bottom: 100px;
+    width: 80%;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.howBlockchainWorks>#blockchainCards {
+    margin-top: 70px;
+    height: auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-between;
+    gap: 30px;
+    background-color: #17181d9e;
+}
+
+#blockchainCards>div {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    color: whitesmoke;
+    font-size: 1.6em;
+}
+
+#blockchainCards>div h5 {
+    font-size: 3em;
+    color: rgba(255, 217, 0, 0.905);
+}
+
+#blockchainCards>div h6 {
+    font-size: 2em;
+    color: azure;
+}
+
+
+/* Crypto section */
+
+.proofOfWorkAndStake {
+    margin-top: 90px;
+}
+
+.alignContentCenter {
+    display: flex;
+    justify-content: center;
+}
+
+#proofCards {
+    margin-top: 50px;
+    width: 80vw;
+    height: auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: space-between;
+    gap: 30px;
+    background-color: #17181d9e;
+}
+
+#proofCards>div {
+    background-color: transparent;
+
+}
+
+#proofCards>div p {
+    font-size: 1.4em;
+}
+
+/* Useful Links */
+#infoPageUsefulLinks {
+    margin-top: 30px;
+    width: 800px;
+    height: auto;
+    padding-left: 70px;
+    overflow: hidden;
+}
+
+#infoPageUsefulLinks li {
+    margin-top: 10px;
+    list-style-image: url("../assets/images/infoPage/bitcoinIconListStyle.png");
+}
+
+#infoPageUsefulLinks li a {
+    overflow: hidden;
+    font-size: 2.5em;
+}
+
+/* #endregion ILIJA => Create Information Page */
