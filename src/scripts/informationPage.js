@@ -8,22 +8,22 @@ let createContent = {
     createCarouselSlideshow: function (title = "", topicsArray = []) {
         if (arguments.length == 0 || !Array.isArray(topicsArray)) return ""
         let counter = ++this.carouselCounter
-        let carousel = ""
-        carousel += `<h2 class="text-center"><span>.......</span><br>${title || 'No heading provided'}</h2> <div id="carouselExampleIndicators" class="carousel slide carouselExampleIndicators${counter}" data-bs-ride="carousel"><div class="carousel-indicators">`
+        let carousel = []
+        carousel.push(`<h2 class="text-center"><span>.......</span><br>${title || 'No heading provided'}</h2> <div id="carouselExampleIndicators" class="carousel slide carouselExampleIndicators${counter}" data-bs-ride="carousel"><div class="carousel-indicators">`)
         for (let i = 0; i < topicsArray.length; i++) {
-            carousel += `
-                <button type="button" data-bs-target=".carouselExampleIndicators${counter}" data-bs-slide-to="${i}" class="${i == 0 ? 'active' : ''}" aria-current="true" aria-label="Slide ${i + 1}}"></button>`
+            carousel.push(`
+                <button type="button" data-bs-target=".carouselExampleIndicators${counter}" data-bs-slide-to="${i}" class="${i == 0 ? 'active' : ''}" aria-current="true" aria-label="Slide ${i + 1}}"></button>`)
         }
-        carousel += `</div><div class="carousel-inner">`
+        carousel.push(`</div><div class="carousel-inner">`)
         for (let i = 0; i < topicsArray.length; i++) {
-            carousel += `
+            carousel.push(`
             <div class="carousel-item ${i == 0 ? 'active' : ''}" data-bs-interval="12000">
             <p>
             ${topicsArray[i]}
             </p>
-            </div>`
+            </div>`)
         }
-        carousel += `  </div>
+        carousel.push(`</div>
         <button class="carousel-control-prev" type="button" data-bs-target=".carouselExampleIndicators${counter}"
                             data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -34,8 +34,8 @@ let createContent = {
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    </div>`
-        return carousel
+                    </div>`)
+        return carousel.join("")
     },
 
     // Function for dynamically creating Unordered List with links as list items,
@@ -60,9 +60,9 @@ let createContent = {
     createHorizontalCards: function (imagePathsArray, sideTextArray) {
         if (arguments.length == 0 || !Array.isArray(imagePathsArray) || !Array.isArray(sideTextArray)) return ""
 
-        let card = ``
+        let card = []
         for (let i = 0; i < imagePathsArray.length; i++) {
-            card += `
+            card.push(`
             <div class="card mb-3" style="max-width: 540px;">
                 <div class="row g-0">
                     <div class="col-md-4">
@@ -77,9 +77,9 @@ let createContent = {
                         </div>
                     </div>
                 </div>
-            </div>`
+            </div>`)
         }
-        return card
+        return card.join("")
     }
 }
 
