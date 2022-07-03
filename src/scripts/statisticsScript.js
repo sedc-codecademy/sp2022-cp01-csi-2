@@ -1,6 +1,6 @@
 const tableContainer = document.getElementById('statisticsTableContainer');
 
-let helpers = {"statisticsTable" : {}};
+let helpers = { "statisticsTable": {} };
 
 //Function for getting the coins data 
 async function getCoinsDataAsync(url) {
@@ -57,7 +57,7 @@ async function tableMaker(data) {
               <th class="align-middle text-center" scope="row">${i + 1}</th>
               <td class="img-fluid align-middle text-center"><img src="${data[i].image}" height="30px" alt="${data[i].id}"}"></td>
               <td class="align-middle text-center">${data[i].name}</td>
-              <td class="align-middle text-center">&#36 ${data[i].current_price.toFixed(5)}$</td>
+              <td class="align-middle text-center">&#36 ${data[i].current_price.toFixed(5)}</td>
               <td class="align-middle text-center">% ${data[i].price_change_percentage_24h.toFixed(2)}</td>
             </tr>`)
     }
@@ -109,11 +109,11 @@ function renderStatisticsTable(data) {
         <td class="align-middle text-center">${coin.name}</td>
         <td class="align-middle text-center">&#36 ${coin.market_cap.toLocaleString('en-US')}</td>
         <td class="align-middle text-center">&#36 ${coin.current_price.toLocaleString('en-US')}</td>
-        <td class="align-middle text-center">${coin.price_change_percentage_24h > 0 
-            ? "<strong class='increase'>↑</strong>" 
-            : coin.price_change_percentage_24h < 0 
-                ? "<strong class='decrease'>↓</strong>" 
-                : " "}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
+        <td class="align-middle text-center">${coin.price_change_percentage_24h > 0
+                ? "<strong class='increase'>↑</strong>"
+                : coin.price_change_percentage_24h < 0
+                    ? "<strong class='decrease'>↓</strong>"
+                    : " "}&nbsp &nbsp${coin.price_change_percentage_24h}% </td>
         <td class="align-middle text-center">${coin.total_supply != null ? coin.total_supply.toLocaleString('en-US') : "N/A"}</td>
         <td class="align-middle text-center"><div class="smallChartContainer chart-container"></div><canvas id="${coin.id}" style ="max-width:200px !important; max-height:9vh"></canvas></div></td>
         </tr>
@@ -137,11 +137,11 @@ async function showSmallChartAsync(coinId) {
 }
 
 //Function for loading and showing the table
-async function showStatisticsTable(){
+async function showStatisticsTable() {
     let statisticsTableContainer = document.getElementById("statisticsTableContainer");
     document.getElementById("prevNextNav").style.visibility = "collapse";
     await showLoaderAsync(statisticsTableContainer, 2000);
-    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl+`&per_page=${helpers.statisticsTable.perPage}`+`&page=${helpers.statisticsTable.currentPage}`);
+    data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl + `&per_page=${helpers.statisticsTable.perPage}` + `&page=${helpers.statisticsTable.currentPage}`);
     statisticsTableContainer.innerHTML = renderStatisticsTable(data);
     document.getElementById("prevNextNav").style.visibility = "visible";
     data.forEach(async coin => {
@@ -150,7 +150,7 @@ async function showStatisticsTable(){
 }
 
 //Main function for rendering the Statistics page
-async function renderStatsPage(){
+async function renderStatsPage() {
     let data = [];
     document.getElementById("prevNextNav").style.visibility = "collapse";
     helpers.statisticsTable.currentPage = 1;
@@ -158,11 +158,11 @@ async function renderStatsPage(){
     helpers.statisticsTable.statisticsTableUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`;
 
     let totalCoins = await getCoinsDataAsync(`https://api.coingecko.com/api/v3/coins/list`);
-    helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length /helpers.statisticsTable.perPage);
+    helpers.statisticsTable.totalPages = Math.ceil(totalCoins.length / helpers.statisticsTable.perPage);
     try {
         //Function for loading top gainers and top losers goes here
         await showGainersAndLosersTables();
-        
+
         //Function for loading the table
         await showStatisticsTable();
         handlePrevNextButtons();
@@ -179,58 +179,58 @@ function timeout(ms) {
 }
 
 //Function for creating a loader with svg
-async function showLoader(element, ms = null, prezerveSize = true){
+async function showLoader(element, ms = null, prezerveSize = true) {
     let elementWidth = element.getBoundingClientRect().width;
     let elementHeight = element.getBoundingClientRect().height;
     let loader = await (await fetch("assets/images/loader.html")).text();
     element.innerHTML = loader;
-    if(!prezerveSize){
+    if (!prezerveSize) {
         element.style.height = `${elementHeight}px`;
     }
-    if(ms != null){
+    if (ms != null) {
         await timeout(ms);
     }
-    if(!prezerveSize){
+    if (!prezerveSize) {
         element.style.height = null;
     }
 }
 
 //Function for creating a loader with bootstrap
-async function showLoaderAsync(element, ms = null){
+async function showLoaderAsync(element, ms = null) {
     let loader = `<div class="d-flex justify-content-center">
     <div class="spinner-border text-warning" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>`;
     element.innerHTML = loader;
-    if(ms != null){
+    if (ms != null) {
         await timeout(ms);
     }
 }
 
 
 //Function for handling the previous and next buttons
-function handlePrevNextButtons(){
+function handlePrevNextButtons() {
     let prevNextButtons = `<ul class="pagination justify-content-center">
     <button type="button" class="btn btn-outline-warning" id="prevPg">Previous</button>
     <li class="btn btn-outline-warning" id="currentPg">1</li>
     <button type="button" class="btn btn-outline-warning" id="nextPg">Next</button>
 </ul>`;
-let prevBtn = document.getElementById("prevPg");
-let nextBtn = document.getElementById("nextPg");
+    let prevBtn = document.getElementById("prevPg");
+    let nextBtn = document.getElementById("nextPg");
     //Replacing previous and next buttons with vanilla ones without event listener to avoid duplicating events
     nextBtn.parentNode.replaceChild(nextBtn.cloneNode(true), nextBtn);
     prevBtn.parentNode.replaceChild(prevBtn.cloneNode(true), prevBtn);
     prevBtn = document.getElementById("prevPg");
     nextBtn = document.getElementById("nextPg");
     let currentPg = document.getElementById("currentPg");
-    if(helpers.statisticsTable.currentPage == 1){
+    if (helpers.statisticsTable.currentPage == 1) {
         prevBtn.setAttribute("disabled", true);
     }
     document.getElementById("nextPg").addEventListener("click", async (event) => {
-        helpers.statisticsTable.currentPage +=1;
+        helpers.statisticsTable.currentPage += 1;
         await showStatisticsTable();
-        if(currentPg == helpers.statisticsTable.totalPages){
+        if (currentPg == helpers.statisticsTable.totalPages) {
             nextBtn.setAttribute("disabled", false);
             nextBtn.parentNode.classList.add("disabled");
         }
@@ -240,9 +240,9 @@ let nextBtn = document.getElementById("nextPg");
     })
 
     document.getElementById("prevPg").addEventListener("click", async (event) => {
-        helpers.statisticsTable.currentPage -=1;
+        helpers.statisticsTable.currentPage -= 1;
         await showStatisticsTable();
-        if(helpers.statisticsTable.currentPage == 1){
+        if (helpers.statisticsTable.currentPage == 1) {
             prevBtn.setAttribute("disabled", true);
             prevBtn.parentNode.classList.add("disabled");
         }
@@ -369,7 +369,7 @@ async function GetSingleCoinChartConfig(id, coinName) {
                         borderColor: 'rgb(255,255,255)'
                     },
                     ticks: {
-                        callback: function(value, index, ticks) {
+                        callback: function (value, index, ticks) {
                             return '$' + value;
                         }
                     }
@@ -444,7 +444,7 @@ document.getElementById("statisticsTableContainer").addEventListener('click', as
     if (e.target.nodeName === "TD") {
         coinId = e.path[1].className
         coinName = e.path[1].attributes[1].value
-    } else if(e.target.parentNode.nodeName === "TD"){    
+    } else if (e.target.parentNode.nodeName === "TD") {
         coinId = e.path[2].className
         coinName = e.path[2].attributes[1].value
     }
