@@ -21,19 +21,20 @@ const renderSideMarketData = async (data) => {
             <span><img src="${coin.image}" height="30px" alt="${coin.id}"}"></span>
             <span>${coin.name}</span>
             <span>${coin.current_price.toLocaleString('en-US')}</span>
-            <span  style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <span>${coin.price_change_percentage_24h >= 0 ? "<strong class='increase small-font-size'>↑</strong>&nbsp" : "<strong class='decrease small-font-size'>↓</strong>"} ${coin.price_change_percentage_24h.toFixed(2)}%</span>
             <span id="${coin.id}">Buy</span>
         </div>`)
   };
-  return coinBar.join('');
+  return coinBar.join("");
 }
 
 // Function for adding the appropriate data to the element
 const renderSideMarketBar = async (pageNumber = 1) => {
   let url = sideMarketBarHelpers.getApiUrl(pageNumber)
   let data = await getCoinsDataAsync(url)
-  // console.log(data);
-  sideMarketBarHelpers.coinsElement.innerHTML += await renderSideMarketData(data)
+  console.log("Page Number " + sideMarketBarHelpers.pageNumber);
+  console.log(data);
+  sideMarketBarHelpers.coinsElement.insertAdjacentHTML("beforeend", await renderSideMarketData(data))
 }
 
 // Function for creating the 'infinity' scroll
@@ -56,8 +57,11 @@ const sideMarketInfinityScroll = async (e) => {
 const showSimulatorSideMarket = async () => {
   sideMarketBarHelpers.coinsElement.innerHTML = ``
   sideMarketBarHelpers.pageNumber = 1
+  displayElements.showElements(sideMarketBarHelpers.loader)
   await renderSideMarketBar()
+  displayElements.hideElements(sideMarketBarHelpers.loader)
   sideMarketBarHelpers.pageNumber++
+
   //In case there isn't a scroll bar (ex. larger viewport => projector) 
   if (sideMarketBarHelpers.coinsElement.scrollHeight <= sideMarketBarHelpers.coinsElement.clientHeight) {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
@@ -109,7 +113,7 @@ async function generatePortfolioTable(user) {
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPrice(user);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length - 1} coins</p></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
@@ -126,13 +130,13 @@ async function generatePortfolioTable(user) {
 
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
-    let changeInPercent = Math.round(((coin.priceBought - walletCoinsCurrentPrice[coin.id].usd) / 100) * 10) /10;
+    let changeInPercent = Math.round(((coin.priceBought - walletCoinsCurrentPrice[coin.id].usd) / 100) * 10) / 10;
     strArr.push(`<tr>
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
       <td class="align-middle text-center">${value.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">${changeInPercent > 0 
+      <td class="align-middle text-center">${changeInPercent > 0
         ? "<strong class='increase'>↑</strong>" : changeInPercent < 0 ? "<strong class='decrease'>↓</strong>" : " "}&nbsp &nbsp${changeInPercent}% </td></td>
       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
       </tr>`);
@@ -145,14 +149,15 @@ async function generatePortfolioTable(user) {
 //For testing
 function renderPortfolioTable(user) {
   generatePortfolioTable(user).then(e => {
-  document.getElementById("portfolio").insertAdjacentHTML("beforeend", e);
-  let sellBtns = document.getElementsByClassName("sellCoin");
-  for (let btn of sellBtns) {
-    let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
-    btn.addEventListener("click", () => {
-      showSellModal(coinName);
-    });
-  }})
+    document.getElementById("portfolio").insertAdjacentHTML("beforeend", e);
+    let sellBtns = document.getElementsByClassName("sellCoin");
+    for (let btn of sellBtns) {
+      let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
+      btn.addEventListener("click", () => {
+        showSellModal(coinName);
+      });
+    }
+  })
 };
 
 //The real one 
