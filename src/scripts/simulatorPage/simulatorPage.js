@@ -408,6 +408,22 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log
+function createActivityLogTable() {
+  let element = document.getElementById("activity-log-table-content");
+  element.innerHTML = "";
+  for(transaction of loggedUser.user.activityLog.transactionHistory)
+  {
+    element.innerHTML += `
+    <tr>
+    <td scope="col" class="text-center">${transaction.name}</td>
+    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
+    <td scope="col" class="text-center">${transaction.quantity}</td>
+    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    </tr>
+    `
+  }
+}
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -417,4 +433,7 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 document.getElementById("portfolio-navbtn").addEventListener("click", () => displayElements.showPortfolio())
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
-document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => {
+  displayElements.showActivityLog()
+  createActivityLogTable()
+})
