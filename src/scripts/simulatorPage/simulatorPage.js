@@ -109,7 +109,7 @@ async function generatePortfolioTable(user) {
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPrice(user);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length - 1} coins</p></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
@@ -126,13 +126,13 @@ async function generatePortfolioTable(user) {
 
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
-    let changeInPercent = Math.round(((coin.priceBought - walletCoinsCurrentPrice[coin.id].usd) / 100) * 10) /10;
+    let changeInPercent = Math.round(((coin.priceBought - walletCoinsCurrentPrice[coin.id].usd) / 100) * 10) / 10;
     strArr.push(`<tr>
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
       <td class="align-middle text-center">${value.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">${changeInPercent > 0 
+      <td class="align-middle text-center">${changeInPercent > 0
         ? "<strong class='increase'>↑</strong>" : changeInPercent < 0 ? "<strong class='decrease'>↓</strong>" : " "}&nbsp &nbsp${changeInPercent}% </td></td>
       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
       </tr>`);
@@ -145,14 +145,15 @@ async function generatePortfolioTable(user) {
 //For testing
 function renderPortfolioTable(user) {
   generatePortfolioTable(user).then(e => {
-  document.getElementById("portfolio").insertAdjacentHTML("beforeend", e);
-  let sellBtns = document.getElementsByClassName("sellCoin");
-  for (let btn of sellBtns) {
-    let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
-    btn.addEventListener("click", () => {
-      showSellModal(coinName);
-    });
-  }})
+    document.getElementById("portfolio").insertAdjacentHTML("beforeend", e);
+    let sellBtns = document.getElementsByClassName("sellCoin");
+    for (let btn of sellBtns) {
+      let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
+      btn.addEventListener("click", () => {
+        showSellModal(coinName);
+      });
+    }
+  })
 };
 
 //The real one 
@@ -403,6 +404,22 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log
+function createActivityLogTable() {
+  let element = document.getElementById("activity-log-table-content");
+  element.innerHTML = "";
+  for(transaction of loggedUser.user.activityLog.transactionHistory)
+  {
+    element.innerHTML += `
+    <tr>
+    <td scope="col" class="text-center">${transaction.name}</td>
+    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
+    <td scope="col" class="text-center">${transaction.quantity}</td>
+    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    </tr>
+    `
+  }
+}
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -412,4 +429,7 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 document.getElementById("portfolio-navbtn").addEventListener("click", () => displayElements.showPortfolio())
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
-document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => {
+  displayElements.showActivityLog()
+  createActivityLogTable()
+})
