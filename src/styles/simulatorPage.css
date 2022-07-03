@@ -105,6 +105,12 @@ div.marketTable>span {
     word-wrap: break-word;
 }
 
+div.marketTable>span>.increase,
+div.marketTable>span>.decrease {
+    font-size: 1.25em;
+    line-height: 10px;
+}
+
 .marketTableHeader>span:nth-of-type(1),
 div.marketTable>span:nth-of-type(1) {
     width: 10%;

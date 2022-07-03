@@ -21,19 +21,20 @@ const renderSideMarketData = async (data) => {
             <span><img src="${coin.image}" height="30px" alt="${coin.id}"}"></span>
             <span>${coin.name}</span>
             <span>${coin.current_price.toLocaleString('en-US')}</span>
-            <span  style="color:${coin.price_change_percentage_24h >= 0 ? 'green' : 'red'};">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <span>${coin.price_change_percentage_24h >= 0 ? "<strong class='increase small-font-size'>↑</strong>&nbsp" : "<strong class='decrease small-font-size'>↓</strong>"} ${coin.price_change_percentage_24h.toFixed(2)}%</span>
             <span id="${coin.id}">Buy</span>
         </div>`)
   };
-  return coinBar.join('');
+  return coinBar.join("");
 }
 
 // Function for adding the appropriate data to the element
 const renderSideMarketBar = async (pageNumber = 1) => {
   let url = sideMarketBarHelpers.getApiUrl(pageNumber)
   let data = await getCoinsDataAsync(url)
-  // console.log(data);
-  sideMarketBarHelpers.coinsElement.innerHTML += await renderSideMarketData(data)
+  console.log("Page Number " + sideMarketBarHelpers.pageNumber);
+  console.log(data);
+  sideMarketBarHelpers.coinsElement.insertAdjacentHTML("beforeend", await renderSideMarketData(data))
 }
 
 // Function for creating the 'infinity' scroll
@@ -56,8 +57,11 @@ const sideMarketInfinityScroll = async (e) => {
 const showSimulatorSideMarket = async () => {
   sideMarketBarHelpers.coinsElement.innerHTML = ``
   sideMarketBarHelpers.pageNumber = 1
+  displayElements.showElements(sideMarketBarHelpers.loader)
   await renderSideMarketBar()
+  displayElements.hideElements(sideMarketBarHelpers.loader)
   sideMarketBarHelpers.pageNumber++
+
   //In case there isn't a scroll bar (ex. larger viewport => projector) 
   if (sideMarketBarHelpers.coinsElement.scrollHeight <= sideMarketBarHelpers.coinsElement.clientHeight) {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
