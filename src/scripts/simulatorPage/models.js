@@ -141,14 +141,18 @@ class Transaction {
     }
 }
 
-const loggedUser = {
-    user: null
-}
-
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
 let bitcoin = new Coin("bitcoin", "Bitcoin", 19116, 1);
 let ethereum = new Coin("ethereum", "Ethereum", 1041, 2);
 let tether = new Coin("tether", "Tether", 1, 5);
+
+let testUser = new User("testUser", "0000", "test@email.com");
+testUser.wallet.coins.push(bitcoin);
+testUser.wallet.coins.push(ethereum);
+
+const loggedUser = {
+    user: testUser // default for now for testing purposes
+}
 
 let bob = new User("bobbobsky", "1234", "bobmajmuncebobski@bob.com");
 bob.wallet.coins.push(sedcCoin);

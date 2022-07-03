@@ -1,5 +1,33 @@
 //-------------------------------------------------------------------------------------------------------
 //#region  Aleksandar Dojchinovski => TODO: Create Secondary Navigation Bar And Top Info cards
+var formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+document.getElementById("top-info").innerHTML += formatter.format(loggedUser.user.wallet.cash)
+// set the overall wallet progress 
+calculateLossOrGain();
+
+async function calculateLossOrGain()  {
+  var userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
+  var sum = 0;
+
+  loggedUser.user.wallet.coins.forEach(coin => {
+    var total = coin.priceBought * coin.quantity - userCoinsCurrentPrice[coin.id].usd * coin.quantity;
+    sum += total;
+  })
+  
+  if(sum >= 0){
+    var topInfo = document.getElementById("top-info-all");
+    topInfo.innerHTML += "Progress: <br/> ";
+    topInfo.style.color = "green";
+  }
+  else{
+    document.getElementById("top-info-all").innerHTML = "Loss: <br/> "
+  }
+  document.getElementById("top-cash-info").innerHTML += formatter.format(sum)
+}
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------

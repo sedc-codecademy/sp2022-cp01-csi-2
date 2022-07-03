@@ -189,8 +189,13 @@ input::-webkit-inner-spin-button {
     height: 100%;
 }
 
-#portfolio{
-    overflow:auto !important
+#portfolio {
+    overflow: auto !important
+}
+
+.top-card{
+    color:red;
+    font-size: 18px;
 }
 
 #modalLabel{

@@ -198,25 +198,27 @@
             <!-- Here goes content for the Simulator page -->
             <div class="row">
                 <!-- #region  Aleksandar Dojchinovski => TODO: Create Secondary Navigation Bar And Top Info cards -->
-                <div class="col-1">
+                
+                <div class="col-1 border border-warning">
                     <!-- here goes navigation buttons (portfolio, wallet settings, statistics, activity log) -->
-                    <div class="flex-column">
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                    <div class="nav flex-column">
+                        
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn nav-item"
                             id="portfolio-navbtn">
                             Portfolio
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn text-center"
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn text-center nav-item"
                             id="walletsettings-navbtn">
                             Wallet Settings
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn nav-item"
                             id="walletstatistics-navbtn">
                             Statistics
                         </button>
 
-                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn"
+                        <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn nav-item"
                             id="activitylog-navbtn">
                             Activity log
                         </button>
@@ -224,12 +226,14 @@
                 </div>
 
                 <div class="col-7 container">
-
                     <div class="d-flex justify-content-around" id="sim-page-top-info-cards">
-                        <div class="top-info-cards text-center">
+                        <div id="top-info" class="top-info-cards text-center">
+                            <p id = "total-cash" class="pt-2 m-0 top-card">Total cash:</p>
                             <!-- here goes total available cash -->
                         </div>
                         <div class="top-info-cards text-center">
+                            <p id = "top-info-all" class="pt-2 m-0 top-card"></p>
+                            <p id = "top-cash-info"></p>
                             <!-- here goes overall wallet progress  -->
                         </div>
                     </div>
