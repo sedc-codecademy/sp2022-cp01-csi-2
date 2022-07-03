@@ -182,10 +182,11 @@ const displayElements = {
         this.showElements(statisticsPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage)
     },
-    showSimulatorPage: function () {
+    showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
         showSimulatorSideMarket()
+        await renderPortfolioTableAsync(pink)
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)

@@ -186,3 +186,30 @@ input::-webkit-inner-spin-button {
 #portfolio{
     overflow:auto !important
 }
+
+#modalLabel{
+    text-align: center;
+    color: goldenrod;
+}
+
+#buySellModalChartContainer{
+    float: left;
+    height: 100%;
+}
+
+#trade-details{
+    float: left;
+}
+
+#buySellInputsContainer{
+    height: 30vw;
+}
+
+#buyBtn, #sellBtn{
+    width: 100%;
+}
+
+#exceedingAmountError{
+    height: 30px;
+    font-size: small;
+}
