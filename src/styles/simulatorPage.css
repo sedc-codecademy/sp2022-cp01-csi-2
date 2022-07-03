@@ -192,3 +192,8 @@ input::-webkit-inner-spin-button {
 #portfolio {
     overflow: auto !important
 }
+
+.top-card{
+    color:red;
+    font-size: 18px;
+}

@@ -67,8 +67,12 @@ class Wallet {
     }
 };
 
+let testUser = new User("testUser", "0000", "test@email.com");
+testUser.wallet.coins.push(bitcoin);
+testUser.wallet.coins.push(ethereum);
+
 const loggedUser = {
-    user: null
+    user: testUser
 }
 
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
