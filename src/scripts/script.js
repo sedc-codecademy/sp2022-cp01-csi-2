@@ -182,10 +182,11 @@ const displayElements = {
         this.showElements(statisticsPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage)
     },
-    showSimulatorPage: function () {
+    showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
         showSimulatorSideMarket()
+        await renderPortfolioTableAsync(pink)
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -360,30 +361,40 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.classList.remove("form--hidden");
         registerForm.classList.add("form--hidden");
     });
-
-    loginForm.addEventListener("submit", e => {
-        e.preventDefault();
-        setFormMessage(loginForm, "error", "Invalid username/password combination");
-    });
-
-    document.querySelectorAll(".form__input").forEach(inputElement => {
-        inputElement.addEventListener("blur", e => {
-            if (e.target.id === "signupUsername" && e.target.value.length > 0 && e.target.value.length < 10) {
-                setInputError(inputElement, "Username must be at least 10 characters in length");
-            }
-        });
-
-        inputElement.addEventListener("input", e => {
-            clearInputError(inputElement);
-        });
-    });
 });
 
 document.getElementById("login-btn").addEventListener("click", () => {
     let username = document.getElementById("login-username").value
     let password = document.getElementById("login-password").value
-
+    let message = document.getElementById("login-error-msg")
     let user = localStorageService.getUserFromLocalStorage(username, password)
-    loggedUser.user = user
-    console.log(loggedUser.user);
+    if (user === undefined) {
+        message.innerText = "Invalid username or password"
+    } else {
+        message.innerText = ""
+        loggedUser.user = user
+        displayElements.showSimulatorPage();
+        displayElements.showPortfolio();
+    }
 })
+
+document.getElementById("register-btn").addEventListener("click", () => {
+    let userName = document.getElementById("register-username").value;
+    let userPassword = document.getElementById("register-password").value
+    let userEmail = document.getElementById("register-email").value;
+    let confirmPassword = document.getElementById("register-confirm-password").value;
+    let message = document.getElementById("register-error-msg")
+
+    if (validationService.validateUsername(userName)
+        && validationService.validatePassword(userPassword)
+        && validationService.validateEmail(userEmail)
+        && userPassword == confirmPassword) {
+        
+        let user = new User(userName, userPassword, userEmail);
+        localStorageService.addUserToLocalStorage(user);
+        message.innerText = ""
+    } else {
+        message.innerText = "Invalid registration of a user"
+    }
+})
+

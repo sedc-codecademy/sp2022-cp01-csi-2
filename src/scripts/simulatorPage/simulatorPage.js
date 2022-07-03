@@ -7,10 +7,10 @@ var formatter = new Intl.NumberFormat('en-US', {
 
 document.getElementById("top-info").innerHTML += formatter.format(loggedUser.user.wallet.cash)
 // set the overall wallet progress 
- calculateLossOrGain();
+calculateLossOrGain();
 
 async function calculateLossOrGain()  {
-  var userCoinsCurrentPrice = await getWalletCoinsCurrentPrice(loggedUser.user);
+  var userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   var sum = 0;
 
   loggedUser.user.wallet.coins.forEach(coin => {
@@ -104,22 +104,24 @@ const showSimulatorSideMarket = async () => {
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Aneta Stankovska => TODO: Create Portfolio in Simulator
+
+addCoinsToPinkUser();
+
 let portfolioHelpers = {
   "portfolio": {} //Placeholder for portfolio variables
 };
 
-const pinkUser = localStorageService
-  .getAllUsersFromLocalStorage()
-  .find((e) => e.username == "pinkpanther");
-console.log(pinkUser);
-addCoinsToPinkUser();
+// const pinkUser = localStorageService
+//   .getAllUsersFromLocalStorage()
+//   .find((e) => e.username == "pinkpanther");
+// addCoinsToPinkUser();
 
 function getUserCoinIds(user) {
   let userCoins = user.wallet.coins.map((x) => x.id);
   return userCoins;
 }
 
-async function getWalletCoinsCurrentPrice(user) {
+async function getWalletCoinsCurrentPriceAsync(user) {
   let userCoinIds = getUserCoinIds(user);
   let userCoinIdsStr = userCoinIds.join(",");
   let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
@@ -140,8 +142,10 @@ async function generatePortfolioTable(user) {
   let counter = 1;
   let strArr = [];
   let wallet = user.wallet;
-  let walletCoinsCurrentPrice = await getWalletCoinsCurrentPrice(user);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length - 1} coins</p></div>
+  let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
+  console.log(wallet);
+  console.log(walletCoinsCurrentPrice);
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
@@ -158,7 +162,7 @@ async function generatePortfolioTable(user) {
 
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
-    let changeInPercent = Math.round(((coin.priceBought - walletCoinsCurrentPrice[coin.id].usd) / 100) * 10) / 10;
+    let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) /10;
     strArr.push(`<tr>
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
@@ -174,68 +178,60 @@ async function generatePortfolioTable(user) {
   return content;
 };
 
-//For testing
-function renderPortfolioTable(user) {
-  generatePortfolioTable(user).then(e => {
-    document.getElementById("portfolio").insertAdjacentHTML("beforeend", e);
-    let sellBtns = document.getElementsByClassName("sellCoin");
-    for (let btn of sellBtns) {
-      let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
-      btn.addEventListener("click", () => {
-        showSellModal(coinName);
-      });
-    }
-  })
+//Function for rendering portfolio table
+async function renderPortfolioTableAsync(user) {
+  document.getElementById("portfolio").innerHTML = "";
+  document
+    .getElementById("portfolio")
+    .insertAdjacentHTML("beforeend", await generatePortfolioTable(user))
+  let sellBtns = document.getElementsByClassName("sellCoin");
+  for (let btn of sellBtns) {
+    let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
+    let coinId = user.wallet.coins.find(x => x.name == coinName).id;
+    btn.addEventListener("click", () => {
+      showTradeModal(coinId, coinName, false);
+    });
+  }
 };
 
-//The real one 
-// async function renderPortfolioTable(user) {
-//   document
-//     .getElementById("portfolio")
-//     .insertAdjacentHTML("beforeend", await generatePortfolioTable(user))
-//   let sellBtns = document.getElementsByClassName("sellCoin");
-//   for (let btn of sellBtns) {
-//     let coinName = btn.parentNode.getElementsByTagName("td")[2].innerHTML;
-//     btn.addEventListener("click", () => {
-//       showSellModal(coinName);
-//     });
-//   }
-// };
-
-getWalletCoinsCurrentPrice(pinkUser);
-
-//addCoinsToPinkUser();
-//renderPortfolioTable(pinkUser);
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Ilija Mitev and Aneta Stankovska => TODO: Create Buy and Sell confirmation modal
 
-function ShowModal(
-  title,
-  content,
-  parent = document.getElementById("modal-container")
-) {
+async function getCoinCoinsCurrentPriceAsync(coinId) {
+  let url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`;
+
+  try {
+    let response = await fetch(url);
+    let result = await response.json();
+    console.log(result);
+    //return await response.json();
+    return result;
+  } catch (err) {
+    console.error(err);
+    // Handle errors here
+  }
+};
+
+async function ShowModal(content, parent = document.getElementById("modal-container")) {
   let scaffold = `
   <div id="newModal" class="modal" >
       <div class="modal-dialog modal-xl modal-dialog-centered darkModal">
           <!-- Modal content -->
           <div class="modal-content">
           <div class="modal-header darkModal">
-              <h5 class="modal-title" id=",odalLabel">${title}</h5>
+              <h5 class="modal-title" id="modalLabel"></h5>
               <button id="myClose-x" type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body darkModal">
-              <div class="container d-flex justify-content-around">
-                  ${content}
-              </div>
-          </div>
+          <div class="modal-body darkModal">${content}</div>
           <div class="modal-footer darkModal">
               <button id="myClose-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
           </div>
       </div>
   </div>`;
+
   parent.insertAdjacentHTML("beforeend", scaffold);
   let modal = document.getElementById("newModal");
   document.getElementById("newModal").style.display = "block";
@@ -248,27 +244,79 @@ function ShowModal(
     if (event.target == modal) {
       modal.remove();
     }
-  })
+  });
 };
 
-function showBuyModal() {
-  content = "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Buy</button>"
-  ShowModal("Buy coins", content)
-  document.getElementById("amount").addEventListener("change", () => { });
-  document.getElementById("btn-accept").addEventListener("click", () => {
-    // magic code happens here 
-    document.getElementById("newModal").remove();
-  });
-}
+async function showTradeModal(coinId, coinName, isBuy){
+  let coinChart = await createSingleCoinChartAsync(coinId, coinName);
+  let coinCurrentPrice = await getCoinCoinsCurrentPriceAsync(coinId);  
+  console.log(coinCurrentPrice);
+  console.log(coinId);
+  let content = `<div class="container d-flex justify-content-around" id="buySellModalChartContainer">
+                  <div class="container d-flex justify-content-around" id="buySellModalChart">
+                  </div>
+                  <div id="buySellInputsContainer">
+                  <h3>${coinName}</h3>
+                  <br>
+                  <label for="">Number of coins</label>
+                  <br>
+                  <input type="number" style="color:black !important" id="coinsAmount" name="coinsAmount"></input>
+                  <p id="exceedingAmountError" class="text-danger"></p>
+                  <br>
+                  <label for="coinsAmount">Total price</label>
+                  <br>
+                  <input type="number" id="totalPrice" style="color:black !important" readonly></input>
+                  <br>
+                  <div id="ExchangeRate">Rate<div>1 ${coinName } = ${coinCurrentPrice[coinId].usd} USD</div>
+                  <br><br>
+                    <button class="btn btn-secondary d-flex justify-content-around" id='${isBuy ? 'buyBtn' : 'sellBtn'}'>${isBuy ? 'Buy' : 'Sell'}</button>
+                    <br><br><br>
+                  </div>
+                </div>`;
+  await ShowModal(content);
+  await tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy);
+  
+  document.getElementById("buySellModalChart").appendChild(coinChart);
 
-function showSellModal(title) {
-  content =
-    "<label>Amount:</label><input id='amount'></input><button class='btn btn-secondary' id='btn-accept'>Sell</button>";
-  ShowModal(`Sell ${title}`, content);
-  document.getElementById("amount").addEventListener("change", () => { });
-  document.getElementById("btn-accept").addEventListener("click", () => {
-    // magic code happens here 
-    document.getElementById("newModal").remove();
+  if(isBuy){
+    document.getElementById("buyBtn").addEventListener('click', (e) => {
+    })
+  }
+  else{
+    document.getElementById("sellBtn").addEventListener('click', (e) => {
+    })
+  }
+};
+
+async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
+  let sellBtn = document.getElementById("sellBtn");
+  document.getElementById("coinsAmount").addEventListener('input', (e) =>{
+    let coinsInput = e.target;
+    let totalPriceInput = document.getElementById("totalPrice")
+    let val = e.target.value;
+    if(val == ""){
+      totalPriceInput.value = "";
+      return;
+    }
+    let totalAmount = coinCurrentPrice[coinId].usd * parseInt(val);
+    totalPriceInput.value = totalAmount;
+
+    let maxQuantity = pink.wallet.coins.find(x => x.id == coinId).quantity;
+    let exceedingAmountErrorText = document.getElementById("exceedingAmountError");
+    if (val > maxQuantity) {
+      exceedingAmountErrorText.innerText = "The amount of coins exceeds the amount in your wallet";
+      sellBtn.disabled = true;
+    }
+    else {
+      sellBtn.disabled = false;
+      exceedingAmountErrorText.innerText = "";
+    }
+  });
+
+  document.getElementById("coinsAmount").addEventListener("keypress", e => {
+    if (!validateNumberInput(e)) {
+      e.preventDefault();
+    }
   });
 }
 
@@ -436,13 +484,32 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log
+function createActivityLogTable() {
+  let element = document.getElementById("activity-log-table-content");
+  element.innerHTML = "";
+  for(transaction of loggedUser.user.activityLog.transactionHistory)
+  {
+    element.innerHTML += `
+    <tr>
+    <td scope="col" class="text-center">${transaction.name}</td>
+    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
+    <td scope="col" class="text-center">${transaction.quantity}</td>
+    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    </tr>
+    `
+  }
+}
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 //#endregion
 
-document.getElementById("portfolio-navbtn").addEventListener("click", () => displayElements.showPortfolio())
+document.getElementById("portfolio-navbtn").addEventListener("click", async () => {displayElements.showPortfolio(); await renderPortfolioTableAsync(pink)})
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
-document.getElementById("activitylog-navbtn").addEventListener("click", () => displayElements.showActivityLog())
+document.getElementById("activitylog-navbtn").addEventListener("click", () => {
+  displayElements.showActivityLog()
+  createActivityLogTable()
+})

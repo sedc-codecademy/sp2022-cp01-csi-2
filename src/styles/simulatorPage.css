@@ -197,3 +197,40 @@ input::-webkit-inner-spin-button {
     color:red;
     font-size: 18px;
 }
+
+#modalLabel{
+    text-align: center;
+    color: goldenrod;
+}
+
+#buySellModalChartContainer{
+    float: left;
+    height: 100%;
+}
+
+#trade-details{
+    float: left;
+}
+
+#buySellInputsContainer{
+    height: 30vw;
+}
+
+#buyBtn, #sellBtn{
+    width: 100%;
+}
+
+#exceedingAmountError{
+    height: 30px;
+    font-size: small;
+}
+
+.activitySideBuy {
+    color: green;
+    text-shadow: 0px 0px 2px green;
+}
+
+.activitySideSell {
+    color: red;
+    text-shadow: 0px 0px 2px red;
+}
