@@ -193,34 +193,37 @@ input::-webkit-inner-spin-button {
     overflow: auto !important
 }
 
-.top-card{
-    color:red;
+.top-card {
+    color: red;
     font-size: 18px;
 }
 
-#modalLabel{
+#modalLabel {
     text-align: center;
     color: goldenrod;
 }
 
-#buySellModalChartContainer{
+#buySellModalChartContainer,
+#buyModalChartContainer {
     float: left;
     height: 100%;
 }
 
-#trade-details{
+#trade-details {
     float: left;
 }
 
-#buySellInputsContainer{
+#buySellInputsContainer,
+#buyInputsContainer {
     height: 30vw;
 }
 
-#buyBtn, #sellBtn{
+#buyBtn,
+#sellBtn {
     width: 100%;
 }
 
-#exceedingAmountError{
+#exceedingAmountError {
     height: 30px;
     font-size: small;
 }
@@ -251,3 +254,20 @@ input::-webkit-inner-spin-button {
 }
 
 /*endRegion walletStatistics ivana_stojadinovska */
+
+#availableCoins {
+    cursor: pointer;
+    padding: 3px;
+    transition: all 0.15s linear;
+    background-color: transparent;
+    font-weight: 900;
+}
+
+#availableCoins:hover {
+    background-color: darkgray;
+}
+
+#coinsAmount,
+#buyCoinsAmount {
+    width: 100%;
+}

@@ -9,7 +9,7 @@ document.getElementById("top-info").innerHTML += formatter.format(loggedUser.use
 // set the overall wallet progress 
 calculateLossOrGain();
 
-async function calculateLossOrGain()  {
+async function calculateLossOrGain() {
   var userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   var sum = 0;
 
@@ -17,13 +17,13 @@ async function calculateLossOrGain()  {
     var total = coin.priceBought * coin.quantity - userCoinsCurrentPrice[coin.id].usd * coin.quantity;
     sum += total;
   })
-  
-  if(sum >= 0){
+
+  if (sum >= 0) {
     var topInfo = document.getElementById("top-info-all");
     topInfo.innerHTML += "Progress: <br/> ";
     topInfo.style.color = "green";
   }
-  else{
+  else {
     document.getElementById("top-info-all").innerHTML = "Loss: <br/> "
   }
   document.getElementById("top-cash-info").innerHTML += formatter.format(sum)
@@ -50,7 +50,7 @@ const renderSideMarketData = async (data) => {
             <span>${coin.name}</span>
             <span>${coin.current_price.toLocaleString('en-US')}</span>
             <span>${coin.price_change_percentage_24h >= 0 ? "<strong class='increase small-font-size'>↑</strong>&nbsp" : "<strong class='decrease small-font-size'>↓</strong>"} ${coin.price_change_percentage_24h.toFixed(2)}%</span>
-            <span id="${coin.id}">Buy</span>
+            <span id="${coin.id}" class="${coin.name}">Buy</span>
         </div>`)
   };
   return coinBar.join("");
@@ -60,8 +60,8 @@ const renderSideMarketData = async (data) => {
 const renderSideMarketBar = async (pageNumber = 1) => {
   let url = sideMarketBarHelpers.getApiUrl(pageNumber)
   let data = await getCoinsDataAsync(url)
-  console.log("Page Number " + sideMarketBarHelpers.pageNumber);
-  console.log(data);
+  // console.log("Page Number " + sideMarketBarHelpers.pageNumber);
+  // console.log(data);
   sideMarketBarHelpers.coinsElement.insertAdjacentHTML("beforeend", await renderSideMarketData(data))
 }
 
@@ -95,21 +95,115 @@ const showSimulatorSideMarket = async () => {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
     sideMarketBarHelpers.pageNumber++
   }
+
   //Events for the Side Market
   sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
-  // buying event ...
+  sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
+    if (e.target.innerText == "Buy") {
+      await showBuyModal(e.target.id, e.target.className)
+    }
+  })
 }
+
+
+async function showBuyModal(coinId, coinName) {
+  let coinChart = await createSingleCoinChartAsync(coinId, coinName);
+  let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
+  coinCurrentPrice = coinCurrentPrice[coinId].usd
+  // console.log("Current price " + coinCurrentPrice);
+  let maxCoinsPerCurrentCash = Math.floor(loggedUser.user.wallet.cash / coinCurrentPrice)
+  // console.log("Max coins amout " + maxCoinsPerCurrentCash);
+
+  let content = `<div class="container d-flex justify-content-around" id="buyModalChartContainer">
+                  <div class="container d-flex justify-content-around" id="buyModalChart">
+                  </div>
+                  <div id="buyInputsContainer">
+                  <h3 class="text-warning">${coinName}</h3>
+                  <br>
+                  <label for="buyCoinsAmount">Number of coins</label>
+                  <br>
+                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? "" : 1}" max="${maxCoinsPerCurrentCash}"></input>
+                  <p id="errorMessage" class="text-danger"></p>
+                  <p style="font-size:medium" readonly>Available cash: ${loggedUser.user.wallet.cash} $</p>
+                  <br>
+                  <label for="totalPriceBuy">Total price</label>
+                  <br>
+                  <input type="number" id="totalPriceBuy" style="color:black !important" readonly></input>
+                  <br>
+                  <div id="ExchangeRate">Rate<div>1 ${coinName} = ${coinCurrentPrice} USD</div>
+                  <br><br>
+                    <button class="btn btn-secondary d-flex justify-content-around" id='buyBtn'>Buy</button>
+                    <br><br><br>
+                  </div>
+                </div>`;
+  await ShowModal(content);
+  document.getElementById("buyModalChart").appendChild(coinChart);
+
+  let totalPrice = document.getElementById('totalPriceBuy')
+  let buyBtn = document.getElementById("buyBtn")
+  let coinsAmountInput = document.getElementById("buyCoinsAmount")
+  // console.log(coinsAmountInput.value);
+  buyBtn.disabled = true;
+
+  coinsAmountInput.addEventListener('input', (e) => {
+    e.preventDefault()
+    let coinsAmountValue = parseFloat(coinsAmountInput.value)
+    let errorMessage = document.getElementById('errorMessage')
+    buyBtn.disabled = true;
+    if (coinsAmountInput.value == "") {
+      errorMessage.innerText = ""
+      totalPrice.value = ''
+    }
+    else if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
+      errorMessage.innerText = "Insuficient funds"
+      totalPrice.value = ''
+    }
+    else if (coinsAmountValue <= 0) {
+      errorMessage.innerText = "Not funny"
+      totalPrice.value = ''
+    }
+    else {
+      errorMessage.innerText = ""
+      buyBtn.disabled = false
+      totalPrice.value = (coinsAmountValue * coinCurrentPrice).toFixed(7)
+    }
+
+  })
+
+
+  buyBtn.addEventListener('click', async (e) => {
+    const totalBuyPrice = parseFloat(totalPrice.value)
+    const amountOfCoins = parseFloat(coinsAmountInput.value)
+    loggedUser.user.wallet.cash -= totalBuyPrice
+    let loggedUserCoins = loggedUser.user?.wallet.coins.filter(x => x.id == coinId)[0]
+    if (!loggedUserCoins) {
+      let newCoin = new Coin(coinId, coinName, amountOfCoins)
+      newCoin.priceBought.push(totalBuyPrice)
+      loggedUser.user.wallet.coins.push(newCoin)
+      alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+    }
+    else {
+      loggedUserCoins.priceBought.push(totalBuyPrice)
+      loggedUserCoins.quantity += parseFloat(amountOfCoins)
+      alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+    }
+    document.getElementById("newModal").remove();
+    displayElements.showSimulatorPage() // to update the portfolio
+  })
+
+};
+
+
+
 
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Aneta Stankovska => TODO: Create Portfolio in Simulator
 
-addCoinsToPinkUser();
+//addCoinsToPinkUser();
 
-let portfolioHelpers = {
-  "portfolio": {} //Placeholder for portfolio variables
-};
+let portfolioHelpers = {};
 
 // const pinkUser = localStorageService
 //   .getAllUsersFromLocalStorage()
@@ -121,6 +215,7 @@ function getUserCoinIds(user) {
   return userCoins;
 }
 
+//Function for getting the current market price of the coins the user owns in the wallet
 async function getWalletCoinsCurrentPriceAsync(user) {
   let userCoinIds = getUserCoinIds(user);
   let userCoinIdsStr = userCoinIds.join(",");
@@ -129,7 +224,7 @@ async function getWalletCoinsCurrentPriceAsync(user) {
   try {
     let response = await fetch(url);
     let result = await response.json();
-    console.log(result);
+    //console.log(result);
     //return await response.json();
     return result;
   } catch (err) {
@@ -138,14 +233,13 @@ async function getWalletCoinsCurrentPriceAsync(user) {
   }
 }
 
+//Function for generating portfolio table
 async function generatePortfolioTable(user) {
   let counter = 1;
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
-  console.log(wallet);
-  console.log(walletCoinsCurrentPrice);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length - 1} coins</p></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
@@ -162,12 +256,12 @@ async function generatePortfolioTable(user) {
 
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
-    let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) /10;
-    strArr.push(`<tr>
+    let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) / 10;
+    strArr.push(`<tr id="portfolioData">
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">${value.toLocaleString('en-US')}</td>
+      <td class="align-middle text-center">$${value.toLocaleString('en-US')}</td>
       <td class="align-middle text-center">${changeInPercent > 0
         ? "<strong class='increase'>↑</strong>" : changeInPercent < 0 ? "<strong class='decrease'>↓</strong>" : " "}&nbsp &nbsp${changeInPercent}% </td></td>
       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
@@ -187,9 +281,12 @@ async function renderPortfolioTableAsync(user) {
   let sellBtns = document.getElementsByClassName("sellCoin");
   for (let btn of sellBtns) {
     let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
-    let coinId = user.wallet.coins.find(x => x.name == coinName).id;
+    let coin = user.wallet.coins.find(x => x.name == coinName);
+    // let coinId = user.wallet.coins.find(x => x.name == coinName).id;
+    let coinId = coin.id;
     btn.addEventListener("click", () => {
-      showTradeModal(coinId, coinName, false);
+      showTradeModal(coinId, coinName);
+      portfolioHelpers["currentCoin"] = coin;
     });
   }
 };
@@ -199,13 +296,14 @@ async function renderPortfolioTableAsync(user) {
 //-------------------------------------------------------------------------------------------------------
 //#region  Ilija Mitev and Aneta Stankovska => TODO: Create Buy and Sell confirmation modal
 
-async function getCoinCoinsCurrentPriceAsync(coinId) {
+//Function fro getting the single coin current market price
+async function getCoinCurrentPriceAsync(coinId) {
   let url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`;
 
   try {
     let response = await fetch(url);
     let result = await response.json();
-    console.log(result);
+    //console.log(result);
     //return await response.json();
     return result;
   } catch (err) {
@@ -214,6 +312,7 @@ async function getCoinCoinsCurrentPriceAsync(coinId) {
   }
 };
 
+//Function for creating and showing the modal container
 async function ShowModal(content, parent = document.getElementById("modal-container")) {
   let scaffold = `
   <div id="newModal" class="modal" >
@@ -247,11 +346,10 @@ async function ShowModal(content, parent = document.getElementById("modal-contai
   });
 };
 
-async function showTradeModal(coinId, coinName, isBuy){
+// Fucntion for creating and showing the content of the modal (buy/sell info)
+async function showTradeModal(coinId, coinName) {
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
-  let coinCurrentPrice = await getCoinCoinsCurrentPriceAsync(coinId);  
-  console.log(coinCurrentPrice);
-  console.log(coinId);
+  let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
   let content = `<div class="container d-flex justify-content-around" id="buySellModalChartContainer">
                   <div class="container d-flex justify-content-around" id="buySellModalChart">
                   </div>
@@ -260,51 +358,68 @@ async function showTradeModal(coinId, coinName, isBuy){
                   <br>
                   <label for="">Number of coins</label>
                   <br>
-                  <input type="number" style="color:black !important" id="coinsAmount" name="coinsAmount"></input>
+                  <input type="number" style="color:black !important" id="coinsAmount" name="coinsAmount" min=0 max=${portfolioHelpers.currentCoin.quantity}></input>
                   <p id="exceedingAmountError" class="text-danger"></p>
+                  <p  style="font-size:small">Available amount of coins: <span id="availableCoins">${portfolioHelpers.currentCoin.quantity}</span></p>
                   <br>
                   <label for="coinsAmount">Total price</label>
                   <br>
                   <input type="number" id="totalPrice" style="color:black !important" readonly></input>
                   <br>
-                  <div id="ExchangeRate">Rate<div>1 ${coinName } = ${coinCurrentPrice[coinId].usd} USD</div>
+                  <div id="ExchangeRate">Rate<div>1 ${coinName} = ${coinCurrentPrice[coinId].usd} USD</div>
                   <br><br>
-                    <button class="btn btn-secondary d-flex justify-content-around" id='${isBuy ? 'buyBtn' : 'sellBtn'}'>${isBuy ? 'Buy' : 'Sell'}</button>
+                    <button class="btn btn-secondary d-flex justify-content-around" id='sellBtn'>Sell</button>
                     <br><br><br>
                   </div>
                 </div>`;
   await ShowModal(content);
-  await tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy);
-  
+  await tradeModalHandlers(coinId, coinName, coinCurrentPrice);
+
   document.getElementById("buySellModalChart").appendChild(coinChart);
 
-  if(isBuy){
-    document.getElementById("buyBtn").addEventListener('click', (e) => {
-    })
-  }
-  else{
-    document.getElementById("sellBtn").addEventListener('click', (e) => {
-    })
-  }
+  document.getElementById("sellBtn").addEventListener('click', async (e) => {
+    let coin = document.getElementById("portfolioData").firstElementChild.innerHTML;
+    let value = document.getElementById("coinsAmount").value;
+    let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
+    loggedUser.user.wallet.cash += totalAmount;
+    portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
+    alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
+    document.getElementById("newModal").remove();
+    renderPortfolioTableAsync(loggedUser.user);
+
+  })
+
 };
 
+//Function for validating the trading of the cryptocurrencies
 async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
   let sellBtn = document.getElementById("sellBtn");
-  document.getElementById("coinsAmount").addEventListener('input', (e) =>{
+  sellBtn.disabled = true;
+  document.getElementById("coinsAmount").addEventListener('input', (e) => {
     let coinsInput = e.target;
     let totalPriceInput = document.getElementById("totalPrice")
     let val = e.target.value;
-    if(val == ""){
+    let exceedingAmountErrorText = document.getElementById("exceedingAmountError");
+    if (val == "") {
       totalPriceInput.value = "";
+      exceedingAmountErrorText.innerText = "";
+      sellBtn.disabled = true;
       return;
     }
-    let totalAmount = coinCurrentPrice[coinId].usd * parseInt(val);
+
+    if (val == 0) {
+      totalPriceInput.value = 0;
+      exceedingAmountErrorText.innerText = "You cannot sell 0 coins.";
+      sellBtn.disabled = true;
+      return;
+    }
+
+    let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(val);
     totalPriceInput.value = totalAmount;
 
-    let maxQuantity = pink.wallet.coins.find(x => x.id == coinId).quantity;
-    let exceedingAmountErrorText = document.getElementById("exceedingAmountError");
+    let maxQuantity = loggedUser.user.wallet.coins.find(x => x.id == coinId).quantity;
     if (val > maxQuantity) {
-      exceedingAmountErrorText.innerText = "The amount of coins exceeds the amount in your wallet";
+      exceedingAmountErrorText.innerText = "The amount of coins exceeds the amount in your wallet.";
       sellBtn.disabled = true;
     }
     else {
@@ -312,6 +427,11 @@ async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
       exceedingAmountErrorText.innerText = "";
     }
   });
+
+  document.getElementById("availableCoins").addEventListener('click', (e) => {
+    let availableCoins = e.target.innerText
+    document.getElementById("coinsAmount").value = parseFloat(availableCoins);
+  })
 
   document.getElementById("coinsAmount").addEventListener("keypress", e => {
     if (!validateNumberInput(e)) {
@@ -351,7 +471,7 @@ ammountInput.addEventListener("keypress", function (e) {
 ammountInput.addEventListener("focusout", () => {
   let ammountErrorText = document.getElementById("ammount-error-text");
 
-  if (ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
+  if (ammountInput.value >= 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
     ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
     confirmAddFundsBtn.disabled = true;
   }
@@ -487,8 +607,7 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", ()
 function createActivityLogTable() {
   let element = document.getElementById("activity-log-table-content");
   element.innerHTML = "";
-  for(transaction of loggedUser.user.activityLog.transactionHistory)
-  {
+  for (transaction of loggedUser.user.activityLog.transactionHistory) {
     element.innerHTML += `
     <tr>
     <td scope="col" class="text-center">${transaction.name}</td>
@@ -634,10 +753,12 @@ function createStatisticChart(chartData)
 
 //#endregion
 
-document.getElementById("portfolio-navbtn").addEventListener("click", async () => {displayElements.showPortfolio(); await renderPortfolioTableAsync(pink)})
+document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()
 })
+
+

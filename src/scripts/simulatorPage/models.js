@@ -105,10 +105,10 @@ class User {
 }
 
 class Coin {
-    constructor(apiId, apiName, apiPrice, quantity) {
+    constructor(apiId, apiName, quantity) {
         this.id = apiId
         this.name = apiName
-        this.priceBought = apiPrice
+        this.priceBought = []
         this.quantity = quantity
         this.sellingPrice = 0;
         this.totalPrice = this.priceBought * this.quantity
@@ -142,13 +142,18 @@ class Transaction {
 }
 
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
-let bitcoin = new Coin("bitcoin", "Bitcoin", 19116, 5);
-let ethereum = new Coin("ethereum", "Ethereum", 1041, 2);
-let tether = new Coin("tether", "Tether", 1, 5);
+let bitcoin = new Coin("bitcoin", "Bitcoin", 1);
+bitcoin.priceBought.push(19116)
+let ethereum = new Coin("ethereum", "Ethereum", 2);
+ethereum.priceBought.push(1041, 1041)
+let tether = new Coin("tether", "Tether", 5);
+tether.priceBought.push(2, 2, 3, 4, 2)
+
 
 let testUser = new User("testUser", "0000", "test@email.com");
 testUser.wallet.coins.push(bitcoin);
 testUser.wallet.coins.push(ethereum);
+testUser.wallet.coins.push(tether);
 
 const loggedUser = {
     user: testUser // default for now for testing purposes
@@ -160,6 +165,7 @@ bob.wallet.coins.push(sedcCoin);
 let pink = new User("pinkpanther", "0000", "pink@panther.com");
 
 function addCoinsToPinkUser() {
+    pink.wallet.cash += 200
     pink.wallet.coins.push(bitcoin);
     pink.wallet.coins.push(ethereum);
     pink.wallet.coins.push(tether);
