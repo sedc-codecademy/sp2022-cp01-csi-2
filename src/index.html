@@ -338,8 +338,29 @@
                         <!-- #endregion -->
 
                         <!-- #region  Ivana Stojadinovska => TODO: Create User statistics -->
-                        <div id="wallet-stats" class="sim-views">
-                            <!-- here goes wallet statistics content  -->
+                        <div id="wallet-stats" class="sim-views walletStatsContainer">
+                            <div class="container wsContainer">
+                                <div class="row wsButtonsContainer">
+                                    <div class="col-8 wsButtons">
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn active" id="24hButton">24h</button>
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn" id="1weekButton">1w</button>
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn" id="1monthButton">1m</button>
+                                    </div>
+                                      <div class="dropdown col-4">
+                                        <button class="btn dropdown-toggle btn-outline-warning my-2" type="button" id="statisticCoins" data-bs-toggle="dropdown" aria-expanded="false">
+                                          Select Coin
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="statisticCoins" id="statisticCoinsButtons">
+                                            <!-- <button class="dropdown-item pickCoin" type="button">Coin one</button>
+                                            <button class="dropdown-item pickCoin" type="button">Coin Two</button>
+                                            <button class="dropdown-item pickCoin" type="button">Coin more</button> -->
+                                        </div>
+                                      </div>
+                                </div>
+                                <div class="row wsStatisticsContainer" id="wsStatCont">
+                                    
+                                </div>
+                            </div>
                         </div>
                         <!-- #endregion -->
 

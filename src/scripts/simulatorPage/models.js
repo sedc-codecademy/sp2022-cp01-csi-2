@@ -142,7 +142,7 @@ class Transaction {
 }
 
 let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
-let bitcoin = new Coin("bitcoin", "Bitcoin", 19116, 1);
+let bitcoin = new Coin("bitcoin", "Bitcoin", 19116, 5);
 let ethereum = new Coin("ethereum", "Ethereum", 1041, 2);
 let tether = new Coin("tether", "Tether", 1, 5);
 
