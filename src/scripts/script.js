@@ -188,8 +188,9 @@ const displayElements = {
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
-        showSimulatorSideMarket()
+        await showSimulatorSideMarket()
         await renderPortfolioTableAsync(loggedUser.user)
+        console.log(loggedUser.user);
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -408,7 +409,7 @@ document.getElementById("register-btn").addEventListener("click", () => {
         && validationService.validatePassword(userPassword)
         && validationService.validateEmail(userEmail)
         && userPassword == confirmPassword) {
-        
+
         let user = new User(userName, userPassword, userEmail);
         localStorageService.addUserToLocalStorage(user);
         message.innerText = ""
