@@ -148,6 +148,10 @@ const homePageGeneralInfo = document.getElementById('homePageGeneralInfo')
 const homePageTrendingCryptos = document.getElementById('homePageTrendingCryptos')
 const homePageExtraInfo = document.getElementById('homePageExtraInfo')
 const homePageMainContent = [homePageExtraInfo, homePageGeneralInfo, homePageTrendingCryptos]
+const loginForm = document.getElementById("login-form")
+const registerForm = document.querySelector("register-form");
+const loginBtn = document.getElementById("loginBtn");
+const loggedUserDropdown = document.getElementById("dropdown-logged-user");
 
 // Other pages elements
 const statisticsPage = document.getElementById('statisticsPage')
@@ -173,7 +177,6 @@ const displayElements = {
             element.removeAttribute('hidden', 'hidden')
         }
     },
-
     showHomePage: function () {
         this.showElements(...homePageMainContent)
         this.hideElements(otherPagesDiv)
@@ -185,8 +188,9 @@ const displayElements = {
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
-        showSimulatorSideMarket()
+        await showSimulatorSideMarket()
         await renderPortfolioTableAsync(loggedUser.user)
+        console.log(loggedUser.user);
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -212,9 +216,16 @@ const displayElements = {
     showActivityLog: function () {
         this.showElements(activityLogDiv)
         this.hideElements(portfolioDiv, walletSettingsDiv, walletStatsDiv)
+    },
+    showLogInBtn: function (){
+        this.showElements(loginBtn)
+        this.hideElements(loggedUserDropdown)
+    },
+    showUserDropDownBtn: function(){
+        this.showElements(loggedUserDropdown)
+        this.hideElements(loginBtn)
     }
 }
-
 
 const cryptoInfo = {
     factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
@@ -328,23 +339,23 @@ function setNavigationTransparentOnScroll() {
 }
 
 // Here goes js.scr for login/register form - Aleksandar Zhivkovikj
-function setFormMessage(formElement, type, message) {
-    const messageElement = formElement.querySelector(".form__message");
+// function setFormMessage(formElement, type, message) {
+//     const messageElement = formElement.querySelector(".form__message");
 
-    messageElement.textContent = message;
-    messageElement.classList.remove("form__message--success", "form__message--error");
-    messageElement.classList.add(`form__message--${type}`);
-}
+//     messageElement.textContent = message;
+//     messageElement.classList.remove("form__message--success", "form__message--error");
+//     messageElement.classList.add(`form__message--${type}`);
+// }
 
-function setInputError(inputElement, message) {
-    inputElement.classList.add("form__input--error");
-    inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
-}
+// function setInputError(inputElement, message) {
+//     inputElement.classList.add("form__input--error");
+//     inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
+// }
 
-function clearInputError(inputElement) {
-    inputElement.classList.remove("form__input--error");
-    inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
-}
+// function clearInputError(inputElement) {
+//     inputElement.classList.remove("form__input--error");
+//     inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
+// }
 
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.querySelector("#login");
@@ -363,16 +374,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.getElementById("login-btn").addEventListener("click", () => {
-    let username = document.getElementById("login-username").value
-    let password = document.getElementById("login-password").value
+document.getElementById("login-btn").addEventListener("click", async () => {
+    let username = document.getElementById("login-username")
+    let password = document.getElementById("login-password")
     let message = document.getElementById("login-error-msg")
-    let user = localStorageService.getUserFromLocalStorage(username, password)
+    let loader = document.getElementById("login-loader")
+    let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
+    
     if (user === undefined) {
         message.innerText = "Invalid username or password"
     } else {
+        username.value = ""
+        password.value = ""
         message.innerText = ""
+
         loggedUser.user = user
+        document.getElementById("logged-user-name").innerText = loggedUser.user.username
+        await showLoaderAsync(loader, 1000)
+        loader.innerHTML = ""
+        displayElements.showUserDropDownBtn();
         displayElements.showSimulatorPage();
         displayElements.showPortfolio();
     }
@@ -389,7 +409,7 @@ document.getElementById("register-btn").addEventListener("click", () => {
         && validationService.validatePassword(userPassword)
         && validationService.validateEmail(userEmail)
         && userPassword == confirmPassword) {
-        
+
         let user = new User(userName, userPassword, userEmail);
         localStorageService.addUserToLocalStorage(user);
         message.innerText = ""
@@ -398,3 +418,10 @@ document.getElementById("register-btn").addEventListener("click", () => {
     }
 })
 
+document.getElementById("logout-btn").addEventListener("click", () => {
+    loggedUser.user = null;
+    setTimeout(() => {        
+        displayElements.showLogInBtn();
+        displayElements.showHomePage();
+    }, 500);
+})

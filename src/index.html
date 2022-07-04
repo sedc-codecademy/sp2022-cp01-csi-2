@@ -72,6 +72,15 @@
                         <li class=" nav-item">
                             <a class="btn btn-outline-warning text-light" id="loginBtn" href="#">Log In</a>
                         </li>
+                        <div class="dropdown" hidden id="dropdown-logged-user">
+                            <a class="btn btn-outline-warning text-light dropdown-toggle" href="#" role="button" id="logged-user-name" data-bs-toggle="dropdown" aria-expanded="false">
+                              <!-- username -->
+                            </a>
+                          
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="logged-user-name">
+                              <li><a class="dropdown-item" href="#" id="logout-btn">Log Out</a></li>
+                            </ul>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -269,7 +278,7 @@
                                             <form action="" id="payment-form">
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
-                                                        id="floatingAmmount" placeholder="Bob Bobsky" required>
+                                                        id="floatingAmmount" placeholder="Bob Bobsky" required min="0">
                                                     <label for="floatingAmmount">Ammount</label>
                                                     <p id="ammount-error-text" class="text-danger"></p>
                                                 </div>
@@ -284,14 +293,14 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
                                                         id="floatingCardNumber" placeholder="1111-2222-3333-4444"
-                                                        required>
+                                                        required min="0">
                                                     <label for="floatingCardNumber">Card number</label>
                                                     <p id="cardNumber-error-text" class="text-danger"></p>
                                                 </div>
 
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
-                                                        id="floatingCvvNumber" placeholder="123" required>
+                                                        id="floatingCvvNumber" placeholder="123" required min="0">
                                                     <label for="floatingCvvNumber">CVV number</label>
                                                     <p id="cvv-error-text" class="text-danger"></p>
                                                 </div>
@@ -412,6 +421,7 @@
                         <div class="form__input-error-message"></div>
                     </div>
                     <button class="form__button" type="button" id="login-btn">Login</button>
+                    <div id="login-loader" class="text-center"></div>
                     <p class="form__text">
                         <a href="#" class="form__link">Forgot your password?</a>
                     </p>
@@ -490,5 +500,4 @@
     <script src="scripts/simulatorPage/models.js"></script>
     <script src="scripts/simulatorPage/simulatorPage.js"></script>
 </body>
-
 </html>
