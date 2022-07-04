@@ -95,15 +95,15 @@ const showSimulatorSideMarket = async () => {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
     sideMarketBarHelpers.pageNumber++
   }
-
-  //Events for the Side Market
-  sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
-  sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
-    if (e.target.innerText == "Buy") {
-      await showBuyModal(e.target.id, e.target.className)
-    }
-  })
 }
+
+//Events for the Side Market
+sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
+sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
+  if (e.target.innerText == "Buy") {
+    await showBuyModal(e.target.id, e.target.className)
+  }
+})
 
 
 async function showBuyModal(coinId, coinName) {
