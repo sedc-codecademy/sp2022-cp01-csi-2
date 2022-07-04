@@ -379,7 +379,7 @@ ammountInput.addEventListener("keypress", function (e) {
 ammountInput.addEventListener("focusout", () => {
   let ammountErrorText = document.getElementById("ammount-error-text");
 
-  if (ammountInput.value > 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
+  if (ammountInput.value >= 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
     ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
     confirmAddFundsBtn.disabled = true;
   }
