@@ -649,11 +649,11 @@ function setupStatiscicForCoin(coin)
   let btnThree = document.getElementById("1monthButton");
 
   btnOne.removeEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
-  btnTwo.removeEventListener("click", () => {createStatiscicForCoin(coin, 7, "hourly");});
+  btnTwo.removeEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily");});
   btnThree.removeEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily");});
 
   btnOne.addEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
-  btnTwo.addEventListener("click", () => {createStatiscicForCoin(coin, 7, "hourly"), btnOne.classList.remove("active")});
+  btnTwo.addEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily"), btnOne.classList.remove("active")});
   btnThree.addEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily"), btnOne.classList.remove("active")});
   
   document.getElementById("statisticCoins").innerHTML = coin.name
@@ -682,7 +682,7 @@ function getDataForUserCoins(url, coin, days, interval) {
 function processDataForUserCoins(data, coin, days, interval)
 {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.totalPrice)
+  chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
