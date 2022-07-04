@@ -143,7 +143,7 @@ async function generatePortfolioTable(user) {
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4><p>${Object.keys(wallet).length-1} coins</p></div>
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
       <tr>
@@ -292,6 +292,7 @@ async function showTradeModal(coinId, coinName, isBuy){
       let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
       loggedUser.user.wallet.cash += totalAmount;
       portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
+      //Create transaction and add the trascation to the user
       alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
       document.getElementById("newModal").remove();
       renderPortfolioTableAsync(loggedUser.user);
