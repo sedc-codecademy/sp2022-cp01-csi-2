@@ -95,15 +95,15 @@ const showSimulatorSideMarket = async () => {
     await renderSideMarketBar(sideMarketBarHelpers.pageNumber)
     sideMarketBarHelpers.pageNumber++
   }
-
-  //Events for the Side Market
-  sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
-  sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
-    if (e.target.innerText == "Buy") {
-      await showBuyModal(e.target.id, e.target.className)
-    }
-  })
 }
+
+//Events for the Side Market
+sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
+sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
+  if (e.target.innerText == "Buy") {
+    await showBuyModal(e.target.id, e.target.className)
+  }
+})
 
 
 async function showBuyModal(coinId, coinName) {
@@ -188,6 +188,8 @@ async function showBuyModal(coinId, coinName) {
       alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
     }
     document.getElementById("newModal").remove();
+    loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
+    createActivityLogTable()
     displayElements.showSimulatorPage() // to update the portfolio
   })
 
