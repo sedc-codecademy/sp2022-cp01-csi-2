@@ -18,7 +18,7 @@
 #main-sim-page-div {
     width: 100%;
     /* height: 68vh; */
-    border: 1px pink solid
+    border: 1px pink solid;
 }
 
 /* ostajte go ova vaka ke se odkomentira koga ke se naprai hide/show na divovite kade sto ke se prikazuvaat site raboti vo simulatorot */
@@ -237,6 +237,23 @@ input::-webkit-inner-spin-button {
     color: red;
     text-shadow: 0px 0px 2px red;
 }
+#portfolio{
+    overflow:auto !important
+}
+
+/*walletStatistics ivana_stojadinovska*/
+
+.wsBtn{
+    font-size: 12px;
+    margin: 0 5px;
+    min-width: 60px;
+}
+
+.coinButtons{
+    background-color: black;
+}
+
+/*endRegion walletStatistics ivana_stojadinovska */
 
 #availableCoins {
     cursor: pointer;
