@@ -257,6 +257,8 @@ async function generatePortfolioTable(user) {
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
     let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) / 10;
+    console.log(walletCoinsCurrentPrice[coin.id].usd)
+    console.log(coin.priceBought)
     strArr.push(`<tr id="portfolioData">
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
@@ -431,6 +433,8 @@ async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
   document.getElementById("availableCoins").addEventListener('click', (e) => {
     let availableCoins = e.target.innerText
     document.getElementById("coinsAmount").value = parseFloat(availableCoins);
+    document.getElementById("totalPrice").value = coinCurrentPrice[coinId].usd * parseFloat(availableCoins);
+    sellBtn.disabled = false;
   })
 
   document.getElementById("coinsAmount").addEventListener("keypress", e => {
