@@ -686,6 +686,134 @@ function createActivityLogTable() {
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
+
+createStatisticsButtons(loggedUser.user.wallet.coins);
+//TODO: statistics for whole wallet
+
+function createStatisticsButtons(coins)
+{
+  let statisticCoinsButtons = document.getElementById("statisticCoinsButtons")
+  for (const coin of coins) {
+    let btn = document.createElement("button")
+    btn.classList.add("dropdown-item")
+    btn.innerHTML = coin.name;
+    statisticCoinsButtons.appendChild(btn)
+
+    btn.addEventListener("click", () =>
+      setupStatiscicForCoin(coin),
+      ); 
+  }
+}
+
+function setupStatiscicForCoin(coin)
+{
+  let btnOne = document.getElementById("24hButton");
+  let btnTwo = document.getElementById("1weekButton");
+  let btnThree = document.getElementById("1monthButton");
+
+  btnOne.removeEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
+  btnTwo.removeEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily");});
+  btnThree.removeEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily");});
+
+  btnOne.addEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
+  btnTwo.addEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily"), btnOne.classList.remove("active")});
+  btnThree.addEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily"), btnOne.classList.remove("active")});
+  
+  document.getElementById("statisticCoins").innerHTML = coin.name
+  
+  createStatiscicForCoin(coin, 1, "hourly");
+}
+
+function createStatiscicForCoin(coin, days, interval)
+{
+  url = `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=usd&days=${days}&interval=${interval}`;
+  getDataForUserCoins(url, coin, days, interval);
+}
+
+function getDataForUserCoins(url, coin, days, interval) {
+  fetch(url)
+      .then((response) => {
+          return response.json();
+      })
+      .then((out) => processDataForUserCoins(out, coin, days, interval))
+      .catch((err) => {
+          console.log("The request has failed!");
+          console.log(err);
+      })
+}
+
+function processDataForUserCoins(data, coin, days, interval)
+{
+  let chartData = data["prices"].map(x => x[1] * coin.quantity);
+  chartData.unshift(coin.priceBought * coin.quantity)
+
+  createStatisticChart(chartData);
+}
+
+function createStatisticChart(chartData)
+{
+  let wsStatCont = document.getElementById('wsStatCont');
+  if (wsStatCont.childElementCount >= 1){
+    wsStatCont.removeChild(wsStatCont.lastElementChild)
+  }
+  let chartCanvas;
+  chartCanvas = document.createElement('canvas')
+  wsStatCont.appendChild(chartCanvas);
+
+    new Chart(chartCanvas,
+        {
+            type: 'line',
+            data:
+            {
+                labels: chartData,
+                datasets: [{
+                    label: 'USD',
+                    data: chartData,
+                    fill: false,
+                    borderColor: 'rgba(255,185,1,255)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            display: true,
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 3
+                    }
+                }
+            }
+        });
+}
+
+
+
+
 //#endregion
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
