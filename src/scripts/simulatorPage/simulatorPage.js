@@ -7,30 +7,23 @@ var formatter = new Intl.NumberFormat('en-US', {
 
 //Function for showing the cash above the portfolio
 function showCash() {
-  document.getElementById("top-info").innerHTML = formatter.format(loggedUser.user.wallet.cash)
+  document.getElementById("total-cash").innerHTML = formatter.format(loggedUser.user.wallet.cash)
 }
-// set the overall wallet progress ,
-showCash()
-calculateLossOrGain();
 
+// set the overall wallet progress ,
 async function calculateLossOrGain() {
   let userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   let sum = 0;
 
   loggedUser.user.wallet.coins.forEach(coin => {
-    let total = coin.priceBought * coin.quantity - userCoinsCurrentPrice[coin.id].usd * coin.quantity;
+    let currentPriceSum = userCoinsCurrentPrice[coin.id].usd * coin.quantity
+    let boughtPriceSum = coin.priceBought.reduce((a,b) => a+b,0)
+    let total = currentPriceSum - boughtPriceSum;
     sum += total;
   })
 
-  if (sum >= 0) {
-    let topInfo = document.getElementById("top-info-all");
-    topInfo.innerHTML += "Progress: <br/> ";
-    topInfo.style.color = "green";
-  }
-  else {
-    document.getElementById("top-info-all").innerHTML = "Loss: <br/> "
-  }
-  document.getElementById("top-cash-info").innerHTML += formatter.format(sum)
+  document.getElementById("top-cash-info").innerHTML = 
+    `${sum > 0 ? `<strong class='text-success'>Profit: ${formatter.format(sum)}</strong>` : `<strong class='text-danger'>Loss: ${formatter.format(sum)}</strong>`}`
 }
 //#endregion
 
@@ -299,23 +292,25 @@ async function generatePortfolioTable(user) {
       increaseDecrease = ""
     }
     currentValue = oldCoinValue * changeInPercentage
-    let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
+    // let value = Math.round((() + Number.EPSILON) * 10) / 10;
 
-    console.log(coin);
-    console.log("Coin amount " + coin.quantity);
-    console.log("Price bought sum  " + priceBoughtSum);
-    console.log("Coins old value  " + oldCoinValue);
-    console.log("");
-    console.log("Current market price " + currentMarketPrice);
-    console.log("Current wallet value " + currentValue);
-    console.log("Change in percentage " + changeInPercentage);
-    console.log("=======================================");
+    let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
+
+    // console.log(coin);
+    // console.log("Coin amount " + coin.quantity);
+    // console.log("Price bought sum  " + priceBoughtSum);
+    // console.log("Coins old value  " + oldCoinValue);
+    // console.log("");
+    // console.log("Current market price " + currentMarketPrice);
+    // console.log("Current wallet value " + currentValue);
+    // console.log("Change in percentage " + changeInPercentage);
+    // console.log("=======================================");
 
     strArr.push(`<tr id="portfolioData">
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">$${value.toLocaleString('en-US')}</td>
+      <td class="align-middle text-center">${value}</td>
       <td class="align-middle text-center">${increaseDecrease}&nbsp &nbsp${(changeInPercentage).toFixed(2).toLocaleString('en-US')}% </td></td>
       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
       </tr>`);
@@ -439,18 +434,35 @@ async function showTradeModal(coinId, coinName) {
     let coin = document.getElementById("portfolioData").firstElementChild.innerHTML;
     let value = document.getElementById("coinsAmount").value;
     let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
-    loggedUser.user.wallet.cash += totalAmount;
+    let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
+    let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
+    
+    // portfolio percentage 
+    let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a,b) => a+b,0)
+    console.log("bought price sum");
+    console.log(boughtPriceSum);
+    console.log("================");
+    let averagePricePerCoin = boughtPriceSum / loggedUser.user.wallet.coins[indexOfCoin].quantity
+    console.log("average price per coin");
+    console.log(averagePricePerCoin);
+    console.log("================");
+    let newBoughtPrice = averagePricePerCoin * parseFloat(value) * -1
+    // portfolio percentage 
+
     portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice[coinId].usd, false, value));
     alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
     document.getElementById("newModal").remove();
-    let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
-    let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
+    
+    loggedUser.user.wallet.cash += totalAmount;
+    loggedUser.user.wallet.coins[indexOfCoin].priceBought.push(newBoughtPrice);
+
     if(soldCoin.quantity == 0){
       loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     }
     showCash()
-    renderPortfolioTableAsync(loggedUser.user);
+    await calculateLossOrGain()
+    await renderPortfolioTableAsync(loggedUser.user);
   })
 };
 
