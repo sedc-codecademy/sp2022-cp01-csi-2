@@ -257,8 +257,7 @@ async function generatePortfolioTable(user) {
   for (let coin of wallet.coins) {
     let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
     let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) / 10;
-    console.log(walletCoinsCurrentPrice[coin.id].usd)
-    console.log(coin.priceBought)
+    //console.log(walletCoinsCurrentPrice[coin.id].usd)
     strArr.push(`<tr id="portfolioData">
       <td class="align-middle text-center">${counter++}</td>
       <td class="align-middle text-center">${coin.name}</td>
@@ -385,8 +384,14 @@ async function showTradeModal(coinId, coinName) {
     let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
     loggedUser.user.wallet.cash += totalAmount;
     portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
+    loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, "sell", value));
     alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
     document.getElementById("newModal").remove();
+    let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
+    let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);3
+    if(soldCoin.quantity == 0){
+      loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
+    }
     renderPortfolioTableAsync(loggedUser.user);
 
   })
