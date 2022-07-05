@@ -687,12 +687,13 @@ function createActivityLogTable() {
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 
-createStatisticsButtons(loggedUser.user.wallet.coins);
+// createStatisticsButtons(loggedUser.user.wallet.coins);
 //TODO: statistics for whole wallet
 
 function createStatisticsButtons(coins)
 {
   let statisticCoinsButtons = document.getElementById("statisticCoinsButtons")
+  statisticCoinsButtons.innerHTML = "";
   for (const coin of coins) {
     let btn = document.createElement("button")
     btn.classList.add("dropdown-item")
@@ -745,7 +746,7 @@ function getDataForUserCoins(url, coin, days, interval) {
 function processDataForUserCoins(data, coin, days, interval)
 {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.priceBought * coin.quantity)
+  // chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
@@ -818,7 +819,9 @@ function createStatisticChart(chartData)
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
-document.getElementById("walletstatistics-navbtn").addEventListener("click", () => displayElements.showWalletStatistics())
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => {
+  displayElements.showWalletStatistics()
+  createStatisticsButtons(loggedUser.user.wallet.coins);})
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()
