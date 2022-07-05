@@ -192,6 +192,8 @@ async function showBuyModal(coinId, coinName) {
       alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
     }
     document.getElementById("newModal").remove();
+    loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
+    createActivityLogTable()
     showCash()
     displayElements.showSimulatorPage() // to update the portfolio
   })
