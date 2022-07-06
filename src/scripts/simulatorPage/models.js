@@ -147,7 +147,7 @@ bitcoin.priceBought.push(19116)
 let ethereum = new Coin("ethereum", "Ethereum", 2);
 ethereum.priceBought.push(1041, 1041)
 let tether = new Coin("tether", "Tether", 5);
-tether.priceBought.push(2, 2, 3, 4, 2)
+tether.priceBought.push(1, 2, 3, 4, 2)
 
 
 let testUser = new User("testUser", "0000", "test@email.com");

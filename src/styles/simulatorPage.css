@@ -253,6 +253,28 @@ input::-webkit-inner-spin-button {
     background-color: black;
 }
 
+.walletStatisticsTable{
+    width: 100%;
+    /* border: 2px solid darkgoldenrod;
+    border-radius: 100px; */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 17px;
+    border-collapse: collapse;
+}
+
+.walletStatisticsTH{
+    /* border-bottom: 4px solid darkgoldenrod; */
+    /* border-radius: 10px; */
+    margin: 10px;
+    border-collapse: collapse;
+    border-radius: 30px;
+    border-style: hidden; /* hide standard table (collapsed) border */
+    box-shadow: 0 0 0 1px darkgoldenrod;
+}
+
 /*endRegion walletStatistics ivana_stojadinovska */
 
 #availableCoins {
