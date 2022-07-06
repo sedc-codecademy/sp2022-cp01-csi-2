@@ -521,11 +521,11 @@ ammountInput.addEventListener("focusout", () => {
 
   if (ammountInput.value >= 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
     ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
-    confirmAddFundsBtn.disabled = true;
+    ammountInput.setCustomValidity("Enter amount between 15$ and 10.000$")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     ammountErrorText.innerText = "";
+    ammountInput.setCustomValidity("")
   }
 })
 
@@ -542,15 +542,15 @@ nameInput.addEventListener("focusout", () => {
 
   if (nameInput.value.length < 3) {
     errortext.innerText = "name must have more then 2 characters"
-    confirmAddFundsBtn.disabled = true;
+    nameInput.setCustomValidity("name must have more then 2 characters")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    nameInput.setCustomValidity("")
   }
 })
 
-cardNumberInput.addEventListener("keydown", function (e) {
+cardNumberInput.addEventListener("keypress", function (e) {
   if (!validateNumberInput(e) || cardNumberInput.value.length === 16) {
     e.preventDefault()
   }
@@ -561,11 +561,11 @@ cardNumberInput.addEventListener("focusout", () => {
 
   if (cardNumberInput.value.length > 0 && cardNumberInput.value.length < 16) {
     errortext.innerText = "enter valid card number. Ex: 1111 2222 3333 4444"
-    confirmAddFundsBtn.disabled = true;
+    cardNumberInput.setCustomValidity("enter valid card number. Ex: 1111 2222 3333 4444")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    cardNumberInput.setCustomValidity("")
   }
 })
 
@@ -580,16 +580,16 @@ cvvNumberInput.addEventListener("focusout", () => {
 
   if (cvvNumberInput.value.length > 0 && cvvNumberInput.value.length < 3) {
     errortext.innerText = "enter valid cvv number. Ex: 123"
-    confirmAddFundsBtn.disabled = true;
+    cvvNumberInput.setCustomValidity("enter valid cvv number. Ex: 123")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    cvvNumberInput.setCustomValidity("")
   }
 })
 
 confirmAddFundsBtn.addEventListener("click", async () => {
-  if (cvvNumberInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
+  if (cvvNumberInput.checkValidity() && nameInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
     let cashAmmount = parseInt(ammountInput.value);
     await showLoaderAsync(loaderContainer, 2000)
     loggedUser.user.wallet.cash += cashAmmount;
@@ -597,9 +597,9 @@ confirmAddFundsBtn.addEventListener("click", async () => {
     document.getElementById("payment-form").reset()
     loaderContainer.innerHTML = "succesfully added funds to your wallet!"
     localStorageService.addUserToLocalStorage(loggedUser.user);
-    console.log(loggedUser.user);
+    showCash();
   }
-  else {
+  else{
     document.getElementById("payment-form").reportValidity();
   }
 })

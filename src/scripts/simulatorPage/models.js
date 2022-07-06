@@ -172,4 +172,4 @@ let bob = new User("bobbobsky", "1234", "bobmajmuncebobski@bob.com");
 let pink = new User("pinkpanther", "0000", "pink@panther.com");
 
 
-// localStorageService.addUserToLocalStorage(bob)5
+// localStorageService.addUserToLocalStorage(testUser)
