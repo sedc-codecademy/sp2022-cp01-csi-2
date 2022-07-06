@@ -25,10 +25,10 @@ async function calculateLossOrGain() {
   let formatedSum = formatter.format(sum)
 
   document.getElementById("top-cash-info").innerHTML =
-    `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>` 
-    : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
-    : "<strong class='text-warning'>$0</strong>"  
-  }`  
+    `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
+      : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
+        : "<strong class='text-warning'>$0</strong>"
+    }`
 }
 //#endregion
 
@@ -174,7 +174,7 @@ async function showBuyModal(coinId, coinName) {
     else {
       errorMessage.innerText = ""
       buyBtn.disabled = false
-      totalPrice.value = (coinsAmountValue * coinCurrentPrice).toFixed(7)
+      totalPrice.value = parseFloat(coinsAmountValue * coinCurrentPrice).toFixed(7)
     }
 
   })
@@ -201,6 +201,7 @@ async function showBuyModal(coinId, coinName) {
     createActivityLogTable()
     showCash()
     await calculateLossOrGain()
+    await generatePortfolioTable(loggedUser.user)
     displayElements.showSimulatorPage() // to update the side market
   })
 
@@ -265,7 +266,7 @@ async function generatePortfolioTable(user) {
     `);
 
   for (let coin of wallet.coins) {
-    let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y)
+    let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
     let oldCoinValue = (priceBoughtSum / coin.quantity)
     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
     let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
@@ -414,13 +415,7 @@ async function showTradeModal(coinId, coinName) {
 
     // portfolio percentage 
     let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a, b) => a + b, 0)
-    console.log("bought price sum");
-    console.log(boughtPriceSum);
-    console.log("================");
     let averagePricePerCoin = boughtPriceSum / loggedUser.user.wallet.coins[indexOfCoin].quantity
-    console.log("average price per coin");
-    console.log(averagePricePerCoin);
-    console.log("================");
     let newBoughtPrice = averagePricePerCoin * parseFloat(value) * -1
     // portfolio percentage 
 
@@ -435,9 +430,10 @@ async function showTradeModal(coinId, coinName) {
     if (soldCoin.quantity == 0) {
       loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     }
-    showCash()
-    await calculateLossOrGain()
+    // showCash()
+    // await calculateLossOrGain()
     await renderPortfolioTableAsync(loggedUser.user);
+    displayElements.showSimulatorPage();
   })
 };
 

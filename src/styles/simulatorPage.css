@@ -35,7 +35,7 @@
 
 .sim-nav-btn {
     width: 100%;
-    word-break: break-word;
+    /* word-break: break-word; */
     font-size: medium;
 
 }
@@ -151,9 +151,14 @@ div.marketTable>span:last-of-type:hover {
 }
 
 /* #endregion */
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+#floatingCvvNumber::-webkit-outer-spin-button,
+#floatingCvvNumber::-webkit-inner-spin-button,
+#floatingAmmount::-webkit-outer-spin-button,
+#floatingAmmount::-webkit-inner-spin-button,
+#floatingCardNumber::-webkit-outer-spin-button,
+#floatingCardNumber::-webkit-inner-spin-button,
+#floatingCryptoLimit::-webkit-outer-spin-button,
+#floatingCryptoLimit::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
