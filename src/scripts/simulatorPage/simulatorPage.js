@@ -103,7 +103,8 @@ sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
     } else {
       await showBuyModal(e.target.id, e.target.className)
     }
-  })
+  }
+})
 
 
 async function showBuyModal(coinId, coinName) {
@@ -122,7 +123,7 @@ async function showBuyModal(coinId, coinName) {
                   <br>
                   <label for="buyCoinsAmount">Number of coins</label>
                   <br>
-                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? "" : 1}" max="${maxCoinsPerCurrentCash}"></input>
+                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? 0 : 1}" max="${maxCoinsPerCurrentCash}"></input>
                   <p id="errorMessage" class="text-danger"></p>
                   <p style="font-size:medium" readonly>Available cash: ${loggedUser.user.wallet.cash} $</p>
                   <br>
@@ -145,21 +146,24 @@ async function showBuyModal(coinId, coinName) {
   // console.log(coinsAmountInput.value);
   buyBtn.disabled = true;
 
+  coinsAmountInput.addEventListener("keypress", (e) => {
+    if (!validateNumberInput(e)) {
+      e.preventDefault()
+    }
+  })
+
   coinsAmountInput.addEventListener('input', (e) => {
     e.preventDefault()
     let coinsAmountValue = parseFloat(coinsAmountInput.value)
     let errorMessage = document.getElementById('errorMessage')
     buyBtn.disabled = true;
-    if (coinsAmountInput.value == "") {
-      errorMessage.innerText = ""
-      totalPrice.value = ''
-    }
-    else if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
+
+    if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
       errorMessage.innerText = "Insuficient funds"
       totalPrice.value = ''
     }
-    else if (coinsAmountValue <= 0) {
-      errorMessage.innerText = "Not funny"
+    else if (coinsAmountValue == 0) {
+      errorMessage.innerText = "Cannot buy zero coins"
       totalPrice.value = ''
     }
     else {
@@ -191,7 +195,8 @@ async function showBuyModal(coinId, coinName) {
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
     createActivityLogTable()
     showCash()
-    displayElements.showSimulatorPage() // to update the portfolio
+    await calculateLossOrGain()
+    displayElements.showSimulatorPage() // to update the side market
   })
 
 };
@@ -498,7 +503,7 @@ const loaderContainer = document.getElementById("payment-loader");
 const cryptoLimitInput = document.getElementById("floatingCryptoLimit");
 
 function validateNumberInput(event) {
-  if (event.key === "e" || event.key === "+" || event.key === "-") {
+  if (event.key === "e" || event.key === "E" || event.key === "+" || event.key === "-") {
     return false;
   }
   else {

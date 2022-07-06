@@ -156,11 +156,11 @@ testUser.wallet.coins.push(ethereum);
 testUser.wallet.coins.push(tether);
 
 testUser.activityLog.transactionHistory.push
-(
-    new Transaction("Bitcoin", 19116, true, 1),
-    new Transaction("Ethereum", 1041, true, 2),
-    new Transaction("Tether", 1, true, 5)
-)
+    (
+        new Transaction("Bitcoin", 19116, true, 1),
+        new Transaction("Ethereum", 1041, true, 2),
+        new Transaction("Tether", 1, true, 5)
+    )
 
 const loggedUser = {
     user: testUser // default for now for testing purposes
