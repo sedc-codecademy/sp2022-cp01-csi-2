@@ -4,21 +4,26 @@
 }
 
 #sim-page-nav-bar {
-    width: 100%;
+    /* width: 100%; */
     height: 80vh;
-    border: 1px solid green;
+    border: 1px solid goldenrod;
 }
 
 .top-info-cards {
     width: 50%;
     height: 10vh;
-    border: 1px solid red;
+    border: 1px solid goldenrod;
 }
 
 #main-sim-page-div {
     width: 100%;
-    /* height: 68vh; */
-    border: 1px pink solid;
+    height: 65vh;
+    border: 1px goldenrod solid;
+    overflow: auto;
+}
+
+#main-sim-page-div::-webkit-scrollbar {
+    display: none;
 }
 
 /* ostajte go ova vaka ke se odkomentira koga ke se naprai hide/show na divovite kade sto ke se prikazuvaat site raboti vo simulatorot */
@@ -30,7 +35,7 @@
 
 .sim-nav-btn {
     width: 100%;
-    word-break: break-word;
+    /* word-break: break-word; */
     font-size: medium;
 
 }
@@ -39,7 +44,7 @@
 #sim-page-side-market {
     width: 100%;
     height: 80vh;
-    border: 1px solid yellow;
+    border: 1px solid goldenrod;
     overflow: hidden;
 }
 
@@ -146,9 +151,14 @@ div.marketTable>span:last-of-type:hover {
 }
 
 /* #endregion */
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+#floatingCvvNumber::-webkit-outer-spin-button,
+#floatingCvvNumber::-webkit-inner-spin-button,
+#floatingAmmount::-webkit-outer-spin-button,
+#floatingAmmount::-webkit-inner-spin-button,
+#floatingCardNumber::-webkit-outer-spin-button,
+#floatingCardNumber::-webkit-inner-spin-button,
+#floatingCryptoLimit::-webkit-outer-spin-button,
+#floatingCryptoLimit::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
@@ -187,10 +197,6 @@ input::-webkit-inner-spin-button {
 
 #accordion-container {
     height: 100%;
-}
-
-#portfolio {
-    overflow: auto !important
 }
 
 .top-card {
@@ -237,19 +243,16 @@ input::-webkit-inner-spin-button {
     color: red;
     text-shadow: 0px 0px 2px red;
 }
-#portfolio{
-    overflow:auto !important
-}
 
 /*walletStatistics ivana_stojadinovska*/
 
-.wsBtn{
+.wsBtn {
     font-size: 12px;
     margin: 0 5px;
     min-width: 60px;
 }
 
-.coinButtons{
+.coinButtons {
     background-color: black;
 }
 

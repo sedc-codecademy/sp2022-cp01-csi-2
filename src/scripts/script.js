@@ -188,9 +188,24 @@ const displayElements = {
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
-        await showSimulatorSideMarket()
-        await renderPortfolioTableAsync(loggedUser.user)
-        console.log(loggedUser.user);
+
+
+        if (loggedUser.user === null) {
+            alert("PLEASE LOGIN FIRST")
+            displayElements.showLoginRegisterPage()
+        }
+        else {
+            await showSimulatorSideMarket()
+            showCash()
+            if (loggedUser.user.wallet.coins.length == 0) {
+                console.log(loggedUser.user.wallet.coins);
+            }
+            else {
+                await renderPortfolioTableAsync(loggedUser.user)
+                calculateLossOrGain();
+                displayElements.showPortfolio();
+            }
+        }
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -217,11 +232,11 @@ const displayElements = {
         this.showElements(activityLogDiv)
         this.hideElements(portfolioDiv, walletSettingsDiv, walletStatsDiv)
     },
-    showLogInBtn: function (){
+    showLogInBtn: function () {
         this.showElements(loginBtn)
         this.hideElements(loggedUserDropdown)
     },
-    showUserDropDownBtn: function(){
+    showUserDropDownBtn: function () {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
     }
@@ -231,8 +246,8 @@ const cryptoInfo = {
     factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
-    stats: ["$2.1 trillion", "18.000", "70 million"],
-    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets"],
+    stats: ["$2.1 trillion", "18.000", "70 million", "1.6 billion"],
+    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets", "Bitcoin transactions"],
 
     facts: [
         "The maximum number of Bitcoins that can be mined is 21 million",
@@ -295,9 +310,26 @@ document.getElementById('statsBtn').addEventListener('click', async () => {
     displayElements.showStatisticsPage()
     await renderStatsPage()
 })
-document.getElementById('simulatorBtn').addEventListener('click', () => {
-    displayElements.showSimulatorPage();
-    displayElements.showPortfolio();
+document.getElementById('simulatorBtn').addEventListener('click', async () => {
+    // if (loggedUser.user === null) {
+    //     alert("PLEASE LOGIN FIRST")
+    //     displayElements.showLoginRegisterPage()
+    // }
+    // else {
+    //     if (loggedUser.user.wallet.coins.length == 0) {
+    //         console.log(loggedUser.user.wallet.coins);
+    //         displayElements.showSimulatorPage();
+    //         showCash()
+    //     }
+    //     else {
+    //         displayElements.showSimulatorPage();
+    //         await renderPortfolioTableAsync(loggedUser.user)
+    //         showCash()
+    //         calculateLossOrGain();
+    //         displayElements.showPortfolio();
+    //     }
+    // }
+    displayElements.showSimulatorPage()
 })
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
@@ -380,7 +412,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
     let message = document.getElementById("login-error-msg")
     let loader = document.getElementById("login-loader")
     let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
-    
+
     if (user === undefined) {
         message.innerText = "Invalid username or password"
     } else {
@@ -413,14 +445,16 @@ document.getElementById("register-btn").addEventListener("click", () => {
         let user = new User(userName, userPassword, userEmail);
         localStorageService.addUserToLocalStorage(user);
         message.innerText = ""
+        displayElements.showLoginRegisterPage()
     } else {
         message.innerText = "Invalid registration of a user"
     }
 })
 
 document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorageService.addUserToLocalStorage(loggedUser.user)
     loggedUser.user = null;
-    setTimeout(() => {        
+    setTimeout(() => {
         displayElements.showLogInBtn();
         displayElements.showHomePage();
     }, 500);
