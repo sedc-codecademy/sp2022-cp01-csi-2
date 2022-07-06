@@ -22,8 +22,13 @@ async function calculateLossOrGain() {
     sum += total;
   })
 
+  let formatedSum = formatter.format(sum)
+
   document.getElementById("top-cash-info").innerHTML =
-    `${sum > 0 ? `<strong class='text-success'>Profit: ${formatter.format(sum)}</strong>` : `<strong class='text-danger'>Loss: ${formatter.format(sum)}</strong>`}`
+    `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>` 
+    : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
+    : "<strong class='text-warning'>$0</strong>"  
+  }`  
 }
 //#endregion
 
@@ -200,9 +205,6 @@ async function showBuyModal(coinId, coinName) {
   })
 
 };
-
-
-
 
 //#endregion
 
@@ -661,10 +663,10 @@ function createActivityLogTable() {
     element.innerHTML += `
     <tr>
     <td scope="col" class="text-center">${transaction.name}</td>
-    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${formatter.format(transaction.price)}$</td>
     <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
     <td scope="col" class="text-center">${transaction.quantity}</td>
-    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    <td scope="col" class="text-center">${formatter.format(transaction.totalPrice)}</td>
     </tr>
     `
   }
