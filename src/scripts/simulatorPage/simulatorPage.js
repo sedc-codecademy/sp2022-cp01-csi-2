@@ -202,8 +202,6 @@ async function showBuyModal(coinId, coinName) {
 };
 
 
-
-
 //#endregion
 
 //-------------------------------------------------------------------------------------------------------
@@ -247,6 +245,7 @@ async function generatePortfolioTable(user) {
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
+  console.log(walletCoinsCurrentPrice);
   strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
@@ -263,7 +262,7 @@ async function generatePortfolioTable(user) {
     `);
 
   for (let coin of wallet.coins) {
-    let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y)
+    let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
     let oldCoinValue = (priceBoughtSum / coin.quantity)
     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
     let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
