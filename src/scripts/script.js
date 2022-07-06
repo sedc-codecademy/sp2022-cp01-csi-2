@@ -231,8 +231,8 @@ const cryptoInfo = {
     factsElement: document.querySelector('#extraInfoArticle .facts .carousel-inner'),
     statsElement: document.getElementById('extraInfoStats'),
 
-    stats: ["$2.1 trillion", "18.000", "70 million"],
-    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets"],
+    stats: ["$2.1 trillion", "18.000", "70 million", "1.6 billion"],
+    statsDescription: ["Total market cap", "Cryptocurrencies", "Blockchain Wallets", "Bitcoin transactions"],
 
     facts: [
         "The maximum number of Bitcoins that can be mined is 21 million",

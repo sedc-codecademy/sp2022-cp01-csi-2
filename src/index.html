@@ -73,12 +73,13 @@
                             <a class="btn btn-outline-warning text-light" id="loginBtn" href="#">Log In</a>
                         </li>
                         <div class="dropdown" hidden id="dropdown-logged-user">
-                            <a class="btn btn-outline-warning text-light dropdown-toggle" href="#" role="button" id="logged-user-name" data-bs-toggle="dropdown" aria-expanded="false">
-                              <!-- username -->
+                            <a class="btn btn-outline-warning text-light dropdown-toggle" href="#" role="button"
+                                id="logged-user-name" data-bs-toggle="dropdown" aria-expanded="false">
+                                <!-- username -->
                             </a>
-                          
+
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="logged-user-name">
-                              <li><a class="dropdown-item" href="#" id="logout-btn">Log Out</a></li>
+                                <li><a class="dropdown-item" href="#" id="logout-btn">Log Out</a></li>
                             </ul>
                         </div>
                     </ul>
@@ -88,6 +89,9 @@
     </header>
 
     <!-- <main id="homePageMainContent"> -->
+    <img src="assets/images/infoPage/blockChainBackground.png" id="blockchainBackgroundImg"
+        alt="blockchainBackgroundImg">
+
 
     <section id="homePageGeneralInfo" class="flexLayout generalInfo">
         <div class="d-flex justify-content-around">
@@ -130,7 +134,7 @@
         <!-- #region ILIJA => Create homepage extra info  -->
         <article id="extraInfoArticle">
             <div id="extraInfoArticleDiv">
-                <img id="worldMapImg" src="assets/images/worldMap.png" class="img-fluid" alt="world-map">
+                <!-- <img id="worldMapImg" src="assets/images/worldMap.png" class="img-fluid" alt="world-map"> -->
                 <h2 class="text-center"><span>.......</span><br> Life in the digital world.</h2>
                 <div id="extraInfoStats" class="text-center"></div>
                 <div id="carouselExampleFade" class="facts carousel slide carousel-fade" data-bs-ride="carousel"
@@ -207,11 +211,11 @@
             <!-- Here goes content for the Simulator page -->
             <div class="row">
                 <!-- #region  Aleksandar Dojchinovski => TODO: Create Secondary Navigation Bar And Top Info cards -->
-                
-                <div class="col-1 border border-warning">
+
+                <div id="sim-page-nav-bar" class="col-1">
                     <!-- here goes navigation buttons (portfolio, wallet settings, statistics, activity log) -->
                     <div class="nav flex-column">
-                        
+
                         <button type="button" class="btn btn btn-outline-warning my-2 sim-nav-btn nav-item"
                             id="portfolio-navbtn">
                             Portfolio
@@ -243,7 +247,7 @@
                         </div>
                         <div class="top-info-cards text-center">
                             <p class="pt-2 m-0 top-card text-warning lead">Wallet progress</p>
-                            <p id = "top-cash-info" class="lead mt-2"></p>
+                            <p id="top-cash-info" class="lead mt-2"></p>
                             <!-- here goes overall wallet progress  -->
                         </div>
                     </div>
@@ -352,23 +356,28 @@
                             <div class="container wsContainer">
                                 <div class="row wsButtonsContainer">
                                     <div class="col-8 wsButtons">
-                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn active" id="24hButton">24h</button>
-                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn" id="1weekButton">1w</button>
-                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn" id="1monthButton">1m</button>
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn active"
+                                            id="24hButton">24h</button>
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn"
+                                            id="1weekButton">1w</button>
+                                        <button class="col btn btn btn-outline-warning my-2 text-center wsBtn"
+                                            id="1monthButton">1m</button>
                                     </div>
-                                      <div class="dropdown col-4">
-                                        <button class="btn dropdown-toggle btn-outline-warning my-2" type="button" id="statisticCoins" data-bs-toggle="dropdown" aria-expanded="false">
-                                          Select Coin
+                                    <div class="dropdown col-4">
+                                        <button class="btn dropdown-toggle btn-outline-warning my-2" type="button"
+                                            id="statisticCoins" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Select Coin
                                         </button>
-                                        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="statisticCoins" id="statisticCoinsButtons">
+                                        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="statisticCoins"
+                                            id="statisticCoinsButtons">
                                             <!-- <button class="dropdown-item pickCoin" type="button">Coin one</button>
                                             <button class="dropdown-item pickCoin" type="button">Coin Two</button>
                                             <button class="dropdown-item pickCoin" type="button">Coin more</button> -->
                                         </div>
-                                      </div>
+                                    </div>
                                 </div>
                                 <div class="row wsStatisticsContainer" id="wsStatCont">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -380,15 +389,15 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                      <th scope="col" class="text-center">Name</th>
-                                      <th scope="col" class="text-center">Price</th>
-                                      <th scope="col" class="text-center">Side</th>
-                                      <th scope="col" class="text-center">Quantity</th>
-                                      <th scope="col" class="text-center">Total Price</th>
+                                        <th scope="col" class="text-center">Name</th>
+                                        <th scope="col" class="text-center">Price</th>
+                                        <th scope="col" class="text-center">Side</th>
+                                        <th scope="col" class="text-center">Quantity</th>
+                                        <th scope="col" class="text-center">Total Price</th>
                                     </tr>
-                                  </thead>
-                                  <tbody id="activity-log-table-content">
-                                  </tbody>
+                                </thead>
+                                <tbody id="activity-log-table-content">
+                                </tbody>
                             </table>
                         </div>
                         <!-- #endregion -->
@@ -436,7 +445,7 @@
                     <div class="form__message form__message--error text-danger" id="login-error-msg"></div>
                     <div class="form__input-group">
                         <input type="text" class="form__input" autofocus placeholder="Username" id="login-username">
-                        <div class="form__input-error-message" ></div>
+                        <div class="form__input-error-message"></div>
                     </div>
                     <div class="form__input-group">
                         <input type="password" class="form__input" autofocus placeholder="Password" id="login-password">
@@ -455,19 +464,23 @@
                     <h1 class="form__title">Register</h1>
                     <div class="form__message form__message--error" id="register-error-msg"></div>
                     <div class="form__input-group">
-                        <input type="text" required class="form__input" autofocus placeholder="Username" id="register-username">
+                        <input type="text" required class="form__input" autofocus placeholder="Username"
+                            id="register-username">
                         <div class="form__input-error-message"></div>
                     </div>
                     <div class="form__input-group">
-                        <input type="text" class="form__input" autofocus placeholder="Email Address" id="register-email">
+                        <input type="text" class="form__input" autofocus placeholder="Email Address"
+                            id="register-email">
                         <div class="form__input-error-message"></div>
                     </div>
                     <div class="form__input-group">
-                        <input type="password" class="form__input" autofocus placeholder="Password" id="register-password">
+                        <input type="password" class="form__input" autofocus placeholder="Password"
+                            id="register-password">
                         <div class="form__input-error-message"></div>
                     </div>
                     <div class="form__input-group">
-                        <input type="password" class="form__input" autofocus placeholder="Confirm password" id="register-confirm-password">
+                        <input type="password" class="form__input" autofocus placeholder="Confirm password"
+                            id="register-confirm-password">
                         <div class="form__input-error-message"></div>
                     </div>
                     <button class="form__button" type="button" id="register-btn">Register</button>
@@ -522,4 +535,5 @@
     <script src="scripts/simulatorPage/models.js"></script>
     <script src="scripts/simulatorPage/simulatorPage.js"></script>
 </body>
+
 </html>

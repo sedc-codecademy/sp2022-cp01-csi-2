@@ -17,12 +17,12 @@ async function calculateLossOrGain() {
 
   loggedUser.user.wallet.coins.forEach(coin => {
     let currentPriceSum = userCoinsCurrentPrice[coin.id].usd * coin.quantity
-    let boughtPriceSum = coin.priceBought.reduce((a,b) => a+b,0)
+    let boughtPriceSum = coin.priceBought.reduce((a, b) => a + b, 0)
     let total = currentPriceSum - boughtPriceSum;
     sum += total;
   })
 
-  document.getElementById("top-cash-info").innerHTML = 
+  document.getElementById("top-cash-info").innerHTML =
     `${sum > 0 ? `<strong class='text-success'>Profit: ${formatter.format(sum)}</strong>` : `<strong class='text-danger'>Loss: ${formatter.format(sum)}</strong>`}`
 }
 //#endregion
@@ -98,7 +98,11 @@ const showSimulatorSideMarket = async () => {
 sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
 sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
   if (e.target.innerText == "Buy") {
-    await showBuyModal(e.target.id, e.target.className)
+    if (loggedUser.user.wallet.coins.length >= loggedUser.user.wallet.maxCoins) {
+      alert("You've reached your limit of coins.\nFor buying more coins please adjust your coin limit in the wallet settings")
+    } else {
+      await showBuyModal(e.target.id, e.target.className)
+    }
   }
 })
 
@@ -119,7 +123,7 @@ async function showBuyModal(coinId, coinName) {
                   <br>
                   <label for="buyCoinsAmount">Number of coins</label>
                   <br>
-                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? "" : 1}" max="${maxCoinsPerCurrentCash}"></input>
+                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? 0 : 1}" max="${maxCoinsPerCurrentCash}"></input>
                   <p id="errorMessage" class="text-danger"></p>
                   <p style="font-size:medium" readonly>Available cash: ${loggedUser.user.wallet.cash} $</p>
                   <br>
@@ -142,21 +146,24 @@ async function showBuyModal(coinId, coinName) {
   // console.log(coinsAmountInput.value);
   buyBtn.disabled = true;
 
+  coinsAmountInput.addEventListener("keypress", (e) => {
+    if (!validateNumberInput(e)) {
+      e.preventDefault()
+    }
+  })
+
   coinsAmountInput.addEventListener('input', (e) => {
     e.preventDefault()
     let coinsAmountValue = parseFloat(coinsAmountInput.value)
     let errorMessage = document.getElementById('errorMessage')
     buyBtn.disabled = true;
-    if (coinsAmountInput.value == "") {
-      errorMessage.innerText = ""
-      totalPrice.value = ''
-    }
-    else if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
+
+    if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
       errorMessage.innerText = "Insuficient funds"
       totalPrice.value = ''
     }
-    else if (coinsAmountValue <= 0) {
-      errorMessage.innerText = "Not funny"
+    else if (coinsAmountValue == 0) {
+      errorMessage.innerText = "Cannot buy zero coins"
       totalPrice.value = ''
     }
     else {
@@ -188,7 +195,8 @@ async function showBuyModal(coinId, coinName) {
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
     createActivityLogTable()
     showCash()
-    displayElements.showSimulatorPage() // to update the portfolio
+    await calculateLossOrGain()
+    displayElements.showSimulatorPage() // to update the side market
   })
 
 };
@@ -259,7 +267,7 @@ async function generatePortfolioTable(user) {
     let oldCoinValue = (priceBoughtSum / coin.quantity)
     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
     let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
-    
+
     let changeInPercentage = 0;
     let increaseDecrease = ''
 
@@ -401,9 +409,9 @@ async function showTradeModal(coinId, coinName) {
     let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
     let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
     let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
-    
+
     // portfolio percentage 
-    let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a,b) => a+b,0)
+    let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a, b) => a + b, 0)
     console.log("bought price sum");
     console.log(boughtPriceSum);
     console.log("================");
@@ -418,11 +426,11 @@ async function showTradeModal(coinId, coinName) {
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice[coinId].usd, false, value));
     alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
     document.getElementById("newModal").remove();
-    
+
     loggedUser.user.wallet.cash += totalAmount;
     loggedUser.user.wallet.coins[indexOfCoin].priceBought.push(newBoughtPrice);
 
-    if(soldCoin.quantity == 0){
+    if (soldCoin.quantity == 0) {
       loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     }
     showCash()
@@ -495,7 +503,7 @@ const loaderContainer = document.getElementById("payment-loader");
 const cryptoLimitInput = document.getElementById("floatingCryptoLimit");
 
 function validateNumberInput(event) {
-  if (event.key === "e" || event.key === "+" || event.key === "-") {
+  if (event.key === "e" || event.key === "E" || event.key === "+" || event.key === "-") {
     return false;
   }
   else {
@@ -669,8 +677,7 @@ function createActivityLogTable() {
 // createStatisticsButtons(loggedUser.user.wallet.coins);
 //TODO: statistics for whole wallet
 
-function createStatisticsButtons(coins)
-{
+function createStatisticsButtons(coins) {
   let statisticCoinsButtons = document.getElementById("statisticCoinsButtons")
   statisticCoinsButtons.innerHTML = "";
   for (const coin of coins) {
@@ -681,114 +688,110 @@ function createStatisticsButtons(coins)
 
     btn.addEventListener("click", () =>
       setupStatiscicForCoin(coin),
-      ); 
+    );
   }
 }
 
-function setupStatiscicForCoin(coin)
-{
+function setupStatiscicForCoin(coin) {
   let btnOne = document.getElementById("24hButton");
   let btnTwo = document.getElementById("1weekButton");
   let btnThree = document.getElementById("1monthButton");
 
-  btnOne.removeEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
-  btnTwo.removeEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily");});
-  btnThree.removeEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily");});
+  btnOne.removeEventListener("click", () => { createStatiscicForCoin(coin, 1, "hourly") });
+  btnTwo.removeEventListener("click", () => { createStatiscicForCoin(coin, 7, "daily"); });
+  btnThree.removeEventListener("click", () => { createStatiscicForCoin(coin, 30, "daily"); });
 
-  btnOne.addEventListener("click", () => {createStatiscicForCoin(coin, 1, "hourly")});
-  btnTwo.addEventListener("click", () => {createStatiscicForCoin(coin, 7, "daily"), btnOne.classList.remove("active")});
-  btnThree.addEventListener("click", () => {createStatiscicForCoin(coin, 30, "daily"), btnOne.classList.remove("active")});
-  
+  btnOne.addEventListener("click", () => { createStatiscicForCoin(coin, 1, "hourly") });
+  btnTwo.addEventListener("click", () => { createStatiscicForCoin(coin, 7, "daily"), btnOne.classList.remove("active") });
+  btnThree.addEventListener("click", () => { createStatiscicForCoin(coin, 30, "daily"), btnOne.classList.remove("active") });
+
   document.getElementById("statisticCoins").innerHTML = coin.name
-  
+
   createStatiscicForCoin(coin, 1, "hourly");
 }
 
-function createStatiscicForCoin(coin, days, interval)
-{
+function createStatiscicForCoin(coin, days, interval) {
   url = `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=usd&days=${days}&interval=${interval}`;
   getDataForUserCoins(url, coin, days, interval);
 }
 
 function getDataForUserCoins(url, coin, days, interval) {
   fetch(url)
-      .then((response) => {
-          return response.json();
-      })
-      .then((out) => processDataForUserCoins(out, coin, days, interval))
-      .catch((err) => {
-          console.log("The request has failed!");
-          console.log(err);
-      })
+    .then((response) => {
+      return response.json();
+    })
+    .then((out) => processDataForUserCoins(out, coin, days, interval))
+    .catch((err) => {
+      console.log("The request has failed!");
+      console.log(err);
+    })
 }
 
-function processDataForUserCoins(data, coin, days, interval)
-{
+function processDataForUserCoins(data, coin, days, interval) {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
   // chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
 
-function createStatisticChart(chartData)
-{
+function createStatisticChart(chartData) {
   let wsStatCont = document.getElementById('wsStatCont');
-  if (wsStatCont.childElementCount >= 1){
+  if (wsStatCont.childElementCount >= 1) {
     wsStatCont.removeChild(wsStatCont.lastElementChild)
   }
   let chartCanvas;
   chartCanvas = document.createElement('canvas')
   wsStatCont.appendChild(chartCanvas);
 
-    new Chart(chartCanvas,
-        {
-            type: 'line',
-            data:
-            {
-                labels: chartData,
-                datasets: [{
-                    label: 'USD',
-                    data: chartData,
-                    fill: false,
-                    borderColor: 'rgba(255,185,1,255)',
-                    tension: 0.1
-                }]
+  new Chart(chartCanvas,
+    {
+      type: 'line',
+      data:
+      {
+        labels: chartData,
+        datasets: [{
+          label: 'USD',
+          data: chartData,
+          fill: false,
+          borderColor: 'rgba(255,185,1,255)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true
+          },
+        },
+        scales: {
+          y: {
+            ticks: {
+              display: true,
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true
-                    },
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            display: true,
-                        },
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 3
-                    }
-                }
+            grid: {
+              display: false,
+              drawBorder: false
             }
-        });
+          },
+          x: {
+            ticks: {
+              display: false
+            },
+            grid: {
+              display: false,
+              drawBorder: false
+            }
+          }
+        },
+        elements: {
+          point: {
+            radius: 3
+          }
+        }
+      }
+    });
 }
 
 //#endregion
@@ -797,7 +800,8 @@ document.getElementById("portfolio-navbtn").addEventListener("click", async () =
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => {
   displayElements.showWalletStatistics()
-  createStatisticsButtons(loggedUser.user.wallet.coins);})
+  createStatisticsButtons(loggedUser.user.wallet.coins);
+})
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()

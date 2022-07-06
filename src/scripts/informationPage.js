@@ -283,8 +283,6 @@ const displayInfoPage = () => {
     // Here you can change the info page font size 
     infoPage.style.fontSize = '14px'
     infoPage.innerHTML = ` 
-        <img src="assets/images/infoPage/blockChainBackground.png" id="blockchainBackgroundImg"
-            alt="blockchainBackgroundImg">
         <section id="blockchainSection">
             <article class="blockchainSection whatIsBlockchain">
                ${infoPageBlockchainContent.whatIsBlockchain}

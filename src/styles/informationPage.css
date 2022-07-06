@@ -5,6 +5,7 @@
     z-index: -1;
     background: transparent;
     position: fixed;
+    margin-top: 7%;
 }
 
 #infoCenterPage h2 {
