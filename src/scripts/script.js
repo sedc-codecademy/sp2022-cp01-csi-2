@@ -217,11 +217,11 @@ const displayElements = {
         this.showElements(activityLogDiv)
         this.hideElements(portfolioDiv, walletSettingsDiv, walletStatsDiv)
     },
-    showLogInBtn: function (){
+    showLogInBtn: function () {
         this.showElements(loginBtn)
         this.hideElements(loggedUserDropdown)
     },
-    showUserDropDownBtn: function(){
+    showUserDropDownBtn: function () {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
     }
@@ -297,6 +297,8 @@ document.getElementById('statsBtn').addEventListener('click', async () => {
 })
 document.getElementById('simulatorBtn').addEventListener('click', () => {
     displayElements.showSimulatorPage();
+    showCash()
+    calculateLossOrGain();
     displayElements.showPortfolio();
 })
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
@@ -380,7 +382,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
     let message = document.getElementById("login-error-msg")
     let loader = document.getElementById("login-loader")
     let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
-    
+
     if (user === undefined) {
         message.innerText = "Invalid username or password"
     } else {
@@ -420,7 +422,7 @@ document.getElementById("register-btn").addEventListener("click", () => {
 
 document.getElementById("logout-btn").addEventListener("click", () => {
     loggedUser.user = null;
-    setTimeout(() => {        
+    setTimeout(() => {
         displayElements.showLogInBtn();
         displayElements.showHomePage();
     }, 500);
