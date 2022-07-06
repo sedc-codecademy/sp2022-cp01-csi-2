@@ -258,8 +258,6 @@ div.marketTable>span:last-of-type:hover {
 
 .walletStatisticsTable{
     width: 100%;
-    /* border: 2px solid darkgoldenrod;
-    border-radius: 100px; */
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
@@ -269,13 +267,20 @@ div.marketTable>span:last-of-type:hover {
 }
 
 .walletStatisticsTH{
-    /* border-bottom: 4px solid darkgoldenrod; */
-    /* border-radius: 10px; */
     margin: 10px;
     border-collapse: collapse;
     border-radius: 30px;
-    border-style: hidden; /* hide standard table (collapsed) border */
+    border-style: hidden;
     box-shadow: 0 0 0 1px darkgoldenrod;
+}
+
+.walletStatisticsTotal{
+    border-collapse: collapse;
+    border-radius: 30px;
+    width: 100%;
+    border-style: hidden;
+    box-shadow: 0 0 0 3px darkgoldenrod;
+    text-align: center;
 }
 
 /*endRegion walletStatistics ivana_stojadinovska */

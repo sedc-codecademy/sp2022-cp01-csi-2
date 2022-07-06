@@ -734,7 +734,7 @@ function getDataForUserCoins(url, coin, days, interval) {
 function processDataForUserCoins(data, coin, days, interval)
 {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.priceBought[0] * coin.quantity)
+  chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
@@ -821,7 +821,7 @@ function processDataForWallet(data, coins){
   wsContainer.appendChild(div);
 
   let wsTotalTable = document.createElement('table');
-  wsTotalTable.classList.add("walletStatisticsTable");
+  wsTotalTable.classList.add("walletStatisticsTotal");
   div.appendChild(wsTotalTable);
 
   let wsTable = document.createElement('table');
@@ -841,7 +841,8 @@ function processDataForWallet(data, coins){
 
   for (const coin of coins)
   {
-    let valueBought = coin.priceBought[0] * coin.quantity;
+    console.log(coin.priceBought);
+    let valueBought = coin.priceBought * coin.quantity;
     let valueCurrent = data[coin.id].usd * coin.quantity;
 
     totalValueBought += valueBought;
@@ -853,7 +854,7 @@ function processDataForWallet(data, coins){
     tableData.insertCell().innerHTML = coin.quantity
     tableData.insertCell().innerHTML = formatter.format(valueBought)
     tableData.insertCell().innerHTML = formatter.format(valueCurrent)
-    tableData.insertCell().innerHTML = formatter.format(valueBought - valueCurrent)
+    tableData.insertCell().innerHTML = formatter.format(valueCurrent - valueBought)
   }
 
   let walletData = wsTotalTable.insertRow();
@@ -861,8 +862,8 @@ function processDataForWallet(data, coins){
   walletData.insertCell().innerHTML = "Total Wallet Value Current"
 
   let walletValue = wsTotalTable.insertRow();
-  walletValue.insertCell().innerHTML = totalValueBought
-  walletValue.insertCell().innerHTML = totalValueCurrent
+  walletValue.insertCell().innerHTML = formatter.format(totalValueBought)
+  walletValue.insertCell().innerHTML = formatter.format(totalValueCurrent)
 }
 
 //#endregion
