@@ -254,28 +254,12 @@ async function generatePortfolioTable(user) {
     <tbody>
     `);
 
-  // for (let coin of wallet.coins) {
-  //   let value = Math.round(((walletCoinsCurrentPrice[coin.id].usd * coin.quantity) + Number.EPSILON) * 10) / 10;
-  //   let changeInPercent = Math.round(((walletCoinsCurrentPrice[coin.id].usd - coin.priceBought) / 100) * 10) / 10;
-
-  //   //console.log(walletCoinsCurrentPrice[coin.id].usd)
-  //   strArr.push(`<tr id="portfolioData">
-  //     <td class="align-middle text-center">${counter++}</td>
-  //     <td class="align-middle text-center">${coin.name}</td>
-  //     <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
-  //     <td class="align-middle text-center">$${value.toLocaleString('en-US')}</td>
-  //     <td class="align-middle text-center">${changeInPercent > 0
-  //       ? "<strong class='increase'>↑</strong>" : changeInPercent < 0 ? "<strong class='decrease'>↓</strong>" : " "}&nbsp &nbsp${changeInPercent}% </td></td>
-  //     <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
-  //     </tr>`);
-  // }
-
   for (let coin of wallet.coins) {
     let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y)
     let oldCoinValue = (priceBoughtSum / coin.quantity)
     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
-
-    let currentValue = 0;
+    let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
+    
     let changeInPercentage = 0;
     let increaseDecrease = ''
 
@@ -291,20 +275,6 @@ async function generatePortfolioTable(user) {
       changeInPercentage = 0
       increaseDecrease = ""
     }
-    currentValue = oldCoinValue * changeInPercentage
-    // let value = Math.round((() + Number.EPSILON) * 10) / 10;
-
-    let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
-
-    // console.log(coin);
-    // console.log("Coin amount " + coin.quantity);
-    // console.log("Price bought sum  " + priceBoughtSum);
-    // console.log("Coins old value  " + oldCoinValue);
-    // console.log("");
-    // console.log("Current market price " + currentMarketPrice);
-    // console.log("Current wallet value " + currentValue);
-    // console.log("Change in percentage " + changeInPercentage);
-    // console.log("=======================================");
 
     strArr.push(`<tr id="portfolioData">
       <td class="align-middle text-center">${counter++}</td>
@@ -319,11 +289,6 @@ async function generatePortfolioTable(user) {
   let content = strArr.join("");
   return content;
 };
-
-
-
-
-
 
 //Function for rendering portfolio table
 async function renderPortfolioTableAsync(user) {
@@ -826,9 +791,6 @@ function createStatisticChart(chartData)
         });
 }
 
-
-
-
 //#endregion
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
@@ -840,5 +802,3 @@ document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()
 })
-
-
