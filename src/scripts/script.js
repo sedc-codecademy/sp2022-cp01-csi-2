@@ -21,12 +21,12 @@ function tcCreateElements(name, short, price, change, graph) {
 
     let tcPrice = document.createElement('h4')
     tcPrice.classList.add("trendingCryptoCurentPrice")
-    tcPrice.innerText = price + " $";
+    tcPrice.innerText = formatter.format(price);
     tcDataContainer.appendChild(tcPrice);
 
     let tcChange = document.createElement('h4')
     tcChange.classList.add("tendingCryptoPriceChange")
-    tcChange.innerText = change + " %";
+    tcChange.innerText = formatter.format(change);
     tcDataContainer.appendChild(tcChange);
 
     tcChange.style.color = tcChange.innerText.charAt(0) == "-" ? "red" : "green";

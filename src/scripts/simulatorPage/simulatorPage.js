@@ -672,12 +672,15 @@ function createActivityLogTable() {
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 
-// createStatisticsButtons(loggedUser.user.wallet.coins);
 //TODO: statistics for whole wallet
 
 function createStatisticsButtons(coins) {
   let statisticCoinsButtons = document.getElementById("statisticCoinsButtons")
-  statisticCoinsButtons.innerHTML = "";
+
+  while (statisticCoinsButtons.firstChild) {
+    statisticCoinsButtons.removeChild(statisticCoinsButtons.firstChild);
+  }
+  
   for (const coin of coins) {
     let btn = document.createElement("button")
     btn.classList.add("dropdown-item")
@@ -688,6 +691,7 @@ function createStatisticsButtons(coins) {
       setupStatiscicForCoin(coin),
     );
   }
+  createWalletStatistics();
 }
 
 function setupStatiscicForCoin(coin) {
@@ -715,19 +719,22 @@ function createStatiscicForCoin(coin, days, interval) {
 
 function getDataForUserCoins(url, coin, days, interval) {
   fetch(url)
-    .then((response) => {
-      return response.json();
-    })
-    .then((out) => processDataForUserCoins(out, coin, days, interval))
-    .catch((err) => {
-      console.log("The request has failed!");
-      console.log(err);
-    })
+      .then((response) => {
+
+          return response.json();
+      })
+      .then((out) => processDataForUserCoins(out, coin, days, interval))
+      .catch((err) => {
+          console.log("The request has failed!");
+          console.log(err);
+      })
 }
 
-function processDataForUserCoins(data, coin, days, interval) {
+
+function processDataForUserCoins(data, coin, days, interval)
+{
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  // chartData.unshift(coin.priceBought * coin.quantity)
+  chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
@@ -792,14 +799,79 @@ function createStatisticChart(chartData) {
     });
 }
 
+async function createWalletStatistics()
+{
+  let data = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
+  processDataForWallet(data, loggedUser.user.wallet.coins);
+}
+
+function processDataForWallet(data, coins){
+
+  let wsContainer = document.getElementById('wallet-stats');
+
+  let div = document.getElementById("table-div");
+
+  if(div !== null)
+  {
+    wsContainer.removeChild(div) 
+  }
+
+  div = document.createElement('div');
+  div.id = "table-div";
+  wsContainer.appendChild(div);
+
+  let wsTotalTable = document.createElement('table');
+  wsTotalTable.classList.add("walletStatisticsTotal");
+  div.appendChild(wsTotalTable);
+
+  let wsTable = document.createElement('table');
+  wsTable.classList.add("walletStatisticsTable");
+  div.appendChild(wsTable);
+
+  let tableData = wsTable.insertRow()
+  tableData.classList.add("walletStatisticsTH");
+  tableData.insertCell().innerHTML = "Coin Name"
+  tableData.insertCell().innerHTML = "Quantity"
+  tableData.insertCell().innerHTML = "Bought Value"
+  tableData.insertCell().innerHTML = "Current Value"
+  tableData.insertCell().innerHTML = "+/-"
+
+  let totalValueBought = 0;
+  let totalValueCurrent = 0;
+
+  for (const coin of coins)
+  {
+    console.log(coin.priceBought);
+    let valueBought = coin.priceBought * coin.quantity;
+    let valueCurrent = data[coin.id].usd * coin.quantity;
+
+    totalValueBought += valueBought;
+    totalValueCurrent += valueCurrent;
+
+    let tableData = wsTable.insertRow()
+    tableData.classList.add("walletStatisticsTH");
+    tableData.insertCell().innerHTML = coin.name
+    tableData.insertCell().innerHTML = coin.quantity
+    tableData.insertCell().innerHTML = formatter.format(valueBought)
+    tableData.insertCell().innerHTML = formatter.format(valueCurrent)
+    tableData.insertCell().innerHTML = formatter.format(valueCurrent - valueBought)
+  }
+
+  let walletData = wsTotalTable.insertRow();
+  walletData.insertCell().innerHTML = "Total Wallet Value Bought"
+  walletData.insertCell().innerHTML = "Total Wallet Value Current"
+
+  let walletValue = wsTotalTable.insertRow();
+  walletValue.insertCell().innerHTML = formatter.format(totalValueBought)
+  walletValue.insertCell().innerHTML = formatter.format(totalValueCurrent)
+}
+
 //#endregion
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
-document.getElementById("walletstatistics-navbtn").addEventListener("click", () => {
-  displayElements.showWalletStatistics()
-  createStatisticsButtons(loggedUser.user.wallet.coins);
-})
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => 
+  { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins)})
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()

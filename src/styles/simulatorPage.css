@@ -256,6 +256,33 @@ div.marketTable>span:last-of-type:hover {
     background-color: black;
 }
 
+.walletStatisticsTable{
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 17px;
+    border-collapse: collapse;
+}
+
+.walletStatisticsTH{
+    margin: 10px;
+    border-collapse: collapse;
+    border-radius: 30px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px darkgoldenrod;
+}
+
+.walletStatisticsTotal{
+    border-collapse: collapse;
+    border-radius: 30px;
+    width: 100%;
+    border-style: hidden;
+    box-shadow: 0 0 0 3px darkgoldenrod;
+    text-align: center;
+}
+
 /*endRegion walletStatistics ivana_stojadinovska */
 
 #availableCoins {
