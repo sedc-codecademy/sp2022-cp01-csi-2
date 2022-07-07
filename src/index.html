@@ -248,7 +248,8 @@
                         </div>
                         <div class="top-info-cards text-center">
                             <p class="pt-2 m-0 top-card text-warning lead">Unrealized Gain/Loss</p>
-                            <p id="top-cash-info" class="lead mt-2">
+                            <p id="top-cash-info" class="lead mt-2 text-warning">
+                                $0
                                 <!-- here goes overall wallet progress  -->
                             </p>
                         </div>
@@ -285,14 +286,14 @@
                                             <form action="" id="payment-form">
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
-                                                        id="floatingAmmount" placeholder="Bob Bobsky" required min="0">
+                                                        id="floatingAmmount" placeholder="Bob Bobsky" required min="15" max="10000">
                                                     <label for="floatingAmmount">Ammount</label>
                                                     <p id="ammount-error-text" class="text-danger"></p>
                                                 </div>
 
                                                 <div class="form-floating mb-3">
                                                     <input type="text" class="form-control bg-dark text-light"
-                                                        id="floatingName" placeholder="Bob Bobsky" required>
+                                                        id="floatingName" placeholder="Bob Bobsky" required minlength="3">
                                                     <label for="floatingName">Card holder name</label>
                                                     <p id="name-error-text" class="text-danger"></p>
                                                 </div>
@@ -300,14 +301,14 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
                                                         id="floatingCardNumber" placeholder="1111-2222-3333-4444"
-                                                        required min="0">
+                                                        required min="1000000000000000">
                                                     <label for="floatingCardNumber">Card number</label>
                                                     <p id="cardNumber-error-text" class="text-danger"></p>
                                                 </div>
 
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control bg-dark text-light"
-                                                        id="floatingCvvNumber" placeholder="123" required min="0">
+                                                        id="floatingCvvNumber" placeholder="123" required min="100">
                                                     <label for="floatingCvvNumber">CVV number</label>
                                                     <p id="cvv-error-text" class="text-danger"></p>
                                                 </div>
@@ -482,6 +483,7 @@
                         <div class="form__input-error-message"></div>
                     </div>
                     <button class="form__button" type="button" id="register-btn">Register</button>
+                    <div id="register-loader" class="text-center"></div>
                     <p class="form__text">
                         <a class="form__link" href="./" id="linkLogin">Already have an account? Sign in</a>
                     </p>

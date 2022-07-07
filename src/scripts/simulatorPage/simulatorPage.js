@@ -10,7 +10,7 @@ function showCash() {
   document.getElementById("total-cash").innerHTML = formatter.format(loggedUser.user.wallet.cash)
 }
 
-// set the overall wallet progress ,
+// set the overall wallet progress
 async function calculateLossOrGain() {
   let userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   let sum = 0;
@@ -28,7 +28,7 @@ async function calculateLossOrGain() {
     `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
       : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
         : "<strong class='text-warning'>$0</strong>"
-    }`
+  }`
 }
 //#endregion
 
@@ -111,7 +111,6 @@ sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
   }
 })
 
-
 async function showBuyModal(coinId, coinName) {
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
   let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
@@ -179,7 +178,6 @@ async function showBuyModal(coinId, coinName) {
 
   })
 
-
   buyBtn.addEventListener('click', async (e) => {
     const totalBuyPrice = parseFloat(totalPrice.value)
     const amountOfCoins = parseFloat(coinsAmountInput.value)
@@ -212,14 +210,7 @@ async function showBuyModal(coinId, coinName) {
 //-------------------------------------------------------------------------------------------------------
 //#region  Aneta Stankovska => TODO: Create Portfolio in Simulator
 
-//addCoinsToPinkUser();
-
 let portfolioHelpers = {};
-
-// const pinkUser = localStorageService
-//   .getAllUsersFromLocalStorage()
-//   .find((e) => e.username == "pinkpanther");
-// addCoinsToPinkUser();
 
 function getUserCoinIds(user) {
   let userCoins = user.wallet.coins.map((x) => x.id);
@@ -521,11 +512,11 @@ ammountInput.addEventListener("focusout", () => {
 
   if (ammountInput.value >= 0 && ammountInput.value < 15 || ammountInput.value > 10000) {
     ammountErrorText.innerText = "Enter amount between 15$ and 10.000$"
-    confirmAddFundsBtn.disabled = true;
+    ammountInput.setCustomValidity("Enter amount between 15$ and 10.000$")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     ammountErrorText.innerText = "";
+    ammountInput.setCustomValidity("")
   }
 })
 
@@ -542,15 +533,15 @@ nameInput.addEventListener("focusout", () => {
 
   if (nameInput.value.length < 3) {
     errortext.innerText = "name must have more then 2 characters"
-    confirmAddFundsBtn.disabled = true;
+    nameInput.setCustomValidity("name must have more then 2 characters")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    nameInput.setCustomValidity("")
   }
 })
 
-cardNumberInput.addEventListener("keydown", function (e) {
+cardNumberInput.addEventListener("keypress", function (e) {
   if (!validateNumberInput(e) || cardNumberInput.value.length === 16) {
     e.preventDefault()
   }
@@ -561,11 +552,11 @@ cardNumberInput.addEventListener("focusout", () => {
 
   if (cardNumberInput.value.length > 0 && cardNumberInput.value.length < 16) {
     errortext.innerText = "enter valid card number. Ex: 1111 2222 3333 4444"
-    confirmAddFundsBtn.disabled = true;
+    cardNumberInput.setCustomValidity("enter valid card number. Ex: 1111 2222 3333 4444")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    cardNumberInput.setCustomValidity("")
   }
 })
 
@@ -580,16 +571,16 @@ cvvNumberInput.addEventListener("focusout", () => {
 
   if (cvvNumberInput.value.length > 0 && cvvNumberInput.value.length < 3) {
     errortext.innerText = "enter valid cvv number. Ex: 123"
-    confirmAddFundsBtn.disabled = true;
+    cvvNumberInput.setCustomValidity("enter valid cvv number. Ex: 123")
   }
   else {
-    confirmAddFundsBtn.disabled = false;
     errortext.innerText = "";
+    cvvNumberInput.setCustomValidity("")
   }
 })
 
 confirmAddFundsBtn.addEventListener("click", async () => {
-  if (cvvNumberInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
+  if (cvvNumberInput.checkValidity() && nameInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
     let cashAmmount = parseInt(ammountInput.value);
     await showLoaderAsync(loaderContainer, 2000)
     loggedUser.user.wallet.cash += cashAmmount;
@@ -597,9 +588,9 @@ confirmAddFundsBtn.addEventListener("click", async () => {
     document.getElementById("payment-form").reset()
     loaderContainer.innerHTML = "succesfully added funds to your wallet!"
     localStorageService.addUserToLocalStorage(loggedUser.user);
-    console.log(loggedUser.user);
+    showCash();
   }
-  else {
+  else{
     document.getElementById("payment-form").reportValidity();
   }
 })
@@ -730,11 +721,10 @@ function getDataForUserCoins(url, coin, days, interval) {
       })
 }
 
-
 function processDataForUserCoins(data, coin, days, interval)
 {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.priceBought * coin.quantity)
+  chartData.unshift(coin.priceBought.reduce((a,b) => a + b, 0))
 
   createStatisticChart(chartData);
 }
@@ -842,7 +832,7 @@ function processDataForWallet(data, coins){
   for (const coin of coins)
   {
     console.log(coin.priceBought);
-    let valueBought = coin.priceBought * coin.quantity;
+    let valueBought = coin.priceBought.reduce((a,b) => a + b, 0);
     let valueCurrent = data[coin.id].usd * coin.quantity;
 
     totalValueBought += valueBought;
