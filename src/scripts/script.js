@@ -185,7 +185,7 @@ const displayElements = {
     },
     showStatisticsPage: function () {
         this.showElements(statisticsPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
     },
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
