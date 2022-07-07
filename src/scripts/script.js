@@ -244,15 +244,15 @@ const displayElements = {
     },
     showPrivacyPolicy: function() {
         this.showElements(privacyPolicy, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices, infoCenterPage)
     },
     showAbout: function() {
         this.showElements(about, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices, infoCenterPage)
     },
     showOurServices: function() {
         this.showElements(ourServices, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, infoCenterPage)
     }
 }
 
