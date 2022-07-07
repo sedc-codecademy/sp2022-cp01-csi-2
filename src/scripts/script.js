@@ -452,7 +452,7 @@ document.getElementById("aboutBtn").addEventListener('click', () => {
 })
 
 document.getElementById("ourServicesBtn").addEventListener('click', () => {
-    displayElements.showOurServices();
+    displayElements.showOurServices()})
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
     e.preventDefault()
