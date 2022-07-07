@@ -161,6 +161,7 @@ const loginRegisterPage = document.getElementById('loginRegisterPage')
 const otherPagesDiv = document.getElementById('otherPagesDiv')
 const privacyPolicy = document.getElementById("privacyPolicy")
 const about = document.getElementById("about")
+const ourServices = document.getElementById("ourServices")
 
 // simulator page elements
 const portfolioDiv = document.getElementById("portfolio");
@@ -211,12 +212,12 @@ const displayElements = {
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, ourServices)
         displayInfoPage()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage, privacyPolicy, about, ourServices)
     },
     showPortfolio: function () {
         this.showElements(portfolioDiv)
@@ -244,11 +245,15 @@ const displayElements = {
     },
     showPrivacyPolicy: function() {
         this.showElements(privacyPolicy, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices)
     },
     showAbout: function() {
         this.showElements(about, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices)
+    },
+    showOurServices: function() {
+        this.showElements(ourServices, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about)
     }
 }
 
@@ -476,4 +481,8 @@ document.getElementById("privacyPolicyBtn").addEventListener('click', () => {
 
 document.getElementById("aboutBtn").addEventListener('click', () => {
     displayElements.showAbout();
+})
+
+document.getElementById("ourServicesBtn").addEventListener('click', () => {
+    displayElements.showOurServices();
 })

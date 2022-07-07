@@ -140,7 +140,7 @@ async function showSmallChartAsync(coinId) {
 async function showStatisticsTable() {
     let statisticsTableContainer = document.getElementById("statisticsTableContainer");
     document.getElementById("prevNextNav").style.visibility = "collapse";
-    await showLoaderAsync(statisticsTableContainer, 2000);
+    await showLoaderAsync(statisticsTableContainer, 1000);
     data = await getCoinsDataAsync(helpers.statisticsTable.statisticsTableUrl + `&per_page=${helpers.statisticsTable.perPage}` + `&page=${helpers.statisticsTable.currentPage}`);
     statisticsTableContainer.innerHTML = renderStatisticsTable(data);
     document.getElementById("prevNextNav").style.visibility = "visible";
