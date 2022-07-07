@@ -22,8 +22,13 @@ async function calculateLossOrGain() {
     sum += total;
   })
 
+  let formatedSum = formatter.format(sum)
+
   document.getElementById("top-cash-info").innerHTML =
-    `${sum > 0 ? `<strong class='text-success'>Profit: ${formatter.format(sum)}</strong>` : `<strong class='text-danger'>Loss: ${formatter.format(sum)}</strong>`}`
+    `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
+      : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
+        : "<strong class='text-warning'>$0</strong>"
+    }`
 }
 //#endregion
 
@@ -169,7 +174,7 @@ async function showBuyModal(coinId, coinName) {
     else {
       errorMessage.innerText = ""
       buyBtn.disabled = false
-      totalPrice.value = (coinsAmountValue * coinCurrentPrice).toFixed(7)
+      totalPrice.value = parseFloat(coinsAmountValue * coinCurrentPrice).toFixed(7)
     }
 
   })
@@ -196,11 +201,11 @@ async function showBuyModal(coinId, coinName) {
     createActivityLogTable()
     showCash()
     await calculateLossOrGain()
+    await generatePortfolioTable(loggedUser.user)
     displayElements.showSimulatorPage() // to update the side market
   })
 
 };
-
 
 //#endregion
 
@@ -411,13 +416,7 @@ async function showTradeModal(coinId, coinName) {
 
     // portfolio percentage 
     let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a, b) => a + b, 0)
-    console.log("bought price sum");
-    console.log(boughtPriceSum);
-    console.log("================");
     let averagePricePerCoin = boughtPriceSum / loggedUser.user.wallet.coins[indexOfCoin].quantity
-    console.log("average price per coin");
-    console.log(averagePricePerCoin);
-    console.log("================");
     let newBoughtPrice = averagePricePerCoin * parseFloat(value) * -1
     // portfolio percentage 
 
@@ -432,9 +431,10 @@ async function showTradeModal(coinId, coinName) {
     if (soldCoin.quantity == 0) {
       loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     }
-    showCash()
-    await calculateLossOrGain()
+    // showCash()
+    // await calculateLossOrGain()
     await renderPortfolioTableAsync(loggedUser.user);
+    displayElements.showSimulatorPage();
   })
 };
 
@@ -660,10 +660,10 @@ function createActivityLogTable() {
     element.innerHTML += `
     <tr>
     <td scope="col" class="text-center">${transaction.name}</td>
-    <td scope="col" class="text-center">${transaction.price}$</td>
+    <td scope="col" class="text-center">${formatter.format(transaction.price)}$</td>
     <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
     <td scope="col" class="text-center">${transaction.quantity}</td>
-    <td scope="col" class="text-center">${transaction.totalPrice}$</td>
+    <td scope="col" class="text-center">${formatter.format(transaction.totalPrice)}</td>
     </tr>
     `
   }
@@ -673,12 +673,15 @@ function createActivityLogTable() {
 //-------------------------------------------------------------------------------------------------------
 //#region  Ivana Stojadinovska => TODO: Create User statistics
 
-// createStatisticsButtons(loggedUser.user.wallet.coins);
 //TODO: statistics for whole wallet
 
 function createStatisticsButtons(coins) {
   let statisticCoinsButtons = document.getElementById("statisticCoinsButtons")
-  statisticCoinsButtons.innerHTML = "";
+
+  while (statisticCoinsButtons.firstChild) {
+    statisticCoinsButtons.removeChild(statisticCoinsButtons.firstChild);
+  }
+  
   for (const coin of coins) {
     let btn = document.createElement("button")
     btn.classList.add("dropdown-item")
@@ -689,6 +692,7 @@ function createStatisticsButtons(coins) {
       setupStatiscicForCoin(coin),
     );
   }
+  createWalletStatistics();
 }
 
 function setupStatiscicForCoin(coin) {
@@ -716,19 +720,22 @@ function createStatiscicForCoin(coin, days, interval) {
 
 function getDataForUserCoins(url, coin, days, interval) {
   fetch(url)
-    .then((response) => {
-      return response.json();
-    })
-    .then((out) => processDataForUserCoins(out, coin, days, interval))
-    .catch((err) => {
-      console.log("The request has failed!");
-      console.log(err);
-    })
+      .then((response) => {
+
+          return response.json();
+      })
+      .then((out) => processDataForUserCoins(out, coin, days, interval))
+      .catch((err) => {
+          console.log("The request has failed!");
+          console.log(err);
+      })
 }
 
-function processDataForUserCoins(data, coin, days, interval) {
+
+function processDataForUserCoins(data, coin, days, interval)
+{
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  // chartData.unshift(coin.priceBought * coin.quantity)
+  chartData.unshift(coin.priceBought * coin.quantity)
 
   createStatisticChart(chartData);
 }
@@ -793,14 +800,79 @@ function createStatisticChart(chartData) {
     });
 }
 
+async function createWalletStatistics()
+{
+  let data = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
+  processDataForWallet(data, loggedUser.user.wallet.coins);
+}
+
+function processDataForWallet(data, coins){
+
+  let wsContainer = document.getElementById('wallet-stats');
+
+  let div = document.getElementById("table-div");
+
+  if(div !== null)
+  {
+    wsContainer.removeChild(div) 
+  }
+
+  div = document.createElement('div');
+  div.id = "table-div";
+  wsContainer.appendChild(div);
+
+  let wsTotalTable = document.createElement('table');
+  wsTotalTable.classList.add("walletStatisticsTotal");
+  div.appendChild(wsTotalTable);
+
+  let wsTable = document.createElement('table');
+  wsTable.classList.add("walletStatisticsTable");
+  div.appendChild(wsTable);
+
+  let tableData = wsTable.insertRow()
+  tableData.classList.add("walletStatisticsTH");
+  tableData.insertCell().innerHTML = "Coin Name"
+  tableData.insertCell().innerHTML = "Quantity"
+  tableData.insertCell().innerHTML = "Bought Value"
+  tableData.insertCell().innerHTML = "Current Value"
+  tableData.insertCell().innerHTML = "+/-"
+
+  let totalValueBought = 0;
+  let totalValueCurrent = 0;
+
+  for (const coin of coins)
+  {
+    console.log(coin.priceBought);
+    let valueBought = coin.priceBought * coin.quantity;
+    let valueCurrent = data[coin.id].usd * coin.quantity;
+
+    totalValueBought += valueBought;
+    totalValueCurrent += valueCurrent;
+
+    let tableData = wsTable.insertRow()
+    tableData.classList.add("walletStatisticsTH");
+    tableData.insertCell().innerHTML = coin.name
+    tableData.insertCell().innerHTML = coin.quantity
+    tableData.insertCell().innerHTML = formatter.format(valueBought)
+    tableData.insertCell().innerHTML = formatter.format(valueCurrent)
+    tableData.insertCell().innerHTML = formatter.format(valueCurrent - valueBought)
+  }
+
+  let walletData = wsTotalTable.insertRow();
+  walletData.insertCell().innerHTML = "Total Wallet Value Bought"
+  walletData.insertCell().innerHTML = "Total Wallet Value Current"
+
+  let walletValue = wsTotalTable.insertRow();
+  walletValue.insertCell().innerHTML = formatter.format(totalValueBought)
+  walletValue.insertCell().innerHTML = formatter.format(totalValueCurrent)
+}
+
 //#endregion
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
-document.getElementById("walletstatistics-navbtn").addEventListener("click", () => {
-  displayElements.showWalletStatistics()
-  createStatisticsButtons(loggedUser.user.wallet.coins);
-})
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => 
+  { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins)})
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()

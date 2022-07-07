@@ -21,12 +21,12 @@ function tcCreateElements(name, short, price, change, graph) {
 
     let tcPrice = document.createElement('h4')
     tcPrice.classList.add("trendingCryptoCurentPrice")
-    tcPrice.innerText = price + " $";
+    tcPrice.innerText = formatter.format(price);
     tcDataContainer.appendChild(tcPrice);
 
     let tcChange = document.createElement('h4')
     tcChange.classList.add("tendingCryptoPriceChange")
-    tcChange.innerText = change + " %";
+    tcChange.innerText = formatter.format(change);
     tcDataContainer.appendChild(tcChange);
 
     tcChange.style.color = tcChange.innerText.charAt(0) == "-" ? "red" : "green";
@@ -189,10 +189,25 @@ const displayElements = {
     },
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage, privacyPolicy, about)
-        await showSimulatorSideMarket()
-        await renderPortfolioTableAsync(loggedUser.user)
-        console.log(loggedUser.user);
+        this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
+
+
+        if (loggedUser.user === null) {
+            alert("PLEASE LOGIN FIRST")
+            displayElements.showLoginRegisterPage()
+        }
+        else {
+            await showSimulatorSideMarket()
+            showCash()
+            if (loggedUser.user.wallet.coins.length == 0) {
+                console.log(loggedUser.user.wallet.coins);
+            }
+            else {
+                await renderPortfolioTableAsync(loggedUser.user)
+                calculateLossOrGain();
+                displayElements.showPortfolio();
+            }
+        }
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -305,11 +320,26 @@ document.getElementById('statsBtn').addEventListener('click', async () => {
     displayElements.showStatisticsPage()
     await renderStatsPage()
 })
-document.getElementById('simulatorBtn').addEventListener('click', () => {
-    displayElements.showSimulatorPage();
-    showCash()
-    calculateLossOrGain();
-    displayElements.showPortfolio();
+document.getElementById('simulatorBtn').addEventListener('click', async () => {
+    // if (loggedUser.user === null) {
+    //     alert("PLEASE LOGIN FIRST")
+    //     displayElements.showLoginRegisterPage()
+    // }
+    // else {
+    //     if (loggedUser.user.wallet.coins.length == 0) {
+    //         console.log(loggedUser.user.wallet.coins);
+    //         displayElements.showSimulatorPage();
+    //         showCash()
+    //     }
+    //     else {
+    //         displayElements.showSimulatorPage();
+    //         await renderPortfolioTableAsync(loggedUser.user)
+    //         showCash()
+    //         calculateLossOrGain();
+    //         displayElements.showPortfolio();
+    //     }
+    // }
+    displayElements.showSimulatorPage()
 })
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
@@ -425,12 +455,14 @@ document.getElementById("register-btn").addEventListener("click", () => {
         let user = new User(userName, userPassword, userEmail);
         localStorageService.addUserToLocalStorage(user);
         message.innerText = ""
+        displayElements.showLoginRegisterPage()
     } else {
         message.innerText = "Invalid registration of a user"
     }
 })
 
 document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorageService.addUserToLocalStorage(loggedUser.user)
     loggedUser.user = null;
     setTimeout(() => {
         displayElements.showLogInBtn();

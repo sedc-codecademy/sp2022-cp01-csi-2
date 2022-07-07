@@ -141,7 +141,7 @@ class Transaction {
     }
 }
 
-let sedcCoin = new Coin(1, "SedcCoin", 2500, 10);
+
 let bitcoin = new Coin("bitcoin", "Bitcoin", 1);
 bitcoin.priceBought.push(19116)
 let ethereum = new Coin("ethereum", "Ethereum", 2);
@@ -163,35 +163,13 @@ testUser.activityLog.transactionHistory.push
     )
 
 const loggedUser = {
-    user: testUser // default for now for testing purposes
+    user: null // default for now for testing purposes
 }
 
 let bob = new User("bobbobsky", "1234", "bobmajmuncebobski@bob.com");
-bob.wallet.coins.push(sedcCoin);
+
 
 let pink = new User("pinkpanther", "0000", "pink@panther.com");
 
-function addCoinsToPinkUser() {
-    pink.wallet.cash += 200
-    pink.wallet.coins.push(bitcoin);
-    pink.wallet.coins.push(ethereum);
-    pink.wallet.coins.push(tether);
-    console.log(pink);
-    localStorageService.addUserToLocalStorage(pink);
-}
 
-// let jill = new User("jillwayne", "4321", "jillwayne@jill.com");
-// jill.wallet.coins.push(sedcCoin);
-
-localStorageService.addUserToLocalStorage(bob)
-
-// localStorageService.addUserToLocalStorage(pink);
-// localStorageService.addUserToLocalStorage(jill);
-
-// let igor = new User("igor", "12345", "igor@igor.igor")
-// let igorsTransaction = new Transaction("bitcoin1234", 12345, false , 3)
-// igor.activityLog.transactionHistory.push(igorsTransaction)
-
-// let igorsTransaction2 = new Transaction("kikekoin", 54321, true , 10)
-// igor.activityLog.transactionHistory.push(igorsTransaction2)
-// localStorageService.addUserToLocalStorage(igor)
+// localStorageService.addUserToLocalStorage(bob)5
