@@ -335,7 +335,7 @@ document.getElementById('infoCenterBtn').addEventListener('click', () => display
 document.getElementById('loginBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
 
 //Sections events
-document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showLoginRegisterPage())
+document.getElementById('getStartedBtn').addEventListener('click', () => displayElements.showSimulatorPage())
 document.getElementById('learnMoreBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
 
 // Event listener and functions for scrolling of navigation bar - Aleksandar Dojchinovski
