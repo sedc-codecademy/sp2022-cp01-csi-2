@@ -734,7 +734,7 @@ function getDataForUserCoins(url, coin, days, interval) {
 function processDataForUserCoins(data, coin, days, interval)
 {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.priceBought * coin.quantity)
+  chartData.unshift(coin.priceBought.reduce((a,b) => a + b, 0))
 
   createStatisticChart(chartData);
 }
@@ -842,7 +842,7 @@ function processDataForWallet(data, coins){
   for (const coin of coins)
   {
     console.log(coin.priceBought);
-    let valueBought = coin.priceBought * coin.quantity;
+    let valueBought = coin.priceBought.reduce((a,b) => a + b, 0);
     let valueCurrent = data[coin.id].usd * coin.quantity;
 
     totalValueBought += valueBought;
