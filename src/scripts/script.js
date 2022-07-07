@@ -185,12 +185,11 @@ const displayElements = {
     },
     showStatisticsPage: function () {
         this.showElements(statisticsPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
     },
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage)
-
 
         if (loggedUser.user === null) {
             alert("PLEASE LOGIN FIRST")
@@ -242,17 +241,17 @@ const displayElements = {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
     },
-    showPrivacyPolicy: function() {
+    showPrivacyPolicy: function () {
         this.showElements(privacyPolicy, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices, infoCenterPage)
     },
-    showAbout: function() {
+    showAbout: function () {
         this.showElements(about, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices, infoCenterPage)
     },
-    showOurServices: function() {
+    showOurServices: function () {
         this.showElements(ourServices, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, infoCenterPage)
     }
 }
 
@@ -452,7 +451,8 @@ document.getElementById("aboutBtn").addEventListener('click', () => {
 })
 
 document.getElementById("ourServicesBtn").addEventListener('click', () => {
-    displayElements.showOurServices()})
+    displayElements.showOurServices()
+})
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
     e.preventDefault()
