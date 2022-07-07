@@ -10,7 +10,7 @@ function showCash() {
   document.getElementById("total-cash").innerHTML = formatter.format(loggedUser.user.wallet.cash)
 }
 
-// set the overall wallet progress ,
+// set the overall wallet progress
 async function calculateLossOrGain() {
   let userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   let sum = 0;
@@ -28,7 +28,7 @@ async function calculateLossOrGain() {
     `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
       : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
         : "<strong class='text-warning'>$0</strong>"
-    }`
+  }`
 }
 //#endregion
 
@@ -111,7 +111,6 @@ sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
   }
 })
 
-
 async function showBuyModal(coinId, coinName) {
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
   let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
@@ -179,7 +178,6 @@ async function showBuyModal(coinId, coinName) {
 
   })
 
-
   buyBtn.addEventListener('click', async (e) => {
     const totalBuyPrice = parseFloat(totalPrice.value)
     const amountOfCoins = parseFloat(coinsAmountInput.value)
@@ -212,14 +210,7 @@ async function showBuyModal(coinId, coinName) {
 //-------------------------------------------------------------------------------------------------------
 //#region  Aneta Stankovska => TODO: Create Portfolio in Simulator
 
-//addCoinsToPinkUser();
-
 let portfolioHelpers = {};
-
-// const pinkUser = localStorageService
-//   .getAllUsersFromLocalStorage()
-//   .find((e) => e.username == "pinkpanther");
-// addCoinsToPinkUser();
 
 function getUserCoinIds(user) {
   let userCoins = user.wallet.coins.map((x) => x.id);
@@ -729,7 +720,6 @@ function getDataForUserCoins(url, coin, days, interval) {
           console.log(err);
       })
 }
-
 
 function processDataForUserCoins(data, coin, days, interval)
 {

@@ -1,6 +1,5 @@
 //#region Ivana - TODO: trending cryptos table
 
-
 tcTopContainer = document.getElementById('tcTop');
 
 function tcCreateElements(name, short, price, change, graph) {
@@ -311,24 +310,6 @@ document.getElementById('statsBtn').addEventListener('click', async () => {
     await renderStatsPage()
 })
 document.getElementById('simulatorBtn').addEventListener('click', async () => {
-    // if (loggedUser.user === null) {
-    //     alert("PLEASE LOGIN FIRST")
-    //     displayElements.showLoginRegisterPage()
-    // }
-    // else {
-    //     if (loggedUser.user.wallet.coins.length == 0) {
-    //         console.log(loggedUser.user.wallet.coins);
-    //         displayElements.showSimulatorPage();
-    //         showCash()
-    //     }
-    //     else {
-    //         displayElements.showSimulatorPage();
-    //         await renderPortfolioTableAsync(loggedUser.user)
-    //         showCash()
-    //         calculateLossOrGain();
-    //         displayElements.showPortfolio();
-    //     }
-    // }
     displayElements.showSimulatorPage()
 })
 document.getElementById('infoCenterBtn').addEventListener('click', () => displayElements.showInfoCenterPage())
@@ -369,25 +350,6 @@ function setNavigationTransparentOnScroll() {
         document.getElementsByClassName("navbar")[1].style.setProperty("background-color", "rgb(33, 37, 41)", "important");
     }, 700);
 }
-
-// Here goes js.scr for login/register form - Aleksandar Zhivkovikj
-// function setFormMessage(formElement, type, message) {
-//     const messageElement = formElement.querySelector(".form__message");
-
-//     messageElement.textContent = message;
-//     messageElement.classList.remove("form__message--success", "form__message--error");
-//     messageElement.classList.add(`form__message--${type}`);
-// }
-
-// function setInputError(inputElement, message) {
-//     inputElement.classList.add("form__input--error");
-//     inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
-// }
-
-// function clearInputError(inputElement) {
-//     inputElement.classList.remove("form__input--error");
-//     inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
-// }
 
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.querySelector("#login");
@@ -430,12 +392,13 @@ document.getElementById("login-btn").addEventListener("click", async () => {
     }
 })
 
-document.getElementById("register-btn").addEventListener("click", () => {
+document.getElementById("register-btn").addEventListener("click", async () => {
     let userName = document.getElementById("register-username").value;
     let userPassword = document.getElementById("register-password").value
     let userEmail = document.getElementById("register-email").value;
     let confirmPassword = document.getElementById("register-confirm-password").value;
     let message = document.getElementById("register-error-msg")
+    let loader = document.getElementById("register-loader");
 
     if (validationService.validateUsername(userName)
         && validationService.validatePassword(userPassword)
@@ -445,6 +408,11 @@ document.getElementById("register-btn").addEventListener("click", () => {
         let user = new User(userName, userPassword, userEmail);
         localStorageService.addUserToLocalStorage(user);
         message.innerText = ""
+        await showLoaderAsync(loader, 1000)
+        loader.innerHTML = "";
+
+        document.querySelector("#login").classList.remove("form--hidden");
+        document.querySelector("#Register").classList.add("form--hidden");
         displayElements.showLoginRegisterPage()
     } else {
         message.innerText = "Invalid registration of a user"
@@ -458,4 +426,13 @@ document.getElementById("logout-btn").addEventListener("click", () => {
         displayElements.showLogInBtn();
         displayElements.showHomePage();
     }, 500);
+})
+
+// PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
+window.addEventListener("beforeunload", (e) => {
+    e.preventDefault()
+    if (loggedUser.user !== null) {
+        localStorageService.addUserToLocalStorage(loggedUser.user)
+    }
+    loggedUser.user = null;
 })

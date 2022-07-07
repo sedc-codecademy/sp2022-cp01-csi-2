@@ -10,12 +10,17 @@ const localStorageService = {
     // should not duplicate a user - if the user exists, replace it with the input user
     addUserToLocalStorage: function (user) {
         let users = this.getAllUsersFromLocalStorage();
-        let ix = users.findIndex(e => e.username == user.username);   // get index of user with same username, -1 if not found
-        if (ix == -1) {
-            users.push(user);   // user not found, push input user to list
+        if (users[0] === null) {
+            users.push(user);
         }
         else {
-            users[ix] = user;   // user found, replace user at index with input user
+            let ix = users.findIndex(e => e.username == user.username);   // get index of user with same username, -1 if not found
+            if (ix == -1) {
+                users.push(user);   // user not found, push input user to list
+            }
+            else {
+                users[ix] = user;   // user found, replace user at index with input user
+            }
         }
         localStorage.setItem("users", JSON.stringify(users));
     },
@@ -110,8 +115,6 @@ class Coin {
         this.name = apiName
         this.priceBought = []
         this.quantity = quantity
-        this.sellingPrice = 0;
-        this.totalPrice = this.priceBought * this.quantity
     }
 }
 
@@ -141,14 +144,12 @@ class Transaction {
     }
 }
 
-
 let bitcoin = new Coin("bitcoin", "Bitcoin", 1);
 bitcoin.priceBought.push(19116)
 let ethereum = new Coin("ethereum", "Ethereum", 2);
 ethereum.priceBought.push(1041, 1041)
 let tether = new Coin("tether", "Tether", 5);
 tether.priceBought.push(1, 1, 1, 1, 1)
-
 
 let testUser = new User("testUser", "0000", "test@email.com");
 testUser.wallet.coins.push(bitcoin);
@@ -165,11 +166,5 @@ testUser.activityLog.transactionHistory.push
 const loggedUser = {
     user: null // default for now for testing purposes
 }
-
-let bob = new User("bobbobsky", "1234", "bobmajmuncebobski@bob.com");
-
-
-let pink = new User("pinkpanther", "0000", "pink@panther.com");
-
 
 // localStorageService.addUserToLocalStorage(testUser)
