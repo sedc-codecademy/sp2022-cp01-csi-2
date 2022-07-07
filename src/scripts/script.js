@@ -158,6 +158,9 @@ const simulatorPage = document.getElementById('simulatorPage')
 const infoCenterPage = document.getElementById('infoCenterPage')
 const loginRegisterPage = document.getElementById('loginRegisterPage')
 const otherPagesDiv = document.getElementById('otherPagesDiv')
+const privacyPolicy = document.getElementById("privacyPolicy")
+const about = document.getElementById("about")
+const ourServices = document.getElementById("ourServices")
 
 // simulator page elements
 const portfolioDiv = document.getElementById("portfolio");
@@ -182,7 +185,7 @@ const displayElements = {
     },
     showStatisticsPage: function () {
         this.showElements(statisticsPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage)
+        this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about)
     },
     showSimulatorPage: async function () {
         this.showElements(simulatorPage, otherPagesDiv)
@@ -208,12 +211,12 @@ const displayElements = {
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, ourServices)
         displayInfoPage()
     },
     showLoginRegisterPage: function () {
         this.showElements(loginRegisterPage, otherPagesDiv)
-        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, infoCenterPage, privacyPolicy, about, ourServices)
     },
     showPortfolio: function () {
         this.showElements(portfolioDiv)
@@ -238,6 +241,18 @@ const displayElements = {
     showUserDropDownBtn: function () {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
+    },
+    showPrivacyPolicy: function() {
+        this.showElements(privacyPolicy, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices)
+    },
+    showAbout: function() {
+        this.showElements(about, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices)
+    },
+    showOurServices: function() {
+        this.showElements(ourServices, otherPagesDiv)
+        this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about)
     }
 }
 
@@ -428,6 +443,16 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     }, 500);
 })
 
+document.getElementById("privacyPolicyBtn").addEventListener('click', () => {
+    displayElements.showPrivacyPolicy();
+})
+
+document.getElementById("aboutBtn").addEventListener('click', () => {
+    displayElements.showAbout();
+})
+
+document.getElementById("ourServicesBtn").addEventListener('click', () => {
+    displayElements.showOurServices()})
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
     e.preventDefault()

@@ -241,6 +241,7 @@ async function generatePortfolioTable(user) {
   let strArr = [];
   let wallet = user.wallet;
   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
+  console.log(walletCoinsCurrentPrice);
   strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
     <thead>
