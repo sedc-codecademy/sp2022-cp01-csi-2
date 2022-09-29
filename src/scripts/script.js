@@ -191,7 +191,7 @@ const displayElements = {
         this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
 
-
+        // ................. TUKA BI TREBALO DA SE NAPRAVI FETCH DO APITO (WALLET CONTROLLER) .................
         if (loggedUser.user === null) {
             alert("PLEASE LOGIN FIRST")
             displayElements.showLoginRegisterPage()
@@ -242,15 +242,15 @@ const displayElements = {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
     },
-    showPrivacyPolicy: function() {
+    showPrivacyPolicy: function () {
         this.showElements(privacyPolicy, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices, infoCenterPage)
     },
-    showAbout: function() {
+    showAbout: function () {
         this.showElements(about, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices, infoCenterPage)
     },
-    showOurServices: function() {
+    showOurServices: function () {
         this.showElements(ourServices, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, infoCenterPage)
     }
@@ -384,54 +384,102 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("login-btn").addEventListener("click", async () => {
-    let username = document.getElementById("login-username")
-    let password = document.getElementById("login-password")
+    let usernameInput = document.getElementById("login-username").value
+    let passwordInput = document.getElementById("login-password").value
     let message = document.getElementById("login-error-msg")
     let loader = document.getElementById("login-loader")
-    let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
 
-    if (user === undefined) {
-        message.innerText = "Invalid username or password"
-    } else {
-        username.value = ""
-        password.value = ""
-        message.innerText = ""
-
-        loggedUser.user = user
-        document.getElementById("logged-user-name").innerText = loggedUser.user.username
-        await showLoaderAsync(loader, 1000)
-        loader.innerHTML = ""
-        displayElements.showUserDropDownBtn();
-        displayElements.showSimulatorPage();
-        displayElements.showPortfolio();
+    const userLoginModel = {
+        username: usernameInput,
+        password: passwordInput
     }
+
+    const loginRequest = JSON.stringify(userLoginModel)
+
+    console.log(loginRequest);
+    await showLoaderAsync(loader)
+    fetch("https://localhost:7054/api/v1/User/login", {
+        method: "POST",
+        body: loginRequest,
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    })
+        .then(async response => {
+            if (!response.ok) {
+                const error = response.status;
+                throw new Error(error);
+            }
+            document.getElementById("logged-user-name").innerText = `${userLoginModel.username}`
+            document.getElementById("login-username").value = ""
+            document.getElementById("login-password").value = ""
+            displayElements.showUserDropDownBtn();
+            displayElements.showSimulatorPage();
+            displayElements.showPortfolio();
+        })
+        .catch(error => {
+            message.innerText = `Login failed: Status ${error.message}`
+        })
+    loader.innerHTML = ""
+
+    setTimeout(() => {
+        message.innerText = ""
+    }, 4000);
 })
 
 document.getElementById("register-btn").addEventListener("click", async () => {
+    let firstName = document.getElementById("register-firstname").value;
+    let lastName = document.getElementById("register-lastname").value;
     let userName = document.getElementById("register-username").value;
     let userPassword = document.getElementById("register-password").value
     let userEmail = document.getElementById("register-email").value;
-    let confirmPassword = document.getElementById("register-confirm-password").value;
+    let confirmedPassword = document.getElementById("register-confirm-password").value;
     let message = document.getElementById("register-error-msg")
     let loader = document.getElementById("register-loader");
+    message.style.color = "red"
 
-    if (validationService.validateUsername(userName)
-        && validationService.validatePassword(userPassword)
-        && validationService.validateEmail(userEmail)
-        && userPassword == confirmPassword) {
-
-        let user = new User(userName, userPassword, userEmail);
-        localStorageService.addUserToLocalStorage(user);
-        message.innerText = ""
-        await showLoaderAsync(loader, 1000)
-        loader.innerHTML = "";
-
-        document.querySelector("#login").classList.remove("form--hidden");
-        document.querySelector("#Register").classList.add("form--hidden");
-        displayElements.showLoginRegisterPage()
-    } else {
-        message.innerText = "Invalid registration of a user"
+    let registerUserModel = {
+        firstname: firstName,
+        lastName: lastName,
+        username: userName,
+        email: userEmail,
+        password: userPassword,
+        confirmPassword: confirmedPassword
     }
+    const registerUserRequest = JSON.stringify(registerUserModel)
+    console.log(registerUserRequest);
+
+    await showLoaderAsync(loader)
+    await fetch("https://localhost:7054/api/v1/User/register", {
+        method: "POST",
+        body: registerUserRequest,
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    }).then(async response => {
+        if (!response.ok) {
+            //TODO Manage showing error in better way
+            // const error = await response.json();    // gives the whole exception from backend ...
+            const error = response.status;
+            throw new Error(error);
+        }
+        else {
+            message.style.color = "green"
+            message.innerHTML = `Welcome user ${registerUserModel.firstname}`
+        }
+    }).catch(error => {
+        console.log(error);
+        message.innerHTML = `Registration failed: Status ${error.message}`
+    })
+    loader.innerHTML = "";
+
+    // Remove error message after a while ...
+    setTimeout(() => {
+        message.innerHTML = ""
+    }, 5000);
+
+    document.getElementById("register-firstname").value = ""
+    document.getElementById("register-lastname").value = ""
+    document.getElementById("register-username").value = ""
+    document.getElementById("register-password").value = ""
+    document.getElementById("register-email").value = ""
+    document.getElementById("register-confirm-password").value = ""
 })
 
 document.getElementById("logout-btn").addEventListener("click", () => {
@@ -452,7 +500,8 @@ document.getElementById("aboutBtn").addEventListener('click', () => {
 })
 
 document.getElementById("ourServicesBtn").addEventListener('click', () => {
-    displayElements.showOurServices()})
+    displayElements.showOurServices()
+})
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
     e.preventDefault()
