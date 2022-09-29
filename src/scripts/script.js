@@ -242,15 +242,15 @@ const displayElements = {
         this.showElements(loggedUserDropdown)
         this.hideElements(loginBtn)
     },
-    showPrivacyPolicy: function() {
+    showPrivacyPolicy: function () {
         this.showElements(privacyPolicy, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, about, ourServices, infoCenterPage)
     },
-    showAbout: function() {
+    showAbout: function () {
         this.showElements(about, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, ourServices, infoCenterPage)
     },
-    showOurServices: function() {
+    showOurServices: function () {
         this.showElements(ourServices, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, simulatorPage, loginRegisterPage, privacyPolicy, about, infoCenterPage)
     }
@@ -384,54 +384,97 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("login-btn").addEventListener("click", async () => {
-    let username = document.getElementById("login-username")
-    let password = document.getElementById("login-password")
+    let usernameInput = document.getElementById("login-username")
+    let passwordInput = document.getElementById("login-password")
     let message = document.getElementById("login-error-msg")
     let loader = document.getElementById("login-loader")
-    let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
+    // let user = localStorageService.getUserFromLocalStorage(username.value, password.value)
 
-    if (user === undefined) {
-        message.innerText = "Invalid username or password"
-    } else {
-        username.value = ""
-        password.value = ""
-        message.innerText = ""
-
-        loggedUser.user = user
-        document.getElementById("logged-user-name").innerText = loggedUser.user.username
-        await showLoaderAsync(loader, 1000)
-        loader.innerHTML = ""
-        displayElements.showUserDropDownBtn();
-        displayElements.showSimulatorPage();
-        displayElements.showPortfolio();
+    const userLoginModel = {
+        username: usernameInput,
+        password: passwordInput
     }
+
+    const loginRequest = JSON.stringify(userLoginModel)
+
+    console.log(loginRequest);
+    fetch("https://localhost:7054/api/v1/User/login", {
+        method: "POST",
+        body: loginRequest,
+        // mode: "no-cors",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    })
+        // .then(x => {
+        //     localStorage.setItem("User", JSON.stringify(x))
+        // })
+        .catch(err => {
+            message.innerText = err
+        })
+
+
+    // loggedUser.user = user
+    document.getElementById("logged-user-name").innerText = userLoginModel.username
+
+    usernameInput.value = ""
+    passwordInput.value = ""
+    message.innerText = ""
+
+    await showLoaderAsync(loader, 1000)
+    loader.innerHTML = ""
+    displayElements.showUserDropDownBtn();
+    displayElements.showSimulatorPage();
+    displayElements.showPortfolio();
+
 })
 
 document.getElementById("register-btn").addEventListener("click", async () => {
+    let firstName = document.getElementById("register-firstname").value;
+    let lastName = document.getElementById("register-lastname").value;
     let userName = document.getElementById("register-username").value;
     let userPassword = document.getElementById("register-password").value
     let userEmail = document.getElementById("register-email").value;
-    let confirmPassword = document.getElementById("register-confirm-password").value;
+    let confirmedPassword = document.getElementById("register-confirm-password").value;
     let message = document.getElementById("register-error-msg")
     let loader = document.getElementById("register-loader");
-
-    if (validationService.validateUsername(userName)
-        && validationService.validatePassword(userPassword)
-        && validationService.validateEmail(userEmail)
-        && userPassword == confirmPassword) {
-
-        let user = new User(userName, userPassword, userEmail);
-        localStorageService.addUserToLocalStorage(user);
-        message.innerText = ""
-        await showLoaderAsync(loader, 1000)
-        loader.innerHTML = "";
-
-        document.querySelector("#login").classList.remove("form--hidden");
-        document.querySelector("#Register").classList.add("form--hidden");
-        displayElements.showLoginRegisterPage()
-    } else {
-        message.innerText = "Invalid registration of a user"
+    let registerUserModel = {
+        firstname: firstName,
+        lastName: lastName,
+        username: userName,
+        email: userEmail,
+        password: userPassword,
+        confirmPassword: confirmedPassword
     }
+    console.log(registerUserModel);
+    const registerUserRequest = JSON.stringify(registerUserModel)
+    const errorResposne = "";
+    fetch("https://localhost:7054/api/v1/User/register", {
+        method: "POST",
+        body: registerUserRequest,
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    }).then(response => {
+        if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && data.message) || response.status;
+            return Promise.reject(error);
+        }
+    }).catch(error => {
+        console.error(error);
+        message.innerHTML = `Error: ${error.message}`
+    })
+
+    document.getElementById("register-firstname").value = ""
+    document.getElementById("register-lastname").value = ""
+    document.getElementById("register-username").value = ""
+    document.getElementById("register-password").value = ""
+    document.getElementById("register-email").value = ""
+    document.getElementById("register-confirm-password").value = ""
+    await showLoaderAsync(loader, 1000)
+    loader.innerHTML = errorResposne;
+
+    // document.querySelector("#login").classList.remove("form--hidden");
+    // document.querySelector("#Register").classList.add("form--hidden");
+    // displayElements.showLoginRegisterPage()
+
 })
 
 document.getElementById("logout-btn").addEventListener("click", () => {
@@ -452,7 +495,8 @@ document.getElementById("aboutBtn").addEventListener('click', () => {
 })
 
 document.getElementById("ourServicesBtn").addEventListener('click', () => {
-    displayElements.showOurServices()})
+    displayElements.showOurServices()
+})
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
     e.preventDefault()
