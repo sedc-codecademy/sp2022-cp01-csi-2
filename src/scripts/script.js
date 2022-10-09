@@ -193,7 +193,7 @@ const displayElements = {
 
         // ................. TUKA BI TREBALO DA SE NAPRAVI FETCH DO APITO (WALLET CONTROLLER) .................
         if (loggedUser.user === null) {
-            alert("PLEASE LOGIN FIRST")
+            // alert("PLEASE LOGIN FIRST")
             displayElements.showLoginRegisterPage()
         }
         else {
