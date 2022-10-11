@@ -36,13 +36,13 @@ async function calculateLossOrGain() {
   // VO METODAVA DA SE NAPRAVI POVIK DO WALLET KONTROLER , AKCIJATA STO KE GO PRIKAZUVA CALCULATEYIELD i sum = na toa
 
 
-  let formatedSum = formatter.format(sum)
+//   let formatedSum = formatter.format(sum)
 
-  document.getElementById("top-cash-info").innerHTML =
-    `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
-      : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
-        : "<strong class='text-warning'>$0</strong>"
-    }`
+//   document.getElementById("top-cash-info").innerHTML =
+//     `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
+//       : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
+//         : "<strong class='text-warning'>$0</strong>"
+//     }`
 }
 //#endregion
 
@@ -266,97 +266,98 @@ async function showBuyModal(coinId, coinName) {
 
 let portfolioHelpers = {};
 
-// function getUserCoinIds(user) {
-//   let userCoins = user.wallet.coins.map((x) => x.id);
-//   return userCoins;
-// }
+function getUserCoinIds(wallet) {
+  let userCoins = wallet.coins.map(e=>e.coinId);
+  return userCoins;
+}
 
 //Function for getting the current market price of the coins the user owns in the wallet
-// async function getWalletCoinsCurrentPriceAsync(user) {
-//   let userCoinIds = getUserCoinIds(user);
-//   let userCoinIdsStr = userCoinIds.join(",");
-//   let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
+async function getWalletCoinsCurrentPriceAsync(wallet) {
+  let userCoinIds = getUserCoinIds(wallet);
+  let userCoinIdsStr = userCoinIds.join(",");
+  let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
 
-//   try {
-//     let response = await fetch(url);
-//     let result = await response.json();
-//     //console.log(result);
-//     //return await response.json();
-//     return result;
-//   } catch (err) {
-//     console.error(err);
-//     // Handle errors here
-//   }
-// }
+  try {
+    let response = await fetch(url);
+    let result = await response.json();
+    //console.log(result);
+    //return await response.json();
+    return result;
+  } catch (err) {
+    console.error(err);
+    // Handle errors here
+  }
+}
 
 //Function for generating portfolio table
-// async function generatePortfolioTable(user) {
-//   let counter = 1;
-//   let strArr = [];
-//   let wallet = user.wallet;
-//   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
-//   console.log(walletCoinsCurrentPrice);
-//   strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
-//   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
-//     <thead>
-//       <tr>
-//         <th scope="col" class="table-sm align-middle text-center">#</th>
-//         <th scope="col" class="table-sm align-middle text-center">Name</th>
-//         <th scope="col" class="table-sm align-middle text-center">Amount</th>
-//         <th scope="col" class="table-sm align-middle text-center">Value</th>
-//         <th scope="col" class="table-sm align-middle text-center">Change in %</th>
-//         <th scope="col" class="table-sm align-middle text-center">Action</th>
-//       </tr>
-//     </thead>
-//     <tbody>
-//     `);
+async function generatePortfolioTable(wallet) {
+  let counter = 1;
+  let strArr = [];
+  // let wallet = user.wallet;
+  let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(wallet);
+  console.log(walletCoinsCurrentPrice);
+  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
+  <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
+    <thead>
+      <tr>
+        <th scope="col" class="table-sm align-middle text-center">#</th>
+        <th scope="col" class="table-sm align-middle text-center">Name</th>
+        <th scope="col" class="table-sm align-middle text-center">Amount</th>
+        <th scope="col" class="table-sm align-middle text-center">Value</th>
+        <th scope="col" class="table-sm align-middle text-center">Change in %</th>
+        <th scope="col" class="table-sm align-middle text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    `);
 
-//   for (let coin of wallet.coins) {
-//     let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
-//     let oldCoinValue = (priceBoughtSum / coin.quantity)
-//     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
-//     let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
+  for (let coin of wallet.coins) {
+    // let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
+    // let oldCoinValue = (priceBoughtSum / coin.quantity)
+    let currentMarketPrice = walletCoinsCurrentPrice[coin.coinId].usd
+    let value = formatter.format(walletCoinsCurrentPrice[coin.coinId].usd * coin.quantity)
+    console.log(`${currentMarketPrice} ${value}`);
+    // let changeInPercentage = 0;
+    // let increaseDecrease = ''
 
-//     let changeInPercentage = 0;
-//     let increaseDecrease = ''
+    // if (oldCoinValue < currentMarketPrice) {
+    //   changeInPercentage = 100 - (oldCoinValue / currentMarketPrice * 100)
+    //   increaseDecrease = "<strong class='increase'>↑</strong>"
+    // }
+    // else if (oldCoinValue > currentMarketPrice) {
+    //   changeInPercentage = 100 - (currentMarketPrice / oldCoinValue * 100)
+    //   increaseDecrease = "<strong class='decrease'>↓</strong>"
+    // }
+    // else if (oldCoinValue == currentMarketPrice) {
+    //   changeInPercentage = 0
+    //   increaseDecrease = ""
+    // }
 
-//     if (oldCoinValue < currentMarketPrice) {
-//       changeInPercentage = 100 - (oldCoinValue / currentMarketPrice * 100)
-//       increaseDecrease = "<strong class='increase'>↑</strong>"
-//     }
-//     else if (oldCoinValue > currentMarketPrice) {
-//       changeInPercentage = 100 - (currentMarketPrice / oldCoinValue * 100)
-//       increaseDecrease = "<strong class='decrease'>↓</strong>"
-//     }
-//     else if (oldCoinValue == currentMarketPrice) {
-//       changeInPercentage = 0
-//       increaseDecrease = ""
-//     }
+    strArr.push(`<tr id="portfolioData">
+      <td class="align-middle text-center">${counter++}</td>
+      <td class="align-middle text-center">${coin.name}</td>
+      <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
+      <td class="align-middle text-center">${value}</td>
+      <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
+      </tr>`);
+    }
+    // <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
+    // <td class="align-middle text-center">${increaseDecrease}&nbsp &nbsp${(changeInPercentage).toFixed(2).toLocaleString('en-US')}% </td></td>
 
-//     strArr.push(`<tr id="portfolioData">
-//       <td class="align-middle text-center">${counter++}</td>
-//       <td class="align-middle text-center">${coin.name}</td>
-//       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
-//       <td class="align-middle text-center">${value}</td>
-//       <td class="align-middle text-center">${increaseDecrease}&nbsp &nbsp${(changeInPercentage).toFixed(2).toLocaleString('en-US')}% </td></td>
-//       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
-//       </tr>`);
-//   }
-
-//   let content = strArr.join("");
-//   return content;
-// };
+  let content = strArr.join("");
+  return content;
+};
 
 //Function for rendering portfolio table
-async function renderPortfolioTableAsync(user) {
+async function renderPortfolioTableAsync(wallet) {
   document.getElementById("portfolio").innerHTML = "";
   document
     .getElementById("portfolio")
-    .insertAdjacentHTML("beforeend", await generatePortfolioTable(user))
+    .insertAdjacentHTML("beforeend", await generatePortfolioTable(wallet))
   let sellBtns = document.getElementsByClassName("sellCoin");
   for (let btn of sellBtns) {
     let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
-    let coin = user.wallet.coins.find(x => x.name == coinName);
+    let coin = wallet.coins.find(x => x.name == coinName);
     // let coinId = user.wallet.coins.find(x => x.name == coinName).id;
     let coinId = coin.id;
     btn.addEventListener("click", () => {
@@ -423,8 +424,18 @@ async function ShowModal(content, parent = document.getElementById("modal-contai
 
 // Fucntion for creating and showing the content of the modal (buy/sell info)
 async function showTradeModal(coinId, coinName) {
+  let userFromDb = JSON.parse(localStorage.getItem("user"));
+  let response = await fetch(`https://localhost:7054/api/v1/Wallet/user-cash?userId=${userFromDb.id}`, {
+    headers: {
+      "Authorization": `Bearer ${userFromDb.token}`
+    },
+    method: 'GET'
+  });
+  let userCash = await response.json();
+  
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
   let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
+  coinCurrentPrice = coinCurrentPrice[coinId].usd
   let content = `<div class="container d-flex justify-content-around" id="buySellModalChartContainer">
                   <div class="container d-flex justify-content-around" id="buySellModalChart">
                   </div>
@@ -441,7 +452,7 @@ async function showTradeModal(coinId, coinName) {
                   <br>
                   <input type="number" id="totalPrice" style="color:black !important" readonly></input>
                   <br>
-                  <div id="ExchangeRate">Rate<div>1 ${coinName} = ${coinCurrentPrice[coinId].usd} USD</div>
+                  <div id="ExchangeRate">Rate<div>1 ${coinName} = ${coinCurrentPrice} USD</div>
                   <br><br>
                     <button class="btn btn-secondary d-flex justify-content-around" id='sellBtn'>Sell</button>
                     <br><br><br>
@@ -455,28 +466,53 @@ async function showTradeModal(coinId, coinName) {
   document.getElementById("sellBtn").addEventListener('click', async (e) => {
     let coin = document.getElementById("portfolioData").firstElementChild.innerHTML;
     let value = document.getElementById("coinsAmount").value;
-    let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
-    let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
-    let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
+    let totalAmount = coinCurrentPrice * parseFloat(value);
+
+    // let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
+    // let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
+
+    let sellModel = {
+      coinId: `${coinId}`,
+      name: `${coinName}`,
+      userId: +userFromDb.id,
+      amount: +amountOfCoins
+    }
+
+    let requestModel = JSON.stringify(sellModel);
+
+    let response = await fetch(`https://localhost:7054/api/v1/Wallet/SellCoin`, {
+      method: 'POST',
+      headers: {
+        "Authorization": `Bearer ${userFromDb.token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: requestModel,
+    });
+
+    if (!response.ok) {
+      alert("Transaction unsuccessful!")
+    }
 
     // portfolio percentage 
-    let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a, b) => a + b, 0)
-    let averagePricePerCoin = boughtPriceSum / loggedUser.user.wallet.coins[indexOfCoin].quantity
-    let newBoughtPrice = averagePricePerCoin * parseFloat(value) * -1
+    // let boughtPriceSum = loggedUser.user.wallet.coins[indexOfCoin].priceBought.reduce((a, b) => a + b, 0)
+    // let averagePricePerCoin = boughtPriceSum / loggedUser.user.wallet.coins[indexOfCoin].quantity
+    // let newBoughtPrice = averagePricePerCoin * parseFloat(value) * -1
     // portfolio percentage 
 
-    portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
-    loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice[coinId].usd, false, value));
+    // portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
+    // loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice[coinId].usd, false, value));
     // alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
     document.getElementById("newModal").remove();
 
-    loggedUser.user.wallet.cash += totalAmount;
-    loggedUser.user.wallet.coins[indexOfCoin].priceBought.push(newBoughtPrice);
+    // loggedUser.user.wallet.cash += totalAmount;
+    // loggedUser.user.wallet.coins[indexOfCoin].priceBought.push(newBoughtPrice);
 
-    if (soldCoin.quantity == 0) {
-      loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
-    }
-    // showCash()
+    // if (soldCoin.quantity == 0) {
+    //   loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
+    // }
+    
+    showCash()
     await calculateLossOrGain()
     await renderPortfolioTableAsync(loggedUser.user);
     displayElements.showSimulatorPage();
