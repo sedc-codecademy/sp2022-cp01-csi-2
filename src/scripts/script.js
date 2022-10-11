@@ -192,22 +192,27 @@ const displayElements = {
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
 
         // ................. TUKA BI TREBALO DA SE NAPRAVI FETCH DO APITO (WALLET CONTROLLER) .................
-        if (loggedUser.user === null) {
-            alert("PLEASE LOGIN FIRST")
+        let userFromDb = JSON.parse(localStorage.getItem("user"));
+        
+        if (!userFromDb) {
             displayElements.showLoginRegisterPage()
         }
-        else {
+        else {            
             await showSimulatorSideMarket()
-            showCash()
-            if (loggedUser.user.wallet.coins.length == 0) {
-                console.log(loggedUser.user.wallet.coins);
-            }
-            else {
-                await renderPortfolioTableAsync(loggedUser.user)
+            await showCash(userFromDb.id)
+            displayElements.showPortfolio();
+            
+            // if (loggedUser.user.wallet.coins.length == 0) {
+            //     console.log(loggedUser.user.wallet.coins);
+            // }
+            // else {
+            //     await renderPortfolioTableAsync(loggedUser.user)
                 calculateLossOrGain();
-                displayElements.showPortfolio();
-            }
+            //     displayElements.showPortfolio();
+            // }
         }
+
+
     },
     showInfoCenterPage: function () {
         this.showElements(infoCenterPage, otherPagesDiv)
@@ -384,6 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("login-btn").addEventListener("click", async () => {
+    
     let usernameInput = document.getElementById("login-username").value
     let passwordInput = document.getElementById("login-password").value
     let message = document.getElementById("login-error-msg")
@@ -395,9 +401,10 @@ document.getElementById("login-btn").addEventListener("click", async () => {
     }
 
     const loginRequest = JSON.stringify(userLoginModel)
-
-    console.log(loginRequest);
+    // console.log(loginRequest);
+    
     await showLoaderAsync(loader)
+
     fetch("https://localhost:7054/api/v1/User/login", {
         method: "POST",
         body: loginRequest,
@@ -408,9 +415,15 @@ document.getElementById("login-btn").addEventListener("click", async () => {
                 const error = response.status;
                 throw new Error(error);
             }
-            document.getElementById("logged-user-name").innerText = `${userLoginModel.username}`
-            document.getElementById("login-username").value = ""
-            document.getElementById("login-password").value = ""
+
+            let loggedUserFromDb = await response.json();
+
+            document.getElementById("logged-user-name").innerText = `${loggedUserFromDb.username}`
+            usernameInput.value = ""
+            passwordInput.value = ""
+            
+            localStorage.setItem("user", JSON.stringify(loggedUserFromDb));
+
             displayElements.showUserDropDownBtn();
             displayElements.showSimulatorPage();
             displayElements.showPortfolio();
@@ -483,8 +496,10 @@ document.getElementById("register-btn").addEventListener("click", async () => {
 })
 
 document.getElementById("logout-btn").addEventListener("click", () => {
-    localStorageService.addUserToLocalStorage(loggedUser.user)
-    loggedUser.user = null;
+    // localStorageService.addUserToLocalStorage(loggedUser.user)
+    // loggedUser.user = null;
+
+    localStorage.clear();
     setTimeout(() => {
         displayElements.showLogInBtn();
         displayElements.showHomePage();
@@ -504,9 +519,11 @@ document.getElementById("ourServicesBtn").addEventListener('click', () => {
 })
 // PRI GASENJE NA BROWSEROT DA SE SNIMI LOGIRANIOT USER
 window.addEventListener("beforeunload", (e) => {
-    e.preventDefault()
-    if (loggedUser.user !== null) {
-        localStorageService.addUserToLocalStorage(loggedUser.user)
-    }
-    loggedUser.user = null;
+    // e.preventDefault()
+    // if (loggedUser.user !== null) {
+    //     localStorageService.addUserToLocalStorage(loggedUser.user)
+    // }
+    // loggedUser.user = null;
+
+    localStorage.clear();
 })

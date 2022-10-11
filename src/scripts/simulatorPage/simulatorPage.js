@@ -6,8 +6,19 @@ var formatter = new Intl.NumberFormat('en-US', {
 });
 
 //Function for showing the cash above the portfolio
-function showCash() {
-  document.getElementById("total-cash").innerHTML = formatter.format(loggedUser.user.wallet.cash)
+async function showCash() {
+
+  let userFromDb = JSON.parse(localStorage.getItem("user"));
+  
+  let response = await fetch(`https://localhost:7054/api/v1/Wallet/user-cash?userId=${userFromDb.id}`, {
+    headers: {
+      "Authorization": `Bearer ${userFromDb.token}`
+    },
+    method: 'GET'
+  });
+  let data = await response.json();
+
+  document.getElementById("total-cash").innerHTML = formatter.format(data)
 }
 
 // set the overall wallet progress
@@ -28,7 +39,7 @@ async function calculateLossOrGain() {
     `${sum > 0 ? `<strong class='text-success'>${formatedSum}</strong>`
       : sum < 0 ? `<strong class='text-danger'>${formatedSum}</strong>`
         : "<strong class='text-warning'>$0</strong>"
-  }`
+    }`
 }
 //#endregion
 
@@ -582,16 +593,25 @@ cvvNumberInput.addEventListener("focusout", () => {
 
 confirmAddFundsBtn.addEventListener("click", async () => {
   if (cvvNumberInput.checkValidity() && nameInput.checkValidity() && cardNumberInput.checkValidity() && ammountInput.checkValidity()) {
-    let cashAmmount = parseInt(ammountInput.value);
-    await showLoaderAsync(loaderContainer, 2000)
-    loggedUser.user.wallet.cash += cashAmmount;
 
-    document.getElementById("payment-form").reset()
+    let userFromDb = JSON.parse(localStorage.getItem("user"));
+    let cashAmmount = parseInt(ammountInput.value);
+
+    await fetch(`https://localhost:7054/api/v1/Wallet/add-cash?userId=${userFromDb.id}&amount=${cashAmmount}`, {
+      headers: {
+        "Authorization": `Bearer ${userFromDb.token}`
+      },
+      method: 'POST'
+    });
+    // loggedUser.user.wallet.cash += cashAmmount;
+
+    // document.getElementById("payment-form").reset()
+    await showLoaderAsync(loaderContainer, 2000)
     loaderContainer.innerHTML = "succesfully added funds to your wallet!"
-    localStorageService.addUserToLocalStorage(loggedUser.user);
+    // localStorageService.addUserToLocalStorage(loggedUser.user);
     showCash();
   }
-  else{
+  else {
     document.getElementById("payment-form").reportValidity();
   }
 })
@@ -618,27 +638,50 @@ cryptoLimitInput.addEventListener("keypress", (e) => {
   }
 })
 
-document.getElementById("limit-crypto-confirm-btn").addEventListener("click", () => {
-  let form = document.getElementById("cryptolimit-form");
+document.getElementById("limit-crypto-confirm-btn").addEventListener("click", async () => {
+  
+  // let form = document.getElementById("cryptolimit-form");
+  
   let msg = document.getElementById("crypto-limit-msg")
+  let userFromDb = JSON.parse(localStorage.getItem("user"));
 
-  if (cryptoLimitInput.checkValidity()) {
+  let data = await fetch(`https://localhost:7054/api/v1/Wallet/set-coin-limit?userId=${userFromDb.id}&limit=${cryptoLimitInput.value}`, {
+    headers: {
+      "Authorization": `Bearer ${userFromDb.token}`
+    },
+    method: 'POST'
+  });
 
-    if (cryptoLimitInput.value >= loggedUser.user.wallet.coins.length) {
-      loggedUser.user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
+  let result = await data.json();
 
-      msg.setAttribute("class", "text-light")
-      msg.innerText = "Succesfully changed the limit!"
-      document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
-      localStorageService.addUserToLocalStorage(loggedUser.user);
-      form.reset();
-    } else {
-      msg.setAttribute("class", "text-danger")
-      msg.innerText = "You have more coins in your wallet now. Try again"
-    }
-  } else {
-    form.reportValidity();
+  if(result){
+    await showLoaderAsync(msg, 2000)
+    msg.setAttribute("class", "text-light")
+    msg.innerText = "Succesfully changed the limit!"
   }
+  else{
+    await showLoaderAsync(msg, 2000)
+    msg.setAttribute("class", "text-danger")
+    msg.innerText = "You have more coins in your wallet now. Try again"
+  }
+
+  // if (cryptoLimitInput.checkValidity()) {
+
+  //   if (cryptoLimitInput.value >= loggedUser.user.wallet.coins.length) {
+  //     loggedUser.user.wallet.maxCoins = parseInt(cryptoLimitInput.value);
+
+  //     msg.setAttribute("class", "text-light")
+  //     msg.innerText = "Succesfully changed the limit!"
+  //     document.getElementById("current-number-of-limit").innerHTML = `Current limit of cryptos you can have in the wallet: ${loggedUser.user.wallet.maxCoins}`
+  //     localStorageService.addUserToLocalStorage(loggedUser.user);
+  //     form.reset();
+  //   } else {
+  //     msg.setAttribute("class", "text-danger")
+  //     msg.innerText = "You have more coins in your wallet now. Try again"
+  //   }
+  // } else {
+  //   form.reportValidity();
+  // }
 })
 //#endregion
 
@@ -672,7 +715,7 @@ function createStatisticsButtons(coins) {
   while (statisticCoinsButtons.firstChild) {
     statisticCoinsButtons.removeChild(statisticCoinsButtons.firstChild);
   }
-  
+
   for (const coin of coins) {
     let btn = document.createElement("button")
     btn.classList.add("dropdown-item")
@@ -711,21 +754,20 @@ function createStatiscicForCoin(coin, days, interval) {
 
 function getDataForUserCoins(url, coin, days, interval) {
   fetch(url)
-      .then((response) => {
+    .then((response) => {
 
-          return response.json();
-      })
-      .then((out) => processDataForUserCoins(out, coin, days, interval))
-      .catch((err) => {
-          console.log("The request has failed!");
-          console.log(err);
-      })
+      return response.json();
+    })
+    .then((out) => processDataForUserCoins(out, coin, days, interval))
+    .catch((err) => {
+      console.log("The request has failed!");
+      console.log(err);
+    })
 }
 
-function processDataForUserCoins(data, coin, days, interval)
-{
+function processDataForUserCoins(data, coin, days, interval) {
   let chartData = data["prices"].map(x => x[1] * coin.quantity);
-  chartData.unshift(coin.priceBought.reduce((a,b) => a + b, 0))
+  chartData.unshift(coin.priceBought.reduce((a, b) => a + b, 0))
 
   createStatisticChart(chartData);
 }
@@ -790,21 +832,19 @@ function createStatisticChart(chartData) {
     });
 }
 
-async function createWalletStatistics()
-{
+async function createWalletStatistics() {
   let data = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
   processDataForWallet(data, loggedUser.user.wallet.coins);
 }
 
-function processDataForWallet(data, coins){
+function processDataForWallet(data, coins) {
 
   let wsContainer = document.getElementById('wallet-stats');
 
   let div = document.getElementById("table-div");
 
-  if(div !== null)
-  {
-    wsContainer.removeChild(div) 
+  if (div !== null) {
+    wsContainer.removeChild(div)
   }
 
   div = document.createElement('div');
@@ -830,10 +870,9 @@ function processDataForWallet(data, coins){
   let totalValueBought = 0;
   let totalValueCurrent = 0;
 
-  for (const coin of coins)
-  {
+  for (const coin of coins) {
     console.log(coin.priceBought);
-    let valueBought = coin.priceBought.reduce((a,b) => a + b, 0);
+    let valueBought = coin.priceBought.reduce((a, b) => a + b, 0);
     let valueCurrent = data[coin.id].usd * coin.quantity;
 
     totalValueBought += valueBought;
@@ -861,8 +900,7 @@ function processDataForWallet(data, coins){
 
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
-document.getElementById("walletstatistics-navbtn").addEventListener("click", () => 
-  { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins)})
+document.getElementById("walletstatistics-navbtn").addEventListener("click", () => { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins) })
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
   createActivityLogTable()
