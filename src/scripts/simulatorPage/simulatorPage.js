@@ -9,7 +9,7 @@ var formatter = new Intl.NumberFormat('en-US', {
 async function showCash() {
 
   let userFromDb = JSON.parse(localStorage.getItem("user"));
-  
+
   let response = await fetch(`https://localhost:7054/api/v1/Wallet/user-cash?userId=${userFromDb.id}`, {
     headers: {
       "Authorization": `Bearer ${userFromDb.token}`
@@ -23,15 +23,18 @@ async function showCash() {
 
 // set the overall wallet progress
 async function calculateLossOrGain() {
-  let userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
-  let sum = 0;
+  // let userCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(loggedUser.user);
+  // let sum = 0;
+  // loggedUser.user.wallet.coins.forEach(coin => {
+  //   let currentPriceSum = userCoinsCurrentPrice[coin.id].usd * coin.quantity
+  //   let boughtPriceSum = coin.priceBought.reduce((a, b) => a + b, 0)
+  //   let total = currentPriceSum - boughtPriceSum;
+  //   sum += total;
+  // })
 
-  loggedUser.user.wallet.coins.forEach(coin => {
-    let currentPriceSum = userCoinsCurrentPrice[coin.id].usd * coin.quantity
-    let boughtPriceSum = coin.priceBought.reduce((a, b) => a + b, 0)
-    let total = currentPriceSum - boughtPriceSum;
-    sum += total;
-  })
+
+  // VO METODAVA DA SE NAPRAVI POVIK DO WALLET KONTROLER , AKCIJATA STO KE GO PRIKAZUVA CALCULATEYIELD i sum = na toa
+
 
   let formatedSum = formatter.format(sum)
 
@@ -114,33 +117,45 @@ const showSimulatorSideMarket = async () => {
 sideMarketBarHelpers.coinsElement.addEventListener("scroll", sideMarketInfinityScroll)
 sideMarketBarHelpers.coinsElement.addEventListener("click", async (e) => {
   if (e.target.innerText == "Buy") {
-    if (loggedUser.user.wallet.coins.length >= loggedUser.user.wallet.maxCoins) {
-      alert("You've reached your limit of coins.\nFor buying more coins please adjust your coin limit in the wallet settings")
-    } else {
-      await showBuyModal(e.target.id, e.target.className)
-    }
+
+    // if (loggedUser.user.wallet.coins.length >= loggedUser.user.wallet.maxCoins) {
+    //   alert("You've reached your limit of coins.\nFor buying more coins please adjust your coin limit in the wallet settings")
+    // } else {
+    await showBuyModal(e.target.id, e.target.className)
+    // }
   }
 })
 
 async function showBuyModal(coinId, coinName) {
+
+  let userFromDb = JSON.parse(localStorage.getItem("user"));
+
+  let response = await fetch(`https://localhost:7054/api/v1/Wallet/user-cash?userId=${userFromDb.id}`, {
+    headers: {
+      "Authorization": `Bearer ${userFromDb.token}`
+    },
+    method: 'GET'
+  });
+  let userCash = await response.json();
+
+
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
   let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
   coinCurrentPrice = coinCurrentPrice[coinId].usd
-  // console.log("Current price " + coinCurrentPrice);
-  let maxCoinsPerCurrentCash = Math.floor(loggedUser.user.wallet.cash / coinCurrentPrice)
-  // console.log("Max coins amout " + maxCoinsPerCurrentCash);
+  let maxCoinsPerCurrentCash = Math.floor(userCash / coinCurrentPrice)
 
+  //
   let content = `<div class="container d-flex justify-content-around" id="buyModalChartContainer">
-                  <div class="container d-flex justify-content-around" id="buyModalChart">
+  <div class="container d-flex justify-content-around" id="buyModalChart">
                   </div>
                   <div id="buyInputsContainer">
                   <h3 class="text-warning">${coinName}</h3>
                   <br>
                   <label for="buyCoinsAmount">Number of coins</label>
                   <br>
-                  <input type="number" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" min="${maxCoinsPerCurrentCash == 0 ? 0 : 1}" max="${maxCoinsPerCurrentCash}"></input>
+                  <input type="number" min="${maxCoinsPerCurrentCash == 0 ? 0 : 1}" max="${maxCoinsPerCurrentCash}" style="color:black !important" id="buyCoinsAmount" name="buyCoinsAmount" ></input>
                   <p id="errorMessage" class="text-danger"></p>
-                  <p style="font-size:medium" readonly>Available cash: ${loggedUser.user.wallet.cash} $</p>
+                  <p style="font-size:medium" readonly>Available cash: ${userCash} $</p>
                   <br>
                   <label for="totalPriceBuy">Total price</label>
                   <br>
@@ -168,10 +183,10 @@ async function showBuyModal(coinId, coinName) {
   })
 
   coinsAmountInput.addEventListener('input', (e) => {
+    let errorMessage = document.getElementById('errorMessage')
     e.preventDefault()
     let coinsAmountValue = parseFloat(coinsAmountInput.value)
-    let errorMessage = document.getElementById('errorMessage')
-    buyBtn.disabled = true;
+    buyBtn.disabled = false;
 
     if (maxCoinsPerCurrentCash == 0 || coinsAmountValue > maxCoinsPerCurrentCash) {
       errorMessage.innerText = "Insuficient funds"
@@ -190,27 +205,55 @@ async function showBuyModal(coinId, coinName) {
   })
 
   buyBtn.addEventListener('click', async (e) => {
-    const totalBuyPrice = parseFloat(totalPrice.value)
+    // const totalBuyPrice = parseFloat(totalPrice.value)
     const amountOfCoins = parseFloat(coinsAmountInput.value)
-    loggedUser.user.wallet.cash -= totalBuyPrice
-    let loggedUserCoins = loggedUser.user?.wallet.coins.filter(x => x.id == coinId)[0]
-    if (!loggedUserCoins) {
-      let newCoin = new Coin(coinId, coinName, amountOfCoins)
-      newCoin.priceBought.push(totalBuyPrice)
-      loggedUser.user.wallet.coins.push(newCoin)
-      // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+
+    let buyModel = {
+      coinId: `${coinId}`,
+      name: `${coinName}`,
+      userId: +userFromDb.id,
+      amount: +amountOfCoins
     }
-    else {
-      loggedUserCoins.priceBought.push(totalBuyPrice)
-      loggedUserCoins.quantity += parseFloat(amountOfCoins)
-      // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+
+    let requestModel = JSON.stringify(buyModel);
+
+    let response = await fetch(`https://localhost:7054/api/v1/Wallet/BuyCoin`, {
+      method: 'POST',
+      headers: {
+        "Authorization": `Bearer ${userFromDb.token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: requestModel,
+    });
+
+    if (!response.ok) {
+      alert("Max coins limit reached!")
     }
+
+    // let walletYieldParsed = JSON.parse(walletYieldRaw)
+
+    // alert(walletYieldParsed)
+
+    // loggedUser.user.wallet.cash -= totalBuyPrice
+    // let loggedUserCoins = loggedUser.user?.wallet.coins.filter(x => x.id == coinId)[0]
+    // if (!loggedUserCoins) {
+    //   let newCoin = new Coin(coinId, coinName, amountOfCoins)
+    //   newCoin.priceBought.push(totalBuyPrice)
+    //   loggedUser.user.wallet.coins.push(newCoin)
+    //   // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+    // }
+    // else {
+    //   loggedUserCoins.priceBought.push(totalBuyPrice)
+    //   loggedUserCoins.quantity += parseFloat(amountOfCoins)
+    //   // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+    // }
     document.getElementById("newModal").remove();
-    loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
-    createActivityLogTable()
+    // loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
+    //createActivityLogTable()
     showCash()
     await calculateLossOrGain()
-    await generatePortfolioTable(loggedUser.user)
+    //await generatePortfolioTable(loggedUser.user)
     displayElements.showSimulatorPage() // to update the side market
   })
 
@@ -223,86 +266,86 @@ async function showBuyModal(coinId, coinName) {
 
 let portfolioHelpers = {};
 
-function getUserCoinIds(user) {
-  let userCoins = user.wallet.coins.map((x) => x.id);
-  return userCoins;
-}
+// function getUserCoinIds(user) {
+//   let userCoins = user.wallet.coins.map((x) => x.id);
+//   return userCoins;
+// }
 
 //Function for getting the current market price of the coins the user owns in the wallet
-async function getWalletCoinsCurrentPriceAsync(user) {
-  let userCoinIds = getUserCoinIds(user);
-  let userCoinIdsStr = userCoinIds.join(",");
-  let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
+// async function getWalletCoinsCurrentPriceAsync(user) {
+//   let userCoinIds = getUserCoinIds(user);
+//   let userCoinIdsStr = userCoinIds.join(",");
+//   let url = `https://api.coingecko.com/api/v3/simple/price?ids=${userCoinIdsStr}&vs_currencies=usd`;
 
-  try {
-    let response = await fetch(url);
-    let result = await response.json();
-    //console.log(result);
-    //return await response.json();
-    return result;
-  } catch (err) {
-    console.error(err);
-    // Handle errors here
-  }
-}
+//   try {
+//     let response = await fetch(url);
+//     let result = await response.json();
+//     //console.log(result);
+//     //return await response.json();
+//     return result;
+//   } catch (err) {
+//     console.error(err);
+//     // Handle errors here
+//   }
+// }
 
 //Function for generating portfolio table
-async function generatePortfolioTable(user) {
-  let counter = 1;
-  let strArr = [];
-  let wallet = user.wallet;
-  let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
-  console.log(walletCoinsCurrentPrice);
-  strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
-  <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
-    <thead>
-      <tr>
-        <th scope="col" class="table-sm align-middle text-center">#</th>
-        <th scope="col" class="table-sm align-middle text-center">Name</th>
-        <th scope="col" class="table-sm align-middle text-center">Amount</th>
-        <th scope="col" class="table-sm align-middle text-center">Value</th>
-        <th scope="col" class="table-sm align-middle text-center">Change in %</th>
-        <th scope="col" class="table-sm align-middle text-center">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-    `);
+// async function generatePortfolioTable(user) {
+//   let counter = 1;
+//   let strArr = [];
+//   let wallet = user.wallet;
+//   let walletCoinsCurrentPrice = await getWalletCoinsCurrentPriceAsync(user);
+//   console.log(walletCoinsCurrentPrice);
+//   strArr.push(`<div class="" id="portfolio-heading" style= "text-align:center"><h4>Portfolio</h4></div>
+//   <table id="dtBasicExample" class="table table-hover table-responsive table-fit">
+//     <thead>
+//       <tr>
+//         <th scope="col" class="table-sm align-middle text-center">#</th>
+//         <th scope="col" class="table-sm align-middle text-center">Name</th>
+//         <th scope="col" class="table-sm align-middle text-center">Amount</th>
+//         <th scope="col" class="table-sm align-middle text-center">Value</th>
+//         <th scope="col" class="table-sm align-middle text-center">Change in %</th>
+//         <th scope="col" class="table-sm align-middle text-center">Action</th>
+//       </tr>
+//     </thead>
+//     <tbody>
+//     `);
 
-  for (let coin of wallet.coins) {
-    let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
-    let oldCoinValue = (priceBoughtSum / coin.quantity)
-    let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
-    let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
+//   for (let coin of wallet.coins) {
+//     let priceBoughtSum = coin.priceBought.reduce((x, y) => x + y, 0)
+//     let oldCoinValue = (priceBoughtSum / coin.quantity)
+//     let currentMarketPrice = walletCoinsCurrentPrice[coin.id].usd
+//     let value = formatter.format(walletCoinsCurrentPrice[coin.id].usd * coin.quantity)
 
-    let changeInPercentage = 0;
-    let increaseDecrease = ''
+//     let changeInPercentage = 0;
+//     let increaseDecrease = ''
 
-    if (oldCoinValue < currentMarketPrice) {
-      changeInPercentage = 100 - (oldCoinValue / currentMarketPrice * 100)
-      increaseDecrease = "<strong class='increase'>↑</strong>"
-    }
-    else if (oldCoinValue > currentMarketPrice) {
-      changeInPercentage = 100 - (currentMarketPrice / oldCoinValue * 100)
-      increaseDecrease = "<strong class='decrease'>↓</strong>"
-    }
-    else if (oldCoinValue == currentMarketPrice) {
-      changeInPercentage = 0
-      increaseDecrease = ""
-    }
+//     if (oldCoinValue < currentMarketPrice) {
+//       changeInPercentage = 100 - (oldCoinValue / currentMarketPrice * 100)
+//       increaseDecrease = "<strong class='increase'>↑</strong>"
+//     }
+//     else if (oldCoinValue > currentMarketPrice) {
+//       changeInPercentage = 100 - (currentMarketPrice / oldCoinValue * 100)
+//       increaseDecrease = "<strong class='decrease'>↓</strong>"
+//     }
+//     else if (oldCoinValue == currentMarketPrice) {
+//       changeInPercentage = 0
+//       increaseDecrease = ""
+//     }
 
-    strArr.push(`<tr id="portfolioData">
-      <td class="align-middle text-center">${counter++}</td>
-      <td class="align-middle text-center">${coin.name}</td>
-      <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
-      <td class="align-middle text-center">${value}</td>
-      <td class="align-middle text-center">${increaseDecrease}&nbsp &nbsp${(changeInPercentage).toFixed(2).toLocaleString('en-US')}% </td></td>
-      <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
-      </tr>`);
-  }
+//     strArr.push(`<tr id="portfolioData">
+//       <td class="align-middle text-center">${counter++}</td>
+//       <td class="align-middle text-center">${coin.name}</td>
+//       <td class="align-middle text-center">${coin.quantity.toLocaleString('en-US')}</td>
+//       <td class="align-middle text-center">${value}</td>
+//       <td class="align-middle text-center">${increaseDecrease}&nbsp &nbsp${(changeInPercentage).toFixed(2).toLocaleString('en-US')}% </td></td>
+//       <td class=" sellCoin align-middle text-center"><button class="btn btn-outline-warning">Sell</button></td>
+//       </tr>`);
+//   }
 
-  let content = strArr.join("");
-  return content;
-};
+//   let content = strArr.join("");
+//   return content;
+// };
 
 //Function for rendering portfolio table
 async function renderPortfolioTableAsync(user) {
@@ -434,7 +477,7 @@ async function showTradeModal(coinId, coinName) {
       loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     }
     // showCash()
-    // await calculateLossOrGain()
+    await calculateLossOrGain()
     await renderPortfolioTableAsync(loggedUser.user);
     displayElements.showSimulatorPage();
   })
@@ -639,9 +682,9 @@ cryptoLimitInput.addEventListener("keypress", (e) => {
 })
 
 document.getElementById("limit-crypto-confirm-btn").addEventListener("click", async () => {
-  
+
   // let form = document.getElementById("cryptolimit-form");
-  
+
   let msg = document.getElementById("crypto-limit-msg")
   let userFromDb = JSON.parse(localStorage.getItem("user"));
 
@@ -654,12 +697,12 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", as
 
   let result = await data.json();
 
-  if(result){
+  if (result) {
     await showLoaderAsync(msg, 2000)
     msg.setAttribute("class", "text-light")
     msg.innerText = "Succesfully changed the limit!"
   }
-  else{
+  else {
     await showLoaderAsync(msg, 2000)
     msg.setAttribute("class", "text-danger")
     msg.innerText = "You have more coins in your wallet now. Try again"
@@ -903,5 +946,5 @@ document.getElementById("walletsettings-navbtn").addEventListener("click", () =>
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins) })
 document.getElementById("activitylog-navbtn").addEventListener("click", () => {
   displayElements.showActivityLog()
-  createActivityLogTable()
+  //createActivityLogTable()
 })

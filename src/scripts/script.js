@@ -193,21 +193,21 @@ const displayElements = {
 
         // ................. TUKA BI TREBALO DA SE NAPRAVI FETCH DO APITO (WALLET CONTROLLER) .................
         let userFromDb = JSON.parse(localStorage.getItem("user"));
-        
+
         if (!userFromDb) {
             displayElements.showLoginRegisterPage()
         }
-        else {            
+        else {
             await showSimulatorSideMarket()
             await showCash(userFromDb.id)
             displayElements.showPortfolio();
-            
+
             // if (loggedUser.user.wallet.coins.length == 0) {
             //     console.log(loggedUser.user.wallet.coins);
             // }
             // else {
             //     await renderPortfolioTableAsync(loggedUser.user)
-                calculateLossOrGain();
+            calculateLossOrGain();
             //     displayElements.showPortfolio();
             // }
         }
@@ -389,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("login-btn").addEventListener("click", async () => {
-    
+
     let usernameInput = document.getElementById("login-username").value
     let passwordInput = document.getElementById("login-password").value
     let message = document.getElementById("login-error-msg")
@@ -402,7 +402,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
 
     const loginRequest = JSON.stringify(userLoginModel)
     // console.log(loginRequest);
-    
+
     await showLoaderAsync(loader)
 
     fetch("https://localhost:7054/api/v1/User/login", {
@@ -421,7 +421,7 @@ document.getElementById("login-btn").addEventListener("click", async () => {
             document.getElementById("logged-user-name").innerText = `${loggedUserFromDb.username}`
             usernameInput.value = ""
             passwordInput.value = ""
-            
+
             localStorage.setItem("user", JSON.stringify(loggedUserFromDb));
 
             displayElements.showUserDropDownBtn();
