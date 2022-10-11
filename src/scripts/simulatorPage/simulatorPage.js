@@ -198,12 +198,12 @@ async function showBuyModal(coinId, coinName) {
       let newCoin = new Coin(coinId, coinName, amountOfCoins)
       newCoin.priceBought.push(totalBuyPrice)
       loggedUser.user.wallet.coins.push(newCoin)
-      alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+      // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
     }
     else {
       loggedUserCoins.priceBought.push(totalBuyPrice)
       loggedUserCoins.quantity += parseFloat(amountOfCoins)
-      alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
+      // alert(`Successfully bought ${amountOfCoins} ${coinName} coin${amountOfCoins > 1 ? "s" : ""}\n\nYou have ${loggedUser.user.wallet.cash}$ cash left in your wallet`)
     }
     document.getElementById("newModal").remove();
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
@@ -424,7 +424,7 @@ async function showTradeModal(coinId, coinName) {
 
     portfolioHelpers["currentCoin"].quantity -= parseFloat(value);
     loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice[coinId].usd, false, value));
-    alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
+    // alert(`You sold ${value} coins for ${totalAmount}. Your current cash in the wallet is: ${loggedUser.user.wallet.cash}`);
     document.getElementById("newModal").remove();
 
     loggedUser.user.wallet.cash += totalAmount;
