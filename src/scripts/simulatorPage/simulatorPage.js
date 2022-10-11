@@ -250,8 +250,8 @@ async function showBuyModal(coinId, coinName) {
     // }
     document.getElementById("newModal").remove();
     // loggedUser.user.activityLog.transactionHistory.push(new Transaction(coinName, coinCurrentPrice, true, amountOfCoins))
-    //createActivityLogTable()
-    showCash()
+    await createActivityLogTable()
+    await showCash()
     await calculateLossOrGain()
     //await generatePortfolioTable(loggedUser.user)
     displayElements.showSimulatorPage() // to update the side market
@@ -730,13 +730,24 @@ document.getElementById("limit-crypto-confirm-btn").addEventListener("click", as
 
 //-------------------------------------------------------------------------------------------------------
 //#region  Kristijan Karanfilovski and Igor Nikoloski => TODO: Create Activity log
-function createActivityLogTable() {
+async function createActivityLogTable() {
   let element = document.getElementById("activity-log-table-content");
   element.innerHTML = "";
-  for (transaction of loggedUser.user.activityLog.transactionHistory) {
+
+  let userFromDb = JSON.parse(localStorage.getItem("user"));
+
+  let response = await fetch(`https://localhost:7054/api/v1/Wallet/transactions?userId=${userFromDb.id}`, {
+    headers: {
+      "Authorization": `Bearer ${userFromDb.token}`
+    },
+    method: 'GET'
+  });
+  let data = await response.json();
+
+  for (transaction of data) {
     element.innerHTML += `
     <tr>
-    <td scope="col" class="text-center">${transaction.name}</td>
+    <td scope="col" class="text-center">${transaction.coinName}</td>
     <td scope="col" class="text-center">${formatter.format(transaction.price)}$</td>
     <td scope="col" class="text-center">${transaction.buyOrSell ? "<span class='activitySideBuy'>Buy</span>" : "<span class='activitySideSell'>Sell</span>"}</td>
     <td scope="col" class="text-center">${transaction.quantity}</td>
@@ -944,7 +955,7 @@ function processDataForWallet(data, coins) {
 document.getElementById("portfolio-navbtn").addEventListener("click", async () => { displayElements.showPortfolio(); await renderPortfolioTableAsync(loggedUser.user) })
 document.getElementById("walletsettings-navbtn").addEventListener("click", () => displayElements.showWalletSettings())
 document.getElementById("walletstatistics-navbtn").addEventListener("click", () => { displayElements.showWalletStatistics(), createStatisticsButtons(loggedUser.user.wallet.coins) })
-document.getElementById("activitylog-navbtn").addEventListener("click", () => {
+document.getElementById("activitylog-navbtn").addEventListener("click", async () => {
   displayElements.showActivityLog()
-  //createActivityLogTable()
+  await createActivityLogTable()
 })
