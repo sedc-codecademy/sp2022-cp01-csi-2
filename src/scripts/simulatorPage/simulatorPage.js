@@ -304,8 +304,8 @@ async function generatePortfolioTable(wallet) {
         <th scope="col" class="table-sm align-middle text-center">Name</th>
         <th scope="col" class="table-sm align-middle text-center">Amount</th>
         <th scope="col" class="table-sm align-middle text-center">Value</th>
-        <th scope="col" class="table-sm align-middle text-center">Change in %</th>
         <th scope="col" class="table-sm align-middle text-center">Action</th>
+        
       </tr>
     </thead>
     <tbody>
@@ -359,9 +359,9 @@ async function renderPortfolioTableAsync(wallet) {
     let coinName = btn.parentNode.getElementsByTagName("td")[1].innerHTML;
     let coin = wallet.coins.find(x => x.name == coinName);
     // let coinId = user.wallet.coins.find(x => x.name == coinName).id;
-    let coinId = coin.id;
+    let coinId = coin.coinId;
     btn.addEventListener("click", () => {
-      showTradeModal(coinId, coinName);
+      showTradeModal(wallet, coinId, coinName);
       portfolioHelpers["currentCoin"] = coin;
     });
   }
@@ -423,7 +423,7 @@ async function ShowModal(content, parent = document.getElementById("modal-contai
 };
 
 // Fucntion for creating and showing the content of the modal (buy/sell info)
-async function showTradeModal(coinId, coinName) {
+async function showTradeModal(wallet, coinId, coinName) {
   let userFromDb = JSON.parse(localStorage.getItem("user"));
   let response = await fetch(`https://localhost:7054/api/v1/Wallet/user-cash?userId=${userFromDb.id}`, {
     headers: {
@@ -435,7 +435,8 @@ async function showTradeModal(coinId, coinName) {
   
   let coinChart = await createSingleCoinChartAsync(coinId, coinName);
   let coinCurrentPrice = await getCoinCurrentPriceAsync(coinId);
-  coinCurrentPrice = coinCurrentPrice[coinId].usd
+  // coinCurrentPrice = coinCurrentPrice[coinId].usd
+  console.log(coinCurrentPrice);
   let content = `<div class="container d-flex justify-content-around" id="buySellModalChartContainer">
                   <div class="container d-flex justify-content-around" id="buySellModalChart">
                   </div>
@@ -459,14 +460,14 @@ async function showTradeModal(coinId, coinName) {
                   </div>
                 </div>`;
   await ShowModal(content);
-  await tradeModalHandlers(coinId, coinName, coinCurrentPrice);
+  await tradeModalHandlers(wallet, coinId, coinName, coinCurrentPrice);
 
   document.getElementById("buySellModalChart").appendChild(coinChart);
 
   document.getElementById("sellBtn").addEventListener('click', async (e) => {
     let coin = document.getElementById("portfolioData").firstElementChild.innerHTML;
     let value = document.getElementById("coinsAmount").value;
-    let totalAmount = coinCurrentPrice * parseFloat(value);
+    let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(value);
 
     // let soldCoin = loggedUser.user.wallet.coins.find(x => x.id == portfolioHelpers.currentCoin.id);
     // let indexOfCoin = loggedUser.user.wallet.coins.indexOf(soldCoin);
@@ -475,7 +476,7 @@ async function showTradeModal(coinId, coinName) {
       coinId: `${coinId}`,
       name: `${coinName}`,
       userId: +userFromDb.id,
-      amount: +amountOfCoins
+      amount: +value
     }
 
     let requestModel = JSON.stringify(sellModel);
@@ -512,15 +513,17 @@ async function showTradeModal(coinId, coinName) {
     //   loggedUser.user.wallet.coins.splice(indexOfCoin, 1);
     // }
     
+
+
     showCash()
     await calculateLossOrGain()
-    await renderPortfolioTableAsync(loggedUser.user);
+    await renderPortfolioTableAsync(wallet);
     displayElements.showSimulatorPage();
   })
 };
 
 //Function for validating the trading of the cryptocurrencies
-async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
+async function tradeModalHandlers(wallet, coinId, coinName, coinCurrentPrice, isBuy) {
   let sellBtn = document.getElementById("sellBtn");
   sellBtn.disabled = true;
   document.getElementById("coinsAmount").addEventListener('input', (e) => {
@@ -545,7 +548,7 @@ async function tradeModalHandlers(coinId, coinName, coinCurrentPrice, isBuy) {
     let totalAmount = coinCurrentPrice[coinId].usd * parseFloat(val);
     totalPriceInput.value = totalAmount;
 
-    let maxQuantity = loggedUser.user.wallet.coins.find(x => x.id == coinId).quantity;
+    let maxQuantity = wallet.coins.find(x => x.coinId == coinId).quantity;
     if (val > maxQuantity) {
       exceedingAmountErrorText.innerText = "The amount of coins exceeds the amount in your wallet.";
       sellBtn.disabled = true;
