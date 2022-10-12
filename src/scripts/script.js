@@ -187,8 +187,7 @@ const displayElements = {
         this.showElements(statisticsPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, simulatorPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
     },
-    showSimulatorPage: async function () {
-        this.showElements(simulatorPage, otherPagesDiv)
+    showSimulatorPage: async function () {this.showElements(simulatorPage, otherPagesDiv)
         this.hideElements(...homePageMainContent, statisticsPage, infoCenterPage, loginRegisterPage, privacyPolicy, about, ourServices)
 
         // ................. TUKA BI TREBALO DA SE NAPRAVI FETCH DO APITO (WALLET CONTROLLER) .................
@@ -200,13 +199,23 @@ const displayElements = {
         else {
             await showSimulatorSideMarket()
             await showCash(userFromDb.id)
+            let wallet = await fetch(`https://localhost:7054/api/v1/Wallet/GetCoins?userId=${userFromDb.id}`, {
+                headers: {
+                  "Authorization": `Bearer ${userFromDb.token}`
+                },
+                method: 'GET'
+              });
+            wallet = await wallet.json();
             displayElements.showPortfolio();
-
-            // if (loggedUser.user.wallet.coins.length == 0) {
-            //     console.log(loggedUser.user.wallet.coins);
+            console.log(userFromDb);
+            console.log(wallet);
+            // if (userFromDb.wallet.coins.length == 0) {
+            //     console.log(userFromDb.wallet.coins);
             // }
             // else {
-            //     await renderPortfolioTableAsync(loggedUser.user)
+
+            await renderPortfolioTableAsync(wallet);
+            // }
             calculateLossOrGain();
             //     displayElements.showPortfolio();
             // }
