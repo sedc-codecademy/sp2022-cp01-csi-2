@@ -1,12 +1,12 @@
-## Crypto Simulator 
+## Crypto Simulator :dollar:
 
-### Idea
+### Idea :sparkles:
 Technology is constantly changing and evolving, and with that come new and exciting ways to implement it. An interesting trend is blockchain technology and the cryptocurrency market.\
 For this reason, we decided to create a website that will provide all the features and functionalities that real websites for trading with cryptocurrencies provide.
 
 This website is a perfect match for those who are willing to start trading with cryptocurrencies but are not ready to invest real money and yet want to see what investment would get them. Experienced traders are also welcome, as they can try different portfolio combinations and strategies for free. 
 
-### Description and Features
+### Description and Features :page_facing_up:
 The website is separated into multiple parts like the Home page, Statistics page, Crypto Simulator page and Info Center. Some of the pages are available to all visitors, and some pages are only available to those that will create an account.
 
 On the Home Page, the user can see some of the trending data regarding cryptocurrencies, like the most popular crypto currencies according to the market size, price etc., and the best-selling cryptocurrencies. Here, the user can also find some interesting facts and statistics regarding trading with cryptos.
@@ -17,7 +17,7 @@ For the users that will register on our page, a crypto simulator page will be av
 
 The Info Center page is of an informative and educational nature as it provides information on what is crypto currency, what blockchain is and how it works. It is highly recommended for those who are starting with crypto technology, but there are some interesting resources for experienced ones too.
 
-### Technology Info
+### Technology Info :information_source:
 
 ####  Frontend
 - The whole page is written in a plain (vanilla) JavaScript programming language using HTML and CSS. 
@@ -28,7 +28,7 @@ The Info Center page is of an informative and educational nature as it provides 
 - JSON Web Token is used for the authentication and authorization process.
 - Microsoft SQL Server is used as a database management system along with the Entity Framework Core.
 
-### Team
+### Team :muscle:
 - Aneta Stankovska
 - Kristijan Karanfilovski
 - Ilija Mitev
